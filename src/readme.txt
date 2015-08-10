@@ -10,7 +10,7 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 An easy to use Link Checker for WordPress to detect broken internal and external links on your website.
 
 == Description ==
-The (Link Checker)[https://www.marcobeierer.com/wordpress-plugins/link-checker] for WordPress uses an external service to crawl your website and and find broken links on your website. 
+The [Link Checker](https://www.marcobeierer.com/wordpress-plugins/link-checker) for WordPress uses an external service to crawl your website and and find broken links on your website. 
 
 In contrast to search engine tools like the Google Search Console, which only show if a URL on your website is not reachable, it does not matter for the link checker if the links leads to an internal or external URL. The link checker will find all dead links. 
 
