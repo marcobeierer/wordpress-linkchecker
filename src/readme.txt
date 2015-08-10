@@ -39,6 +39,10 @@ The link checker uses an external server, operated by the developer of the plugi
 3. Access the generator with the "Link Checker" button in the sidebar and use the "Check your website" button to start the process. 
 4. The found broken links will be reported to you when the crawler has finished.
 
+== Screenshots ==
+
+1. List of broken links found by the link checker.
+
 == Changelog ==
 = 1.0.0-beta.1 =
 *Release Date - 8th August, 2015*
