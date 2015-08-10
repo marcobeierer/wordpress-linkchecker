@@ -66,17 +66,27 @@ function link_checker_page() {
 				</tfoot>
 			</table>
 		</div>
-		<script defer src="<?php echo get_site_url(); ?>/wp-content/plugins/mb-link-checker/js/angular.min.js"></script>
-		<script defer src="<?php echo get_site_url(); ?>/wp-content/plugins/mb-link-checker/js/linkchecker.js?v=1"></script>
 	</div>
 <?
+}
+
+add_action('admin_enqueue_scripts', 'load_link_checker_admin_scripts');
+function load_link_checker_admin_scripts($hook) {
+
+	if ($hook == 'toplevel_page_link-checker') {
+
+		$angularURL = plugins_url('js/angular.min.js', __FILE__);
+		$linkcheckerURL = plugins_url('js/linkchecker.js?v=1', __FILE__);
+
+		wp_enqueue_script('link_checker_angularjs', $angularURL);
+		wp_enqueue_script('link_checker_linkcheckerjs', $linkcheckerURL);
+	}
 }
 
 add_action('wp_ajax_link_checker_proxy', 'link_checker_proxy_callback');
 function link_checker_proxy_callback() {
 
 	$baseurl = get_site_url();
-	$baseurl = "http://www.aboutcms.de";
 	$baseurl64 = strtr(base64_encode($baseurl), '+/', '-_');
 
 	$ch = curl_init();
