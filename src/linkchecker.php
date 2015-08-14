@@ -18,7 +18,7 @@ Text Domain: Marco Beierer
 
 add_action('admin_menu', 'register_link_checker_page');
 function register_link_checker_page() {
-	add_menu_page('Link Checker', 'Link Checker', 'manage_options', 'link-checker', 'link_checker_page', '', 100); 
+	add_menu_page('Link Checker', 'Link Checker', 'manage_options', 'link-checker', 'link_checker_page', '', '132132002');
 }
 
 function link_checker_page() {
