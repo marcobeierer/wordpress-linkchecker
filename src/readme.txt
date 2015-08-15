@@ -49,3 +49,8 @@ The Link Checker uses an external server, operated by the developer of the plugi
 
 * Initial release.
 
+= 1.0.0-beta.2 =
+*Release Date - 14th August, 2015*
+
+* Changed menu position to a more unique one.
+
