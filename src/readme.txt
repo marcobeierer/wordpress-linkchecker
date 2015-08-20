@@ -3,7 +3,7 @@ Contributors: mbsec
 Tags: link checker, broken links, dead links, dead link checker, broken link checker, broken, link, links, maintenance, plugin, seo
 Requires at least: 4.2
 Tested up to: 4.3
-Stable tag: 1.0.0-beta.2
+Stable tag: 1.0.0-beta.3
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -44,13 +44,23 @@ The Link Checker uses an external server, operated by the developer of the plugi
 1. List of broken links found by the Link Checker.
 
 == Changelog ==
-= 1.0.0-beta.1 =
-*Release Date - 8th August, 2015*
+= 1.0.0-beta.3
+*Release Date - 21th August, 2015*
+*Please note that the plugin was not changed, just the backend service.*
 
-* Initial release.
+* The Link Checker is now able to detect the same dead link on multiple pages. Until now the Link Checker only showed the first page where the dead link was found.
+* Pages, blocked by the robots.txt file, were not parsed in earlier version. This is fixed now.
+* Fixed an issue with the evaluation of the HTML base tag. A base tag href value with a trailing slash was not evaluated correctly before.
+* Implemented a timeout on the connection. URLs which time out are shown with an error 500 in the Link Checker.
+* Some smaller bug fixes and performance improvements.
 
 = 1.0.0-beta.2 =
 *Release Date - 14th August, 2015*
 
 * Changed menu position to a more unique one.
+
+= 1.0.0-beta.1 =
+*Release Date - 8th August, 2015*
+
+* Initial release.
 
