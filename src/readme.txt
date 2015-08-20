@@ -44,7 +44,7 @@ The Link Checker uses an external server, operated by the developer of the plugi
 1. List of broken links found by the Link Checker.
 
 == Changelog ==
-= 1.0.0-beta.3
+= 1.0.0-beta.3 =
 *Release Date - 21th August, 2015*
 
 *Please note that the plugin was not changed, just the backend service.*
