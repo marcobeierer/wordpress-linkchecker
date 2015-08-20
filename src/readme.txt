@@ -46,6 +46,7 @@ The Link Checker uses an external server, operated by the developer of the plugi
 == Changelog ==
 = 1.0.0-beta.3
 *Release Date - 21th August, 2015*
+
 *Please note that the plugin was not changed, just the backend service.*
 
 * The Link Checker is now able to detect the same dead link on multiple pages. Until now the Link Checker only showed the first page where the dead link was found.
