@@ -15,6 +15,7 @@ linkCheckerApp.controller('LinkCheckerController', ['$scope', '$http', '$timeout
 			if ($scope.linkCheckerForm.$valid) {
 
 				$scope.checkDisabled = true;
+				$scope.limitReached = false;
 				$scope.urlsCrawledCount = 0;
 
 				$scope.message = "Your website is being checked. Please wait a moment.";
