@@ -51,6 +51,7 @@ The Link Checker uses an external server, operated by the developer of the plugi
 * Undone change introduced in 1.0.0-beta.3: Pages blocked by the robots.txt file are not parsed from now on as in versions older than 1.0.0-beta.3. I rethought this point and think crawlers should respect the robots.txt, no matter which purpose the crawler has.
 * Support for custom user-agent group (MB-SiteCrawler) in robots.txt.
 * Better error reporting if website is not reachable.
+* Reset limit reached message before each run.
 
 = 1.0.0-beta.3 =
 *Release Date - 21th August, 2015*

@@ -115,3 +115,32 @@ function link_checker_proxy_callback() {
 	echo $response;
 	wp_die();
 }
+
+add_action('admin_menu', 'register_link_checker_settings_page');
+function register_link_checker_settings_page() {
+	add_submenu_page('link-checker', 'Link Checker Settings', 'Settings', 'manage_options', 'link-checker-settings', 'link_checker_settings_page');
+	add_action('admin_init', 'register_link_checker_settings');
+}
+
+function register_link_checker_settings() {
+	register_setting('link-checker-settings-group', 'link-checker-token');
+}
+
+function link_checker_settings_page() {
+?>
+	<div class="wrap">
+		<h2>Link Checker Settings</h2>
+		<div class="card">
+			<form method="post" action="options.php">
+				<?php settings_fields('link-checker-settings-group'); ?>
+				<?php do_settings_sections('link-checker-settings-group'); ?>
+				<h3>Your Token</h3>
+				<p><textarea name="link-checker-token" style="width: 100%; min-height: 350px;"><?php echo esc_attr(get_option('link-checker-token')); ?></textarea></p>
+				<p>The Link Checker allows you to check up to 500 internal and external links for free. If your website has more links, you can buy a token for the <a href="https://www.marcobeierer.com/wordpress-plugins/link-checker-professional">Link Checker Professional</a> to check up to 50000 links.</p>
+				<?php submit_button(); ?>
+			</form>
+		</div>
+	</div>
+<?php
+}
+?>
