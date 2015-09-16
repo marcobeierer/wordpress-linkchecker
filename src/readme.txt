@@ -3,7 +3,7 @@ Contributors: mbsec
 Tags: link checker, broken links, dead links, dead link checker, broken link checker, broken, link, links, maintenance, plugin, seo
 Requires at least: 4.2
 Tested up to: 4.3
-Stable tag: 1.0.0-beta.3
+Stable tag: 1.0.0-beta.4
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -27,8 +27,10 @@ The Link Checker works for every plugin out of the box. The computation costs fo
 = Upcoming Technical Features =
 * Support for checking the availability of embedded images, videos, CSS files and JS files.
 
-= Limitations =
-During the beta phase the service is limited to check the first 500 URLs of your website. After the beta phase, you could buy a token to check up to 50000 URLs. If you already need more URLs, please contact me by email.
+= Limitations of the Basic Version =
+The free basic version of the Link Checker allows you to check the first 500 internal and external links on your website. If you need more capacity, you could buy a token for the professional version of the Link Checker to check up to 50'000 links.
+
+[Link Checker Professional](https://www.marcobeierer.com/wordpress-plugins/link-checker-professional)
 
 = Use of an External Server =
 The Link Checker uses an external server, operated by the developer of the plugin, to crawl your website and detect broken links. This means, that there is some communication between your website and the server. The only data that is communicated to the external server by your website is the URL of your website and the fact that you are using WordPress. The server than crawlers your website (as a normal visitor does) and answers with a list of the found broken links.
@@ -46,8 +48,9 @@ The Link Checker uses an external server, operated by the developer of the plugi
 == Changelog ==
 
 = 1.0.0-beta.4 =
-*Release Date - 2015*
+*Release Date - 17th September, 2015*
 
+* Implemented token support for the Link Checker Professional.
 * Undone change introduced in 1.0.0-beta.3: Pages blocked by the robots.txt file are not parsed from now on as in versions older than 1.0.0-beta.3. I rethought this point and think crawlers should respect the robots.txt, no matter which purpose the crawler has.
 * Support for custom user-agent group (MB-SiteCrawler) in robots.txt.
 * Better error reporting if website is not reachable.

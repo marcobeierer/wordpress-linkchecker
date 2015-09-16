@@ -9,7 +9,7 @@
 Plugin Name: Link Checker
 Plugin URI: https://www.marcobeierer.com/wordpress-plugins/link-checker
 Description: An easy to use Link Checker for WordPress to detect broken internal and external links on your website.
-Version: 1.0.0-beta.3
+Version: 1.0.0-beta.4
 Author: Marco Beierer
 Author URI: https://www.marcobeierer.com
 License: GPL v3
@@ -29,13 +29,13 @@ function link_checker_page() {
 				<h2>Link Checker <button type="submit" class="add-new-h2" ng-click="check()" ng-disabled="checkDisabled">Check your website</button></h2>
 			</form>
 			<h3>Check your website for broken internal and external links.</h3>
-			<p>{{ message }} <span ng-if="urlsCrawledCount > 0">{{ urlsCrawledCount }} URLs already checked.</span> <span ng-if="limitReached">The URL limit was reached. The crawler has not checked your complete website.</span></p>
+			<p>{{ message }} <span ng-if="urlsCrawledCount > 0">{{ urlsCrawledCount }} links already checked.</span> <span ng-if="limitReached">The link limit was reached. The Link Checker has not checked your complete website. You could buy a token for the <a href="https://www.marcobeierer.com/wordpress-plugins/link-checker-professional">Link Checker Professional</a> to check up to 50'000 links.</span></p>
 
 			<table class="wp-list-table widefat fixed striped posts">
 				<thead>
 					<tr>
-						<th style="width: 35%;">URL where the broken link was found</th>
-						<th>Broken URL</th>
+						<th style="width: 35%;">URL where the broken links were found</th>
+						<th>Broken Links</th>
 						<th style="width: 6em;">Status Code</th>
 					</tr>
 				</thead>
@@ -59,8 +59,8 @@ function link_checker_page() {
 				</tbody>
 				<tfoot>
 					<tr>
-						<th>URL where the broken link was found</th>
-						<th>Broken URL</th>
+						<th>URL where the broken links were found</th>
+						<th>Broken Links</th>
 						<th>Status Code</th>
 					</tr>
 				</tfoot>
@@ -94,6 +94,11 @@ function link_checker_proxy_callback() {
 	curl_setopt($ch, CURLOPT_URL, 'https://api.marcobeierer.com/linkchecker/v1/' . $baseurl64 . '?origin_system=wordpress');
 	curl_setopt($ch, CURLOPT_HEADER, 0);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+	$token = get_option('sitemap-generator-token');
+	if ($token != '') {
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: BEARER ' . $token));
+	}
 
 	$response = curl_exec($ch);
 
@@ -136,7 +141,7 @@ function link_checker_settings_page() {
 				<?php do_settings_sections('link-checker-settings-group'); ?>
 				<h3>Your Token</h3>
 				<p><textarea name="link-checker-token" style="width: 100%; min-height: 350px;"><?php echo esc_attr(get_option('link-checker-token')); ?></textarea></p>
-				<p>The Link Checker allows you to check up to 500 internal and external links for free. If your website has more links, you can buy a token for the <a href="https://www.marcobeierer.com/wordpress-plugins/link-checker-professional">Link Checker Professional</a> to check up to 50000 links.</p>
+				<p>The Link Checker allows you to check up to 500 internal and external links for free. If your website has more links, you can buy a token for the <a href="https://www.marcobeierer.com/wordpress-plugins/link-checker-professional">Link Checker Professional</a> to check up to 50'000 links.</p>
 				<?php submit_button(); ?>
 			</form>
 		</div>
