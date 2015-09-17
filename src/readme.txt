@@ -71,6 +71,7 @@ In the most cases this is due to the fact that you have set a large value for th
 * Support for custom user-agent group (MB-SiteCrawler) in robots.txt.
 * Better error reporting if website is not reachable.
 * Reset limit reached message before each run.
+* A status update is now requested every 2.5 seconds instead of every second.
 
 = 1.0.0-beta.3 =
 *Release Date - 21th August, 2015*

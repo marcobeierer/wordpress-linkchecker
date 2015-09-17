@@ -39,7 +39,7 @@ linkCheckerApp.controller('LinkCheckerController', ['$scope', '$http', '$timeout
 							}
 							else {
 								$scope.urlsCrawledCount = data.URLsCrawledCount;
-								$timeout(poller, 1000);
+								$timeout(poller, 2500);
 							}
 
 							if (!jQuery.isEmptyObject(data.DeadLinks)) { // necessary for placeholder
