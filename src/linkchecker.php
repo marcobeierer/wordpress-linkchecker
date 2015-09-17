@@ -9,7 +9,7 @@
 Plugin Name: Link Checker
 Plugin URI: https://www.marcobeierer.com/wordpress-plugins/link-checker
 Description: An easy to use Link Checker for WordPress to detect broken internal and external links on your website.
-Version: 1.0.0-beta.4
+Version: 1.0.0-rc.1
 Author: Marco Beierer
 Author URI: https://www.marcobeierer.com
 License: GPL v3
