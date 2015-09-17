@@ -23,6 +23,7 @@ The Link Checker works for every plugin out of the box. The computation costs fo
 
 = Technical Features =
 * Respects your robots.txt file (also the crawl-delay directive).
+	* You could use the user-agent MB-SiteCrawler to control the crawler.
 
 = Upcoming Technical Features =
 * Support for checking the availability of embedded images, videos, CSS files and JS files.
@@ -51,6 +52,7 @@ The Link Checker uses an external server, operated by the developer of the plugi
 *Release Date - 17th September, 2015*
 
 * Implemented token support for the Link Checker Professional.
+* Reset list of broken links directly and not at the first find if a second check is executed.
 * Undone change introduced in 1.0.0-beta.3: Pages blocked by the robots.txt file are not parsed from now on as in versions older than 1.0.0-beta.3. I rethought this point and think crawlers should respect the robots.txt, no matter which purpose the crawler has.
 * Support for custom user-agent group (MB-SiteCrawler) in robots.txt.
 * Better error reporting if website is not reachable.

@@ -29,7 +29,7 @@ function link_checker_page() {
 				<h2>Link Checker <button type="submit" class="add-new-h2" ng-click="check()" ng-disabled="checkDisabled">Check your website</button></h2>
 			</form>
 			<h3>Check your website for broken internal and external links.</h3>
-			<p>{{ message }} <span ng-if="urlsCrawledCount > 0">{{ urlsCrawledCount }} links already checked.</span> <span ng-if="limitReached">The link limit was reached. The Link Checker has not checked your complete website. You could buy a token for the <a href="https://www.marcobeierer.com/wordpress-plugins/link-checker-professional">Link Checker Professional</a> to check up to 50'000 links.</span></p>
+			<p><span ng-bind-html="message | sanitize"></span> <span ng-if="urlsCrawledCount > 0">{{ urlsCrawledCount }} links already checked.</span></p>
 
 			<table class="wp-list-table widefat fixed striped posts">
 				<thead>
@@ -76,7 +76,7 @@ function load_link_checker_admin_scripts($hook) {
 	if ($hook == 'toplevel_page_link-checker') {
 
 		$angularURL = plugins_url('js/angular.min.js', __FILE__);
-		$linkcheckerURL = plugins_url('js/linkchecker.js?v=1', __FILE__);
+		$linkcheckerURL = plugins_url('js/linkchecker.js?v=2', __FILE__);
 
 		wp_enqueue_script('link_checker_angularjs', $angularURL);
 		wp_enqueue_script('link_checker_linkcheckerjs', $linkcheckerURL);
@@ -95,7 +95,7 @@ function link_checker_proxy_callback() {
 	curl_setopt($ch, CURLOPT_HEADER, 0);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-	$token = get_option('sitemap-generator-token');
+	$token = get_option('link-checker-token');
 	if ($token != '') {
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: BEARER ' . $token));
 	}
