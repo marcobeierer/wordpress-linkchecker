@@ -42,6 +42,20 @@ The Link Checker uses an external server, operated by the developer of the plugi
 3. Access the generator with the "Link Checker" button in the sidebar and use the "Check your website" button to start the process. 
 4. The found broken links will be reported to you when the crawler has finished.
 
+== Frequently Asked Questions ==
+
+= Why could the Link Checker not access my site? =
+A reason if the Link Checker could not access your site could be that the crawler of the Link Checker is blocked by your hosting provider. I have observed this issue especially with free and really cheap hosting providers. Some block crawlers (and regular visitors) already after five fast sequential requests. The issue could be fixed by whitelisting the IP of the crawler. However, I think this option is not available for the affected hosting services. Alternatively it is possible to use the crawl-delay directive in your robots.txt to set the delay between two requests.
+
+= Which user-agent should I use in the robots.txt file? =
+The Link Checker uses a custom user-agent group named MB-SiteCrawler. This allows you a fine grained control of which pages are checked. If you do not define a group for the custom user-agent in your robots.txt file, the default set in the * group apply.
+
+= Does the Link Checker work in my local development environment? =
+No, the Link Checker needs to crawl your website and the generator has no access to you local network.
+
+= The Link Checker is very slow. What can I do? =
+In the most cases this is due to the fact that you have set a large value for the crawl-delay directive in your robots.txt file. Some hosters also add the crawl-delay directive automatically to your robots.txt file. The crawl-delay defines the time in seconds between to requests of the crawler.
+
 == Screenshots ==
 
 1. List of broken links found by the Link Checker.
