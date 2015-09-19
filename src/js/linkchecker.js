@@ -6,9 +6,12 @@ var language = jQuery('html').attr('lang');
 linkCheckerApp.controller('LinkCheckerController', ['$scope', '$http', '$timeout',
 	function ($scope, $http, $timeout) {
 
+		var resultsMessage = 'Link check not started yet.';
+
 		$scope.checkDisabled = false;
 		//$scope.limitReached = false;
 		$scope.message = "The link checker was not started yet.";
+		$scope.resultsMessage = resultsMessage;
 		$scope.links = null;
 
 		$scope.check= function() {
@@ -20,7 +23,8 @@ linkCheckerApp.controller('LinkCheckerController', ['$scope', '$http', '$timeout
 				$scope.links = null;
 
 				$scope.message = "Your website is being checked. Please wait a moment.";
-		
+				$scope.resultsMessage = 'Please wait until the check has finished.';
+
 				var poller = function() {
 
 					$http.get('admin-ajax.php?action=link_checker_proxy').
@@ -36,6 +40,8 @@ linkCheckerApp.controller('LinkCheckerController', ['$scope', '$http', '$timeout
 								} else {
 									$scope.message = "Your website was checked successfully. Please see the result below.";
 								}
+
+								$scope.resultsMessage = 'No broken links found.';
 							}
 							else {
 								$scope.urlsCrawledCount = data.URLsCrawledCount;
@@ -55,6 +61,8 @@ linkCheckerApp.controller('LinkCheckerController', ['$scope', '$http', '$timeout
 							} else {
 								$scope.message = "The check of your website failed. Please try it again.";
 							}
+
+							$scope.resultsMessage = resultsMessage;
 						});
 				}
 				poller();
