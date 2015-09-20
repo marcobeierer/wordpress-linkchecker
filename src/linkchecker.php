@@ -9,7 +9,7 @@
 Plugin Name: Link Checker
 Plugin URI: https://www.marcobeierer.com/wordpress-plugins/link-checker
 Description: An easy to use Link Checker for WordPress to detect broken internal and external links on your website.
-Version: 1.0.0-rc.1
+Version: 1.0.0
 Author: Marco Beierer
 Author URI: https://www.marcobeierer.com
 License: GPL v3
@@ -29,7 +29,20 @@ function link_checker_page() {
 				<h2>Link Checker <button type="submit" class="add-new-h2" ng-click="check()" ng-disabled="checkDisabled">Check your website</button></h2>
 			</form>
 			<h3>Check your website for broken internal and external links.</h3>
-			<p><span ng-bind-html="message | sanitize"></span> <span ng-if="urlsCrawledCount > 0">{{ urlsCrawledCount }} links already checked.</span></p>
+			<p ng-bind-html="message | sanitize"></p>
+
+			<table>
+				<tr>
+					<td>Number of crawled HTML pages on your site:</td>
+					<td>{{ urlsCrawledCount }}</td>
+				</tr>
+				<tr>
+					<td>Number of checked internal and external links:</td>
+					<td>{{ checkedLinksCount }}</td>
+				</tr>
+			</table>
+
+			<p></p>
 
 			<table class="wp-list-table widefat fixed striped posts">
 				<thead>
@@ -76,7 +89,7 @@ function load_link_checker_admin_scripts($hook) {
 	if ($hook == 'toplevel_page_link-checker') {
 
 		$angularURL = plugins_url('js/angular.min.js', __FILE__);
-		$linkcheckerURL = plugins_url('js/linkchecker.js?v=3', __FILE__);
+		$linkcheckerURL = plugins_url('js/linkchecker.js?v=4', __FILE__);
 
 		wp_enqueue_script('link_checker_angularjs', $angularURL);
 		wp_enqueue_script('link_checker_linkcheckerjs', $linkcheckerURL);
@@ -104,6 +117,10 @@ function link_checker_proxy_callback() {
 
 	$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 	$contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+
+	if ($statusCode == 0) {
+		$statusCode = 503; // Service unavailable
+	}
 
 	curl_close($ch);
 

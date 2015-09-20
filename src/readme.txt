@@ -3,7 +3,7 @@ Contributors: mbsec
 Tags: link checker, broken links, dead links, dead link checker, broken link checker, broken, link, links, maintenance, plugin, seo
 Requires at least: 4.2
 Tested up to: 4.3
-Stable tag: 1.0.0-rc.1
+Stable tag: 1.0.0
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -61,6 +61,15 @@ In the most cases this is due to the fact that you have set a large value for th
 1. List of broken links found by the Link Checker.
 
 == Changelog ==
+
+= 1.0.0 =
+*Release Date - 20th September, 2015*
+
+* Do only transfer the results once at the end of the scan and not at each status update request.
+	* The status update interval was due to this change reduced to one second again.
+* Better interface messages for use with updated API.
+* Display number of already checked links.
+* Check if the backend service is up and running at the start of a link check.
 
 = 1.0.0-rc.1 =
 *Release Date - 17th September, 2015*
