@@ -62,6 +62,12 @@ In the most cases this is due to the fact that you have set a large value for th
 
 == Changelog ==
 
+= 1.0.1 =
+*Release Date - 27th September, 2015*
+
+* Added a check for the correct cURL version.
+* Added a check if the plugin is used in a local development environment.
+
 = 1.0.0 =
 *Release Date - 20th September, 2015*
 
