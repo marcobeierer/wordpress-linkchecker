@@ -5,13 +5,12 @@
  * @license    https://www.gnu.org/licenses/gpl-3.0.html GNU/GPL
  */
 defined('ABSPATH') or die('Restricted access.');
-require_once('shared_functions.php');
 
 /*
 Plugin Name: Link Checker
 Plugin URI: https://www.marcobeierer.com/wordpress-plugins/link-checker
 Description: An easy to use Link Checker for WordPress to detect broken internal and external links on your website.
-Version: 1.0.1
+Version: 1.0.4
 Author: Marco Beierer
 Author URI: https://www.marcobeierer.com
 License: GPL v3
@@ -24,7 +23,8 @@ function register_link_checker_page() {
 }
 
 function link_checker_page() {
-?>
+	include_once('shared_functions.php'); ?>
+
 	<div class="wrap" id="linkchecker-widget" ng-app="linkCheckerApp" ng-strict-di>
 		<div ng-controller="LinkCheckerController">
 			<form name="linkCheckerForm">

@@ -14,13 +14,17 @@ if (!function_exists('cURLCheck')) {
 				<p>cURL is not activated on your webspace. Please activate it in your web hosting control panel. This plugin will not work without cURL activated.</p>
 			</div>
 
-		<?php elseif (version_compare(curl_version()['version'], '7.18.1', '<')): ?>
+		<?php else: // curl is installed
 
-			<div class="notice notice-error below-h2">
-				<p>You have an outdated version of cURL installed. Please update to cURL 7.18.1 or higher in your web hosting control panel. A compatible version should be provided by default with PHP 5.4 or higher. This plugin will not work with the currently installed cURL version.</p>
-			</div>
+			$curlVersion = curl_version(); // temp var necessary for PHP 5.3
+			if (version_compare($curlVersion['version'], '7.18.1', '<')): ?>
 
-		<?php endif;
+				<div class="notice notice-error below-h2">
+					<p>You have an outdated version of cURL installed. Please update to cURL 7.18.1 or higher in your web hosting control panel. A compatible version should be provided by default with PHP 5.4 or higher. This plugin will not work with the currently installed cURL version.</p>
+				</div>
+
+			<?php endif;
+		endif;
 	}
 }
 
