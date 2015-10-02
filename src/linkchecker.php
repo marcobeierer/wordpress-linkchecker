@@ -52,40 +52,19 @@ function link_checker_page() {
 
 			<p></p>
 
-			<table class="wp-list-table widefat fixed striped posts">
-				<thead>
-					<tr>
-						<th style="width: 35%;">URL where the broken links were found</th>
-						<th>Broken Links</th>
-						<th style="width: 6em;">Status Code</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-if="!links">
-						<td>{{ resultsMessage }}</td>
-						<td></td>
-						<td></td>
-					</tr>
-					<tr ng-repeat="(foundOnURL, deadLinks) in links">
-						<td><a href="{{ foundOnURL }}">{{ foundOnURL }}</a></td>
-						<td colspan="2">
-							<table class="wp-list-table widefat fixed">
-								<tr ng-repeat="deadLink in deadLinks">
-									<td>{{ deadLink.URL }}</td>
-									<td style="width: 5em;">{{ deadLink.StatusCode }}</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</tbody>
-				<tfoot>
-					<tr>
-						<th>URL where the broken links were found</th>
-						<th>Broken Links</th>
-						<th>Status Code</th>
-					</tr>
-				</tfoot>
-			</table>
+			<?php
+				include_once('template.php');
+				
+				$templateFilepath = plugins_url('tmpl/table.html', __FILE__);
+				$template = new MarcoBeierer\Template($templateFilepath);
+
+				$template->setVar('th-col1', 'URL where the broken links were found');
+				$template->setVar('th-col2', 'Broken Links');
+				$template->setVar('th-col3', 'Status Code');
+				$template->setVar('list', 'links');
+
+				$template->render();
+			?>
 		</div>
 	</div>
 <?
