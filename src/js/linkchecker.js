@@ -17,8 +17,9 @@ linkCheckerApp.controller('LinkCheckerController', ['$scope', '$http', '$timeout
 		$scope.resultsMessage = resultsMessage;
 
 		$scope.links = null;
+		$scope.urlsWithDeadImages = null;
 
-		$scope.check= function() {
+		$scope.check = function() {
 
 			if ($scope.linkCheckerForm.$valid) {
 
@@ -28,6 +29,7 @@ linkCheckerApp.controller('LinkCheckerController', ['$scope', '$http', '$timeout
 				$scope.checkedLinksCount = 0;
 
 				$scope.links = null;
+				$scope.urlsWithDeadImages = null;
 
 				$scope.message = "Your website is being checked. Please wait a moment.";
 				$scope.resultsMessage = 'Please wait until the check has finished.';
@@ -58,6 +60,10 @@ linkCheckerApp.controller('LinkCheckerController', ['$scope', '$http', '$timeout
 
 							if (!jQuery.isEmptyObject(data.DeadLinks)) { // necessary for placeholder
 								$scope.links = data.DeadLinks;
+							}
+
+							if (!jQuery.isEmptyObject(data.DeadEmbeddedImages)) { // necessary for placeholder
+								$scope.urlsWithDeadImages = data.DeadEmbeddedImages;
 							}
 						}).
 						error(function(data, status, headers, config) {
