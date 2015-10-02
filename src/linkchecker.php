@@ -45,7 +45,7 @@ function link_checker_page() {
 					<td>{{ urlsCrawledCount }}</td>
 				</tr>
 				<tr>
-					<td>Number of checked internal and external links:</td>
+					<td>Number of checked internal and external resources:</td>
 					<td>{{ checkedLinksCount }}</td>
 				</tr>
 			</table>
