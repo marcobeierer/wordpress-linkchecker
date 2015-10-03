@@ -10,7 +10,7 @@ defined('ABSPATH') or die('Restricted access.');
 Plugin Name: Link Checker
 Plugin URI: https://www.marcobeierer.com/wordpress-plugins/link-checker
 Description: An easy to use Link Checker for WordPress to detect broken internal and external links on your website.
-Version: 1.0.4
+Version: 1.1.0
 Author: Marco Beierer
 Author URI: https://www.marcobeierer.com
 License: GPL v3
@@ -50,11 +50,10 @@ function link_checker_page() {
 				</tr>
 			</table>
 
-			<p></p>
-
+			<h3>Broken Links</h3>
 			<?php
 				include_once('template.php');
-				
+
 				$templateFilepath = plugins_url('tmpl/table.html', __FILE__);
 				$template = new MarcoBeierer\Template($templateFilepath);
 
@@ -64,6 +63,24 @@ function link_checker_page() {
 				$template->setVar('list', 'links');
 
 				$template->render();
+			?>
+
+			<?php
+				$token = get_option('link-checker-token');
+				if ($token != ''): 
+			?>
+			<h3>Broken Images</h3>
+			<?php
+				$template = new MarcoBeierer\Template($templateFilepath);
+
+				$template->setVar('th-col1', 'URL where the broken images were found');
+				$template->setVar('th-col2', 'Broken Images');
+				$template->setVar('th-col3', 'Status Code');
+				$template->setVar('list', 'urlsWithDeadImages');
+
+				$template->render();
+
+				endif; 
 			?>
 		</div>
 	</div>
@@ -91,7 +108,8 @@ function link_checker_proxy_callback() {
 
 	$ch = curl_init();
 
-	curl_setopt($ch, CURLOPT_URL, 'https://api.marcobeierer.com/linkchecker/v1/' . $baseurl64 . '?origin_system=wordpress');
+	//curl_setopt($ch, CURLOPT_URL, 'https://api.marcobeierer.com/linkchecker/v1/' . $baseurl64 . '?origin_system=wordpress');
+	curl_setopt($ch, CURLOPT_URL, 'http://localhost:9999/linkchecker/v1/' . $baseurl64 . '?origin_system=wordpress');
 	curl_setopt($ch, CURLOPT_HEADER, 0);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -146,6 +164,7 @@ function link_checker_settings_page() {
 				<h3>Your Token</h3>
 				<p><textarea name="link-checker-token" style="width: 100%; min-height: 350px;"><?php echo esc_attr(get_option('link-checker-token')); ?></textarea></p>
 				<p>The Link Checker allows you to check up to 500 internal and external links for free. If your website has more links, you can buy a token for the <a href="https://www.marcobeierer.com/wordpress-plugins/link-checker-professional">Link Checker Professional</a> to check up to 50'000 links.</p>
+				<p>The professional version also checks if you have broken embedded images on your site.</p>
 				<?php submit_button(); ?>
 			</form>
 		</div>

@@ -3,7 +3,7 @@ Contributors: mbsec
 Tags: link checker, broken links, dead links, dead link checker, broken link checker, broken, link, links, maintenance, plugin, seo
 Requires at least: 4.2
 Tested up to: 4.3
-Stable tag: 1.0.4
+Stable tag: 1.1.0
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -25,8 +25,11 @@ The Link Checker works for every plugin out of the box. The computation costs fo
 * Respects your robots.txt file (also the crawl-delay directive).
 	* You could use the user-agent MB-SiteCrawler to control the crawler.
 
+= Additional Technical Features of the Professional Version =
+* Check if embedded images are broken.
+
 = Upcoming Technical Features =
-* Support for checking the availability of embedded images, videos, CSS files and JS files.
+* Support for checking the availability of videos, CSS files and JS files.
 
 = Technical Requirements =
 * cURL 7.18.1 or higher.
@@ -65,6 +68,14 @@ In the most cases this is due to the fact that you have set a large value for th
 1. List of broken links found by the Link Checker.
 
 == Changelog ==
+
+= 1.1.0 =
+*Release Date - 4th October, 2015*
+
+* Added support for check of embedded image.
+* Some improvements and bug fixes in the backend service.
+* Implemented a simple template engine.
+* Implemented 15 seconds timeout for connection establishment.
 
 = 1.0.4 =
 *Release Date - 27th September, 2015*

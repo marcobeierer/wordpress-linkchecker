@@ -49,7 +49,7 @@ linkCheckerApp.controller('LinkCheckerController', ['$scope', '$http', '$timeout
 								if (data.LimitReached) {
 									$scope.message = "The link limit was reached. The Link Checker has not checked your complete website. You could buy a token for the <a href=\"https://www.marcobeierer.com/wordpress-plugins/link-checker-professional\">Link Checker Professional</a> to check up to 50'000 links."
 								} else {
-									$scope.message = "Your website was checked successfully. Please see the result below.";
+									$scope.message = "Your website has been checked successfully. Please see the result below. If you additionally like to check your site for <strong>broken images</strong>, then check out the <a href=\"https://www.marcobeierer.com/wordpress-plugins/link-checker-professional\">Link Checker Professional</a>.";
 								}
 
 								$scope.resultsMessage = 'No broken links found.';
