@@ -7,7 +7,7 @@ Stable tag: 1.1.1
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-An easy to use link checker for WordPress to detect broken internal and external links and broken images on your website.
+An easy to use link checker for WordPress to detect broken links and images on your website.
 
 == Description ==
 The [Link Checker](https://www.marcobeierer.com/wordpress-plugins/link-checker) for WordPress uses an external service to crawl your website and and find broken links and images on your website. 
