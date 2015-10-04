@@ -7,10 +7,10 @@ Stable tag: 1.1.0
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
-An easy to use link checker for WordPress to detect broken internal and external links on your website.
+An easy to use link checker for WordPress to detect broken internal and external links and broken images on your website.
 
 == Description ==
-The [Link Checker](https://www.marcobeierer.com/wordpress-plugins/link-checker) for WordPress uses an external service to crawl your website and and find broken links on your website. 
+The [Link Checker](https://www.marcobeierer.com/wordpress-plugins/link-checker) for WordPress uses an external service to crawl your website and and find broken links and images on your website. 
 
 In contrast to search engine tools like the Google Search Console, which only show if a URL on your website is not reachable, it does not matter for the Link Checker if the links leads to an internal or external URL. The Link Checker will find all dead links. 
 
@@ -26,7 +26,7 @@ The Link Checker works for every plugin out of the box. The computation costs fo
 	* You could use the user-agent MB-SiteCrawler to control the crawler.
 
 = Additional Technical Features of the Professional Version =
-* Check if embedded images are broken.
+* Check if embedded internal and external images are broken.
 
 = Upcoming Technical Features =
 * Support for checking the availability of videos, CSS files and JS files.
