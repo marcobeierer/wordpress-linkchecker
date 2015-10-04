@@ -69,6 +69,11 @@ In the most cases this is due to the fact that you have set a large value for th
 
 == Changelog ==
 
+= 1.1.2 =
+*Release Date - th October, 2015*
+
+* Show sales message in status message only if basic version is used.
+
 = 1.1.1 =
 *Release Date - 4th October, 2015*
 

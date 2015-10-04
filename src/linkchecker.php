@@ -93,7 +93,7 @@ function load_link_checker_admin_scripts($hook) {
 	if ($hook == 'toplevel_page_link-checker') {
 
 		$angularURL = plugins_url('js/angular.min.js', __FILE__);
-		$linkcheckerURL = plugins_url('js/linkchecker.js?v=5', __FILE__);
+		$linkcheckerURL = plugins_url('js/linkchecker.js?v=6', __FILE__);
 
 		wp_enqueue_script('link_checker_angularjs', $angularURL);
 		wp_enqueue_script('link_checker_linkcheckerjs', $linkcheckerURL);
@@ -115,6 +115,7 @@ function link_checker_proxy_callback() {
 	$token = get_option('link-checker-token');
 	if ($token != '') {
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: BEARER ' . $token));
+		header('X-Used-Token: 1');
 	}
 
 	$response = curl_exec($ch);
