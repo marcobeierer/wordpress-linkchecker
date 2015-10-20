@@ -54,7 +54,7 @@ function link_checker_page() {
 			<?php
 				include_once('template.php');
 
-				$templateFilepath = plugins_url('tmpl/table.html', __FILE__);
+				$templateFilepath = plugin_dir_path(__FILE__) . 'tmpl/table.html';
 				$template = new MarcoBeierer\Template($templateFilepath);
 
 				$template->setVar('th-col1', 'URL where the broken links were found');
