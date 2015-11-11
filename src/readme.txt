@@ -3,7 +3,7 @@ Contributors: mbsec
 Tags: link checker, broken links, dead links, dead link checker, broken link checker, broken, link, links, maintenance, plugin, seo
 Requires at least: 4.2
 Tested up to: 4.3
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -70,9 +70,10 @@ In the most cases this is due to the fact that you have set a large value for th
 == Changelog ==
 
 = 1.1.2 =
-*Release Date - th October, 2015*
+*Release Date - 20th October, 2015*
 
 * Show sales message in status message only if basic version is used.
+* Fixed file_get_contents bug.
 
 = 1.1.1 =
 *Release Date - 4th October, 2015*
