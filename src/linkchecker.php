@@ -93,7 +93,7 @@ function load_link_checker_admin_scripts($hook) {
 	if ($hook == 'toplevel_page_link-checker') {
 
 		$angularURL = plugins_url('js/angular.min.js', __FILE__);
-		$linkcheckerURL = plugins_url('js/linkchecker.js?v=6', __FILE__);
+		$linkcheckerURL = plugins_url('js/linkchecker.js?v=7', __FILE__);
 
 		wp_enqueue_script('link_checker_angularjs', $angularURL);
 		wp_enqueue_script('link_checker_linkcheckerjs', $linkcheckerURL);
@@ -120,11 +120,24 @@ function link_checker_proxy_callback() {
 
 	$response = curl_exec($ch);
 
-	$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-	$contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+	if ($response === false) {
+		$errorMessage = curl_error($ch);
 
-	if ($statusCode == 0) {
-		$statusCode = 503; // Service unavailable
+		//$responseHeader = '';
+		$responseBody = json_encode($errorMessage);
+
+		$contentType = 'application/json';
+		$statusCode = 504; // gateway timeout
+
+		header('X-CURL-Error: 1');
+	} else {
+		$headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+
+		//$responseHeader = substr($response, 0, $headerSize);
+		$responseBody = substr($response, $headerSize);
+
+		$contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 	}
 
 	curl_close($ch);
@@ -139,7 +152,7 @@ function link_checker_proxy_callback() {
 
 	header("Content-Type: $contentType");
 
-	echo $response;
+	echo $responseBody;
 	wp_die();
 }
 

@@ -77,11 +77,22 @@ linkCheckerApp.controller('LinkCheckerController', ['$scope', '$http', '$timeout
 							if (status == 401) { // unauthorized
 								$scope.message = "The validation of your token failed. The token is invalid or has expired. Please try it again or contact me if the token should be valid.";
 							} else if (status == 500) {
-								$scope.message = "The check of your website failed with the error:<br/><strong>" + JSON.parse(data) + "</strong>.";
+								if (data == '') {
+									$scope.message = "The check of your website failed. Please try it again.";
+								} else {
+									$scope.message = "The check of your website failed with the error:<br/><strong>" + JSON.parse(data) + "</strong>.";
+								}
 							} else if (status == 503) {
-								$scope.message = "The backend server is currently unavailable. Please try it again later.";
+								$scope.message = "The backend server is temporarily unavailable. Please try it again later.";
+							} else if (status == 504 && headers('X-CURL-Error') == 1) {
+								var message = JSON.parse(data);
+								if (message == '') {
+									$scope.message = "A cURL error occurred. Please contact the developer of the extensions.";
+								} else {
+									$scope.message = "A cURL error occurred with the error message:<br/><strong>" + message + "</strong>.";
+								}
 							} else {
-								$scope.message = "The check of your website failed. Please try it again.";
+								$scope.message = "The check of your website failed. Please try it again or contact the developer of the extensions.";
 							}
 
 							$scope.resultsMessage = resultsMessage;
