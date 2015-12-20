@@ -5,6 +5,19 @@
  */
 defined('ABSPATH') or die('Restricted access.');
 
+if (!function_exists('tokenCheck')) {
+	function tokenCheck($service, $url) {
+		$token = get_option('link-checker-token');
+		if ($token == '') { ?>
+			<div class="notice notice-error below-h2">
+			<p>The scheduler is only available if you have deposited a valid token for the <?php echo $service; ?> Professional in the settings. You could purchase the <a href="https://www.marcobeierer.com/wordpress-plugins/<?php echo $url; ?>-professional"><?php echo $service; ?> Professional</a> on my website</p>
+			</div>
+
+
+		<?php }
+	}
+}
+
 if (!function_exists('cURLCheck')) {
 	function cURLCheck() {
 

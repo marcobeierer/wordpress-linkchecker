@@ -1,7 +1,20 @@
 'use strict';
 
 var linkCheckerApp = angular.module('linkCheckerApp', []);
+var schedulerApp = angular.module('schedulerApp', []);
+
 var language = jQuery('html').attr('lang');
+
+schedulerApp.controller('SchedulerController', ['$scope', '$http', '$timeout',
+	function ($scope, $http, $timeout) {
+		$scope.status = function() {
+			$http.get('admin-ajax.php?action=link_checker_scheduler_proxy').
+				success(function(data, status, headers, config) {
+				});
+		}
+		$scope.status();
+	}
+]);
 
 linkCheckerApp.controller('LinkCheckerController', ['$scope', '$http', '$timeout',
 	function ($scope, $http, $timeout) {

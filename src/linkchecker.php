@@ -89,28 +89,45 @@ function link_checker_page() {
 
 add_action('admin_enqueue_scripts', 'load_link_checker_admin_scripts');
 function load_link_checker_admin_scripts($hook) {
-
-	if ($hook == 'toplevel_page_link-checker') {
-
+	if ($hook == 'toplevel_page_link-checker' || $hook == 'link-checker_page_link-checker-scheduler') {
 		$angularURL = plugins_url('js/angular.min.js', __FILE__);
-		$linkcheckerURL = plugins_url('js/linkchecker.js?v=7', __FILE__);
+		$linkcheckerURL = plugins_url('js/linkchecker.js?v=8', __FILE__);
 
 		wp_enqueue_script('link_checker_angularjs', $angularURL);
 		wp_enqueue_script('link_checker_linkcheckerjs', $linkcheckerURL);
 	}
 }
 
+add_action('wp_ajax_link_checker_scheduler_proxy', 'link_checker_scheduler_proxy_callback');
+function link_checker_scheduler_proxy_callback() {
+	$body = array(
+		'Service' => 'Link Checker',
+		'URL' => 'http://www.aboutcms.de' // TODO !!! get_site_url()
+	);
+
+	$url = 'http://marco-desktop:9999/scheduler/v1/status';
+	linkCheckerProxy($url, 'GET', json_encode($body));
+}
+
 add_action('wp_ajax_link_checker_proxy', 'link_checker_proxy_callback');
 function link_checker_proxy_callback() {
-
 	$baseurl = get_site_url();
 	$baseurl64 = strtr(base64_encode($baseurl), '+/', '-_');
 
+	$url = 'https://api.marcobeierer.com/linkchecker/v1/' . $baseurl64 . '?origin_system=wordpress';
+	linkCheckerProxy($url, 'GET');
+}
+
+function linkCheckerProxy($url, $method, $body = false) {
 	$ch = curl_init();
 
-	curl_setopt($ch, CURLOPT_URL, 'https://api.marcobeierer.com/linkchecker/v1/' . $baseurl64 . '?origin_system=wordpress');
+	curl_setopt($ch, CURLOPT_URL, $url);
 	curl_setopt($ch, CURLOPT_HEADER, true);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+	if ($body) {
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
+	}
 
 	$token = get_option('link-checker-token');
 	if ($token != '') {
@@ -156,6 +173,26 @@ function link_checker_proxy_callback() {
 	wp_die();
 }
 
+add_action('admin_menu', 'register_link_checker_scheduler_page');
+function register_link_checker_scheduler_page() {
+	add_submenu_page('link-checker', 'Link Checker Scheduler', 'Scheduler', 'manage_options', 'link-checker-scheduler', 'link_checker_scheduler_page');
+}
+
+function link_checker_scheduler_page() {
+	include_once('shared_functions.php'); ?>
+
+	<div class="wrap" id="scheduler-widget" ng-app="schedulerApp" ng-strict-di>
+		<div ng-controller="SchedulerController">
+			<h2>Link Checker Scheduler <button type="submit" class="add-new-h2" ng-click="status()">Recheck status</button></h2>
+
+			<?php
+				tokenCheck('Link Checker', 'link-checker');
+			?>
+		</div>
+	</div>
+<?php
+}
+
 add_action('admin_menu', 'register_link_checker_settings_page');
 function register_link_checker_settings_page() {
 	add_submenu_page('link-checker', 'Link Checker Settings', 'Settings', 'manage_options', 'link-checker-settings', 'link_checker_settings_page');
@@ -184,4 +221,5 @@ function link_checker_settings_page() {
 	</div>
 <?php
 }
+
 ?>
