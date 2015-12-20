@@ -95,6 +95,12 @@ function load_link_checker_admin_scripts($hook) {
 
 		wp_enqueue_script('link_checker_angularjs', $angularURL);
 		wp_enqueue_script('link_checker_linkcheckerjs', $linkcheckerURL);
+
+		wp_localize_script('link_checker_linkcheckerjs', 'ajaxObject', array(
+			'token' => get_option('link-checker-token'),
+			'url' => get_site_url(),
+			'email' => get_option('admin_email'),
+		));
 	}
 }
 
@@ -105,7 +111,7 @@ function link_checker_scheduler_proxy_callback() {
 		'URL' => 'http://www.aboutcms.de' // TODO !!! get_site_url()
 	);
 
-	$url = 'http://marco-desktop:9999/scheduler/v1/status';
+	$url = 'http://marco-desktop:9999/scheduler/v1/';
 	linkCheckerProxy($url, 'GET', json_encode($body));
 }
 
@@ -183,11 +189,34 @@ function link_checker_scheduler_page() {
 
 	<div class="wrap" id="scheduler-widget" ng-app="schedulerApp" ng-strict-di>
 		<div ng-controller="SchedulerController">
-			<h2>Link Checker Scheduler <button type="submit" class="add-new-h2" ng-click="status()">Recheck status</button></h2>
-
+			<h2>Link Checker Scheduler</h2>
 			<?php
 				tokenCheck('Link Checker', 'link-checker');
 			?>
+			<p ng-bind-html="message | sanitize"></p>
+			
+			<div class="card form-wrap">
+				<h3>Register your Website</h3>
+				<form>
+					<input type="hidden" ng-model="data.Service" ng-init="data.Service = 'Link Checker'" />
+					<input type="hidden" ng-model="data.IntervalInNs" ng-init="data.IntervalInNs = 86400000000" />
+					<div class="form-field form-required">
+						<label>Website URL</label>
+						<input ng-model="data.URL" type="text" readonly="readonly" />
+					</div>
+					<div class="form-field form-required">
+						<label>Email address for notifications</label>
+						<input type="email" ng-model="data.Email" />
+					</div>
+					<p class="submit">
+						<button type="submit" ng-click="register()" class="button button-primary">Register</button>
+					</p>
+				</form>
+			</div>
+		
+			<div class="card form-wrap">
+				<h3>Deregister</h3>
+			</div>
 		</div>
 	</div>
 <?php

@@ -7,12 +7,39 @@ var language = jQuery('html').attr('lang');
 
 schedulerApp.controller('SchedulerController', ['$scope', '$http', '$timeout',
 	function ($scope, $http, $timeout) {
+		$scope.message = "";
+		$scope.data = {
+			URL: ajaxObject.url,
+			Email: ajaxObject.email
+		};
+
 		$scope.status = function() {
 			$http.get('admin-ajax.php?action=link_checker_scheduler_proxy').
 				success(function(data, status, headers, config) {
+					if (status == 204) { // no content
+						$scope.message = 'Your website is currently not registered for the scheduler. Please use the form below to register your site.';
+					}
 				});
 		}
 		$scope.status();
+
+		$scope.register = function() {
+			$http({
+				method: 'POST',
+				url: 'http://marco-desktop:9999/scheduler/v1/',
+				data: $scope.data,
+				headers: {
+					'Authorization': 'BEARER ' + ajaxObject.token,
+				}
+			}).then(
+				function successCallback(response) {
+
+				},
+				function errorCallback(response) { 
+					
+				}
+			);
+		}
 	}
 ]);
 
@@ -117,8 +144,11 @@ linkCheckerApp.controller('LinkCheckerController', ['$scope', '$http', '$timeout
 	}
 ]);
 
-linkCheckerApp.filter("sanitize", ['$sce', function($sce) {
+var sanitize = ['$sce', function($sce) {
 	return function(htmlCode){
 		return $sce.trustAsHtml(htmlCode);
 	}
-}]);
+}];
+
+schedulerApp.filter("sanitize", sanitize);
+linkCheckerApp.filter("sanitize", sanitize);
