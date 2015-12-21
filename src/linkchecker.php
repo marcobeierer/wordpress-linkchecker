@@ -98,8 +98,10 @@ function load_link_checker_admin_scripts($hook) {
 
 		wp_localize_script('link_checker_linkcheckerjs', 'ajaxObject', array(
 			'token' => get_option('link-checker-token'),
-			'url' => get_site_url(),
+			//'url' => get_site_url(), // TODO
+			'url' => 'http://www.aboutcms.de',
 			'email' => get_option('admin_email'),
+			'service' => 'Link Checker',
 		));
 	}
 }
@@ -199,7 +201,7 @@ function link_checker_scheduler_page() {
 				<h3>Register your Website</h3>
 				<form>
 					<input type="hidden" ng-model="data.Service" ng-init="data.Service = 'Link Checker'" />
-					<input type="hidden" ng-model="data.IntervalInNs" ng-init="data.IntervalInNs = 86400000000" />
+					<input type="hidden" ng-model="data.IntervalInNs" ng-init="data.IntervalInNs = 86400000000000" />
 					<div class="form-field form-required">
 						<label>Website URL</label>
 						<input ng-model="data.URL" type="text" readonly="readonly" />
@@ -214,7 +216,7 @@ function link_checker_scheduler_page() {
 				</form>
 			</div>
 		
-			<div class="card form-wrap">
+			<div class="card form-wrap" ng-show="registered">
 				<h3>Deregister</h3>
 			</div>
 		</div>

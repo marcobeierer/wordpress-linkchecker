@@ -7,7 +7,9 @@ var language = jQuery('html').attr('lang');
 
 schedulerApp.controller('SchedulerController', ['$scope', '$http', '$timeout',
 	function ($scope, $http, $timeout) {
+		$scope.registered = false;
 		$scope.message = "";
+
 		$scope.data = {
 			URL: ajaxObject.url,
 			Email: ajaxObject.email
@@ -17,7 +19,10 @@ schedulerApp.controller('SchedulerController', ['$scope', '$http', '$timeout',
 			$http.get('admin-ajax.php?action=link_checker_scheduler_proxy').
 				success(function(data, status, headers, config) {
 					if (status == 204) { // no content
-						$scope.message = 'Your website is currently not registered for the scheduler. Please use the form below to register your site.';
+						$scope.message = 'Your website currently isn\'t registered for the scheduler. Please use the form below to register your site.';
+						$scope.registered = false;
+					} else {
+						$scope.registered = true;
 					}
 				});
 		}
@@ -26,7 +31,7 @@ schedulerApp.controller('SchedulerController', ['$scope', '$http', '$timeout',
 		$scope.register = function() {
 			$http({
 				method: 'POST',
-				url: 'http://marco-desktop:9999/scheduler/v1/',
+				url: 'http://marco-desktop:9999/scheduler/v1/', // TODO
 				data: $scope.data,
 				headers: {
 					'Authorization': 'BEARER ' + ajaxObject.token,
