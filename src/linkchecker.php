@@ -195,10 +195,12 @@ function link_checker_scheduler_page() {
 			<?php
 				tokenCheck('Link Checker', 'link-checker');
 			?>
-			<p ng-bind-html="message | sanitize"></p>
+			<div class="{{ messageClass }} below-h2" ng-show="message">
+				<p ng-bind-html="message | sanitize"></p>
+			</div>
 			
-			<div class="card form-wrap">
-				<h3>Register your Website</h3>
+			<div class="card form-wrap" ng-show="!registered">
+				<h3>Register your website</h3>
 				<form>
 					<input type="hidden" ng-model="data.Service" ng-init="data.Service = 'Link Checker'" />
 					<input type="hidden" ng-model="data.IntervalInNs" ng-init="data.IntervalInNs = 86400000000000" />
@@ -217,7 +219,17 @@ function link_checker_scheduler_page() {
 			</div>
 		
 			<div class="card form-wrap" ng-show="registered">
-				<h3>Deregister</h3>
+				<h3>Deregister your website</h3>
+				<form>
+					<input type="hidden" ng-model="data.Service" ng-init="data.Service = 'Link Checker'" />
+					<div class="form-field form-required">
+						<label>Website URL</label>
+						<input ng-model="data.URL" type="text" readonly="readonly" />
+					</div>
+					<p class="submit">
+						<button type="submit" ng-click="deregister()" class="button button-primary">Deregister</button>
+					</p>
+				</form>
 			</div>
 		</div>
 	</div>

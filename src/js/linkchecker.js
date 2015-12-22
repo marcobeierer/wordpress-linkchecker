@@ -8,7 +8,9 @@ var language = jQuery('html').attr('lang');
 schedulerApp.controller('SchedulerController', ['$scope', '$http', '$timeout',
 	function ($scope, $http, $timeout) {
 		$scope.registered = false;
+
 		$scope.message = "";
+		$scope.messageClass = "notice notice-error";
 
 		$scope.data = {
 			URL: ajaxObject.url,
@@ -20,10 +22,21 @@ schedulerApp.controller('SchedulerController', ['$scope', '$http', '$timeout',
 				success(function(data, status, headers, config) {
 					if (status == 204) { // no content
 						$scope.message = 'Your website currently isn\'t registered for the scheduler. Please use the form below to register your site.';
+
 						$scope.registered = false;
 					} else {
+						$scope.message = 'Your website is currently registered to the scheduler. Please use the form below to deregister your site.';
 						$scope.registered = true;
 					}
+					$scope.messageClass = "notice notice-info";
+				}).
+				error(function(data, status, headers, config) {
+					if (status == 504 || status == 503) {
+						$scope.message = "The backend server is temporarily unavailable. Please try it again later.";
+					} else {
+						$scope.message = "Something went wrong. Please try it again later.";
+					}
+					$scope.messageClass = "notice notice-error";
 				});
 		}
 		$scope.status();
@@ -38,10 +51,36 @@ schedulerApp.controller('SchedulerController', ['$scope', '$http', '$timeout',
 				}
 			}).then(
 				function successCallback(response) {
+					$scope.message = 'You have successfully registered your website to the scheduler.';
+					$scope.messageClass = "notice notice-success";
 
+					$scope.registered = true;
 				},
 				function errorCallback(response) { 
-					
+					$scope.message = "Something went wrong. Please try it again later.";
+					$scope.messageClass = "notice notice-error";
+				}
+			);
+		}
+
+		$scope.deregister = function() {
+			$http({
+				method: 'DELETE',
+				url: 'http://marco-desktop:9999/scheduler/v1/', // TODO
+				data: $scope.data,
+				headers: {
+					'Authorization': 'BEARER ' + ajaxObject.token,
+				}
+			}).then(
+				function successCallback(response) {
+					$scope.message = 'You have successfully deregistered your website from the scheduler.';
+					$scope.messageClass = "notice notice-success";
+
+					$scope.registered = false;
+				},
+				function errorCallback(response) { 
+					$scope.message = "Something went wrong. Please try it again later.";
+					$scope.messageClass = "notice notice-error";
 				}
 			);
 		}
