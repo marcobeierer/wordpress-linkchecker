@@ -98,8 +98,7 @@ function load_link_checker_admin_scripts($hook) {
 
 		wp_localize_script('link_checker_linkcheckerjs', 'ajaxObject', array(
 			'token' => get_option('link-checker-token'),
-			//'url' => get_site_url(), // TODO
-			'url' => 'http://www.aboutcms.de',
+			'url' => get_site_url(),
 			'email' => get_option('admin_email'),
 			'service' => 'Link Checker',
 		));
@@ -110,7 +109,7 @@ add_action('wp_ajax_link_checker_scheduler_proxy', 'link_checker_scheduler_proxy
 function link_checker_scheduler_proxy_callback() {
 	$body = array(
 		'Service' => 'Link Checker',
-		'URL' => 'http://www.aboutcms.de' // TODO !!! get_site_url()
+		'URL' => get_site_url()
 	);
 
 	$url = 'https://api.marcobeierer.com/scheduler/v1/';
@@ -120,7 +119,6 @@ function link_checker_scheduler_proxy_callback() {
 add_action('wp_ajax_link_checker_proxy', 'link_checker_proxy_callback');
 function link_checker_proxy_callback() {
 	$baseurl = get_site_url();
-	$baseurl = 'http://www.aboutcms.de';
 	$baseurl64 = strtr(base64_encode($baseurl), '+/', '-_');
 
 	$url = 'https://api.marcobeierer.com/linkchecker/v1/' . $baseurl64 . '?origin_system=wordpress';
