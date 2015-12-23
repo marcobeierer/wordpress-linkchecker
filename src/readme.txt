@@ -2,8 +2,8 @@
 Contributors: mbsec
 Tags: link checker, broken links, dead links, dead link checker, broken link checker, broken, link, links, maintenance, plugin, seo
 Requires at least: 4.2
-Tested up to: 4.3
-Stable tag: 1.1.3
+Tested up to: 4.4
+Stable tag: 1.2.0
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -27,6 +27,7 @@ The Link Checker works for every plugin out of the box. The computation costs fo
 
 = Additional Technical Features of the Professional Version =
 * Check if embedded internal and external images are broken.
+* Scheduler to automatically check a website once a day and get a summary report by email.
 
 = Upcoming Technical Features =
 * Support for checking the availability of videos, CSS files and JS files.
@@ -69,6 +70,10 @@ In the most cases this is due to the fact that you have set a large value for th
 
 == Changelog ==
 
+= 1.2.0 =
+*Release Date - 23th December, 2015*
+
+* Implemented a scheduler to automatically check a website once a day.
 * Improved cURL error messages.
 
 = 1.1.3 =
