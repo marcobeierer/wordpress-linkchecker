@@ -113,13 +113,14 @@ function link_checker_scheduler_proxy_callback() {
 		'URL' => 'http://www.aboutcms.de' // TODO !!! get_site_url()
 	);
 
-	$url = 'http://marco-desktop:9999/scheduler/v1/';
+	$url = 'https://api.marcobeierer.com/scheduler/v1/';
 	linkCheckerProxy($url, 'GET', json_encode($body));
 }
 
 add_action('wp_ajax_link_checker_proxy', 'link_checker_proxy_callback');
 function link_checker_proxy_callback() {
 	$baseurl = get_site_url();
+	$baseurl = 'http://www.aboutcms.de';
 	$baseurl64 = strtr(base64_encode($baseurl), '+/', '-_');
 
 	$url = 'https://api.marcobeierer.com/linkchecker/v1/' . $baseurl64 . '?origin_system=wordpress';

@@ -21,11 +21,11 @@ schedulerApp.controller('SchedulerController', ['$scope', '$http', '$timeout',
 			$http.get('admin-ajax.php?action=link_checker_scheduler_proxy').
 				success(function(data, status, headers, config) {
 					if (status == 204) { // no content
-						$scope.message = 'Your website currently isn\'t registered for the scheduler. Please use the form below to register your site.';
+						$scope.message = 'Your website isn\'t registered for the scheduler currently. Please use the form below to register your site.';
 
 						$scope.registered = false;
 					} else {
-						$scope.message = 'Your website is currently registered to the scheduler. Please use the form below to deregister your site.';
+						$scope.message = 'Your website is registered to the scheduler currently. Please use the form below to deregister your site.';
 						$scope.registered = true;
 					}
 					$scope.messageClass = "notice notice-info";
@@ -44,7 +44,7 @@ schedulerApp.controller('SchedulerController', ['$scope', '$http', '$timeout',
 		$scope.register = function() {
 			$http({
 				method: 'POST',
-				url: 'http://marco-desktop:9999/scheduler/v1/', // TODO
+				url: 'https://api.marcobeierer.com/scheduler/v1/',
 				data: $scope.data,
 				headers: {
 					'Authorization': 'BEARER ' + ajaxObject.token,
@@ -66,7 +66,7 @@ schedulerApp.controller('SchedulerController', ['$scope', '$http', '$timeout',
 		$scope.deregister = function() {
 			$http({
 				method: 'DELETE',
-				url: 'http://marco-desktop:9999/scheduler/v1/', // TODO
+				url: 'https://api.marcobeierer.com/scheduler/v1/',
 				data: $scope.data,
 				headers: {
 					'Authorization': 'BEARER ' + ajaxObject.token,
