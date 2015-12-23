@@ -31,7 +31,9 @@ schedulerApp.controller('SchedulerController', ['$scope', '$http', '$timeout',
 					$scope.messageClass = "notice notice-info";
 				}).
 				error(function(data, status, headers, config) {
-					if (status == 504 || status == 503) {
+					if (status == 401) { // unauthorized
+						$scope.message = "The validation of your token failed. The token is invalid or has expired. Please try it again or contact me if the token should be valid.";
+					} else if (status == 504 || status == 503) {
 						$scope.message = "The backend server is temporarily unavailable. Please try it again later.";
 					} else {
 						$scope.message = "Something went wrong. Please try it again later.";
@@ -57,7 +59,13 @@ schedulerApp.controller('SchedulerController', ['$scope', '$http', '$timeout',
 					$scope.registered = true;
 				},
 				function errorCallback(response) { 
-					$scope.message = "Something went wrong. Please try it again later.";
+					if (response.status == 401) { // unauthorized
+						$scope.message = "The validation of your token failed. The token is invalid or has expired. Please try it again or contact me if the token should be valid.";
+					} else if (response.status == 504 || response.status == 503) {
+						$scope.message = "The backend server is temporarily unavailable. Please try it again later.";
+					} else {
+						$scope.message = "Something went wrong. Please try it again later.";
+					}
 					$scope.messageClass = "notice notice-error";
 				}
 			);
