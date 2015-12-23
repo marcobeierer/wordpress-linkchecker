@@ -197,6 +197,12 @@ function link_checker_scheduler_page() {
 			<div class="{{ messageClass }} below-h2" ng-show="message">
 				<p ng-bind-html="message | sanitize"></p>
 			</div>
+
+			<div class="card">
+				<h3>Description</h3>
+				<p>The scheduler is an additional service for all users who have bought a token for the <a href="https://www.marcobeierer.com/wordpress-plugins/link-checker-professional">Link Checker Professional</a>.</p>
+				<p>If you register your site to the scheduler, a link check is automatically triggered once a day and you receive an email notification with a summary report after the check has finished. If a dead link was found, you could use the default Link Checker interface to fetch the detailed results.</p>
+			</div>
 			
 			<div class="card form-wrap" ng-show="!registered">
 				<h3>Register your website</h3>
