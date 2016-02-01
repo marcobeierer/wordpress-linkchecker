@@ -3,7 +3,7 @@ Contributors: mbsec
 Tags: link checker, broken links, dead links, dead link checker, broken link checker, broken, link, links, maintenance, plugin, seo
 Requires at least: 4.2
 Tested up to: 4.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -69,6 +69,11 @@ In the most cases this is due to the fact that you have set a large value for th
 1. List of broken links found by the Link Checker.
 
 == Changelog ==
+
+= 1.2.1 =
+*Release Date - 1st January, 2016*
+
+* Bugfix: Replaced get_site_url() with get_home_url(), which referes to the option "Site Address (URL)".
 
 = 1.2.0 =
 *Release Date - 23th December, 2015*
