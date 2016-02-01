@@ -71,7 +71,7 @@ In the most cases this is due to the fact that you have set a large value for th
 == Changelog ==
 
 = 1.2.1 =
-*Release Date - 1st January, 2016*
+*Release Date - 1st February, 2016*
 
 * Bugfix: Replaced get_site_url() with get_home_url(), which referes to the option "Site Address (URL)".
 
