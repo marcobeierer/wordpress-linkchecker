@@ -175,6 +175,7 @@ function linkCheckerProxy($url, $method, $body = false) {
 	}
 
 	header("Content-Type: $contentType");
+	header('Cache-Control: no-store');
 
 	echo $responseBody;
 	wp_die();
