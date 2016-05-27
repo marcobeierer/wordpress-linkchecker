@@ -121,7 +121,7 @@ function link_checker_proxy_callback() {
 	$baseurl = get_home_url();
 	$baseurl64 = strtr(base64_encode($baseurl), '+/', '-_');
 
-	$url = 'https://api.marcobeierer.com/linkchecker/v1/' . $baseurl64 . '?origin_system=wordpress';
+	$url = 'https://api.marcobeierer.com/linkchecker/v1/' . $baseurl64 . '?origin_system=wordpress&max_fetchers=' . (int) get_option('link-checker-max-fetchers', 10);
 	linkCheckerProxy($url, 'GET');
 }
 
@@ -250,6 +250,7 @@ function register_link_checker_settings_page() {
 
 function register_link_checker_settings() {
 	register_setting('link-checker-settings-group', 'link-checker-token');
+	register_setting('link-checker-settings-group', 'link-checker-max-fetchers', 'intval');
 }
 
 function link_checker_settings_page() {
@@ -264,6 +265,15 @@ function link_checker_settings_page() {
 				<p><textarea name="link-checker-token" style="width: 100%; min-height: 350px;"><?php echo esc_attr(get_option('link-checker-token')); ?></textarea></p>
 				<p>The Link Checker allows you to check up to 500 internal and external links for free. If your website has more links, you can buy a token for the <a href="https://www.marcobeierer.com/wordpress-plugins/link-checker-professional">Link Checker Professional</a> to check up to 50'000 links.</p>
 				<p>The professional version also checks if you have broken embedded images on your site.</p>
+				<h3>Concurrent Connections</h3>
+				<p>
+					<select name="link-checker-max-fetchers" style="width: 100%;">
+					<?php for ($i = 1; $i <= 10; $i++) { ?>
+						<option <?php if ((int) get_option('link-checker-max-fetchers', 10) === $i) { ?>selected<?php } ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+					<?php } ?>
+					</select>
+				</p>
+				<p>Number of the maximal concurrent connections. The default value is ten concurrent connections, but some hosters do not allow ten concurrent connections or an installed plugin may use that much resources on each request that the limitations of your hosting is reached with ten concurrent connections. With this option you could limit the number of concurrent connections used to access your website and make the Link Checker work under these circumstances.</p>
 				<?php submit_button(); ?>
 			</form>
 		</div>
