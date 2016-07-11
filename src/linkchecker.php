@@ -84,7 +84,7 @@ function link_checker_page() {
 			?>
 		</div>
 	</div>
-<?
+<?php
 }
 
 add_action('admin_enqueue_scripts', 'load_link_checker_admin_scripts');
