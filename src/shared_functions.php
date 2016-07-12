@@ -1,6 +1,6 @@
 <?php
 /*
- * @copyright  Copyright (C) 2015 Marco Beierer. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2016 Marco Beierer. All rights reserved.
  * @license    https://www.gnu.org/licenses/gpl-3.0.html GNU/GPL
  */
 defined('ABSPATH') or die('Restricted access.');

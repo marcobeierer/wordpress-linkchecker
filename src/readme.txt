@@ -2,8 +2,8 @@
 Contributors: mbsec
 Tags: link checker, broken links, dead links, dead link checker, broken link checker, broken, link, links, maintenance, plugin, seo
 Requires at least: 4.2
-Tested up to: 4.4
-Stable tag: 1.2.1
+Tested up to: 4.5
+Stable tag: 1.3.0
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -35,6 +35,7 @@ The Link Checker works for every plugin out of the box. The computation costs fo
 = Technical Requirements =
 * cURL 7.18.1 or higher.
 	* PHP 5.3 should be compiled against a compatible cURL version in the most cases. PHP 5.4 or higher should by default provide a compatible cURL version.
+* OpenSSL 0.9.8f or higher.
 
 = Limitations of the Basic Version =
 The free basic version of the Link Checker allows you to check the first 500 internal and external links on your website. If you need more capacity, you could buy a token for the professional version of the Link Checker to check up to 50'000 links.
@@ -69,6 +70,15 @@ In the most cases this is due to the fact that you have set a large value for th
 1. List of broken links found by the Link Checker.
 
 == Changelog ==
+
+= 1.3.0 =
+*Release Data - 12th July, 2016*
+
+* Added an option to define the maximum number of concurrent connections.
+* Better handling of requests to servers that do not response to HEAD requests correctly. This prevents some false positives.
+* Bugfixes
+	* Implemented Cache-Control for AJAX requests.
+	* Fixed the PHP short tag issue.
 
 = 1.2.1 =
 *Release Date - 1st February, 2016*
