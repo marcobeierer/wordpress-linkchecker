@@ -71,6 +71,11 @@ In the most cases this is due to the fact that you have set a large value for th
 
 == Changelog ==
 
+= 1.x.x =
+
+* Added news subpage.
+* Added custom status codes documentation.
+
 = 1.3.0 =
 *Release Data - 12th July, 2016*
 

@@ -82,6 +82,14 @@ function link_checker_page() {
 
 				endif; 
 			?>
+
+			<h3>Custom Status Codes</h3>
+			<p>The Link Checker uses the following custom status codes:</p>
+			<ul>
+				<li>598 - Blocked by robots: The Link Checker was not able to access the page because the access was blocked by the robots exclusion protocol.</li>
+				<li>599 - HTML parse error: The HTML code of this page could not be parsed because of an error in the code or because the page was larger than 50 MB.</li>
+			</ul>
+			<p><em>Please note that it is also possible that a website returns these status codes and if this is the case, they probably have another meaning.</em></p>
 		</div>
 	</div>
 <?php
