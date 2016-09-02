@@ -103,6 +103,11 @@ function load_link_checker_admin_scripts($hook) {
 			'service' => 'Link Checker',
 		));
 	}
+
+	if ($hook == 'link-checker_page_link-checker-news') {
+		wp_enqueue_script('link_checker_jquery', 'https://static.marcobeierer.com/cdn/jquery/jquery-3.1.0.min.js');
+		wp_enqueue_script('link_checker_riot', 'https://static.marcobeierer.com/cdn/riot/v2/riot+compiler.min.js');
+	}
 }
 
 add_action('wp_ajax_link_checker_scheduler_proxy', 'link_checker_scheduler_proxy_callback');
@@ -181,9 +186,60 @@ function linkCheckerProxy($url, $method, $body = false) {
 	wp_die();
 }
 
-add_action('admin_menu', 'register_link_checker_scheduler_page');
-function register_link_checker_scheduler_page() {
+add_action('admin_menu', 'register_link_checker_submenu_pages');
+function register_link_checker_submenu_pages() {
+	add_submenu_page('link-checker', 'Link Checker News', 'News', 'manage_options', 'link-checker-news', 'link_checker_news_page');
 	add_submenu_page('link-checker', 'Link Checker Scheduler', 'Scheduler', 'manage_options', 'link-checker-scheduler', 'link_checker_scheduler_page');
+	add_submenu_page('link-checker', 'Link Checker Settings', 'Settings', 'manage_options', 'link-checker-settings', 'link_checker_settings_page');
+}
+
+function link_checker_news_page() { 
+?>
+	<div id="linkchecker-news" class="wrap">
+		<h2>Link Checker News</h2>
+
+		<div class="card">
+			<h3>Latest News on Twitter</h3>
+			<p>I frequently tweet news and server status updates on Twitter. Follow me <a href="https://twitter.com/marcobeierer">@marcobeierer</a> if you like to stay up to date or want to discuss the news.</p>
+			<p>Please find my latest tweets in the section below. The tweets are not exclusively about the Link Checker, but also my other projects.</p>
+		</div>
+
+		<div class="card">
+			<twitter-timeline count="10"></twitter-timeline>
+		</div>
+
+		<div class="card">
+			<h3>Privacy Information</h3>
+			<p>The news are fetched from the Link Checker server operated by me. Your browser thus makes no requests directly to Twitter when you are visiting this page and thus no of your data (IP address, etc.) is transmitted to Twitter.</p>
+		</div>
+	</div>
+	
+	<script src="https://static.marcobeierer.com/riot-tags/raw/raw-1.0.0.tag" type="riot/tag"></script>
+	<script src="https://static.marcobeierer.com/riot-tags/twitter/twitter-timeline-1.1.0.tag" type="riot/tag"></script>
+
+	<script>
+		riot.mount('*', {});
+	</script>
+
+	<style>
+		#linkchecker-news ul > li {
+			margin-bottom: 15px;
+			padding-bottom: 15px;
+			border-bottom: 1px solid #eee;
+		}
+
+		#linkchecker-news ul > li:last-child {
+			margin-bottom: inherit;
+			padding-bottom: inherit;
+			border-bottom: 0;
+		}
+
+		#linkchecker-news ul > li span.datetime {
+			display: block;
+			font-weight: bold;
+		}
+	</style>
+<?php
 }
 
 function link_checker_scheduler_page() {
@@ -244,7 +300,6 @@ function link_checker_scheduler_page() {
 
 add_action('admin_menu', 'register_link_checker_settings_page');
 function register_link_checker_settings_page() {
-	add_submenu_page('link-checker', 'Link Checker Settings', 'Settings', 'manage_options', 'link-checker-settings', 'link_checker_settings_page');
 	add_action('admin_init', 'register_link_checker_settings');
 }
 
