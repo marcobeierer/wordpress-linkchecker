@@ -2,8 +2,8 @@
 Contributors: mbsec
 Tags: link checker, broken links, dead links, dead link checker, broken link checker, broken, link, links, maintenance, plugin, seo
 Requires at least: 4.2
-Tested up to: 4.5
-Stable tag: 1.3.0
+Tested up to: 4.6
+Stable tag: 1.4.0
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -71,7 +71,8 @@ In the most cases this is due to the fact that you have set a large value for th
 
 == Changelog ==
 
-= 1.x.x =
+= 1.4.0 =
+*Release Data - 13th September, 2016*
 
 * Added news subpage.
 * Added custom status codes documentation.
