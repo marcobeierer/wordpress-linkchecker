@@ -113,8 +113,8 @@ function load_link_checker_admin_scripts($hook) {
 	}
 
 	if ($hook == 'link-checker_page_link-checker-news') {
-		wp_enqueue_script('link_checker_jquery', 'https://static.marcobeierer.com/cdn/jquery/jquery-3.1.0.min.js');
-		wp_enqueue_script('link_checker_riot', 'https://static.marcobeierer.com/cdn/riot/v2/riot+compiler.min.js');
+		wp_enqueue_script('jquery');
+		wp_enqueue_script('link_checker_riot', 'https://static.marcobeierer.com/cdn/riot/riot+compiler-2.6.1.min.js');
 	}
 }
 
@@ -223,7 +223,7 @@ function link_checker_news_page() {
 	</div>
 	
 	<script src="https://static.marcobeierer.com/riot-tags/raw/raw-1.0.0.tag" type="riot/tag"></script>
-	<script src="https://static.marcobeierer.com/riot-tags/twitter/twitter-timeline-1.1.0.tag" type="riot/tag"></script>
+	<script src="https://static.marcobeierer.com/riot-tags/twitter/twitter-timeline-1.1.1.tag" type="riot/tag"></script>
 
 	<script>
 		riot.mount('*', {});
