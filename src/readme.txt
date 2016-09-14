@@ -72,7 +72,7 @@ In the most cases this is due to the fact that you have set a large value for th
 == Changelog ==
 
 = 1.4.0 =
-*Release Data - 13th September, 2016*
+*Release Data - 14th September, 2016*
 
 * Added news subpage.
 * Added custom status codes documentation.
