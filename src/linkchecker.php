@@ -179,19 +179,11 @@ function linkCheckerProxy($url, $method, $body = false) {
 
 	curl_close($ch);
 
-	if (function_exists('http_response_code')) {
-		http_response_code($statusCode);
-	}
-	else { // fix for PHP version older than 5.4.0
-		$protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
-		header($protocol . ' ' . $statusCode . ' ');
-	}
-
 	header("Content-Type: $contentType");
 	header('Cache-Control: no-store');
 
 	echo $responseBody;
-	wp_die();
+	wp_die(null, '', $statusCode);
 }
 
 add_action('admin_menu', 'register_link_checker_submenu_pages');
