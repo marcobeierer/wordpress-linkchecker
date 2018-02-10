@@ -183,7 +183,7 @@ function linkCheckerProxy($url, $method, $body = false) {
 	header('Cache-Control: no-store');
 
 	echo $responseBody;
-	wp_die(null, '', $statusCode);
+	wp_die('', '', $statusCode);
 }
 
 add_action('admin_menu', 'register_link_checker_submenu_pages');

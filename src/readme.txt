@@ -74,7 +74,7 @@ In the most cases this is due to the fact that you have set a large value for th
 = Next =
 *Release Date - ...*
 
-* Fixed returned status code of failing requests.
+* Fixed returned status code of failing proxy requests.
 
 = 1.4.0 =
 *Release Date - 14th September, 2016*
