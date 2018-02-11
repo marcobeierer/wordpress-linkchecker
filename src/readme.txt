@@ -2,8 +2,8 @@
 Contributors: mbsec
 Tags: link checker, broken links, dead links, dead link checker, broken link checker, broken, link, links, maintenance, plugin, seo
 Requires at least: 4.2
-Tested up to: 4.6
-Stable tag: 1.4.0
+Tested up to: 4.9
+Stable tag: 1.4.1
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -71,10 +71,14 @@ In the most cases this is due to the fact that you have set a large value for th
 
 == Changelog ==
 
-= Next =
-*Release Date - ...*
+= 1.4.1 =
+*Release Date - 11th February, 2018*
 
-* Fixed returned status code of failing proxy requests.
+* Improvements to the crawler.
+* Updated compatibility information (tested up to WordPress 4.9).
+* Bugfixes
+	* Fixed returned status code of failing proxy requests.
+	* fixed call to wp_die()
 
 = 1.4.0 =
 *Release Date - 14th September, 2016*
