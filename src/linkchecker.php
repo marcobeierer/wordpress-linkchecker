@@ -134,7 +134,7 @@ function link_checker_proxy_callback() {
 	$baseurl = get_home_url();
 	$baseurl64 = strtr(base64_encode($baseurl), '+/', '-_');
 
-	$url = 'https://api.marcobeierer.com/linkchecker/v1/' . $baseurl64 . '?origin_system=wordpress&max_fetchers=' . (int) get_option('link-checker-max-fetchers', 10);
+	$url = 'https://api.marcobeierer.com/linkchecker/v1/' . $baseurl64 . '?origin_system=wordpress&max_fetchers=' . (int) get_option('link-checker-max-fetchers', 3);
 	linkCheckerProxy($url, 'GET');
 }
 
@@ -258,7 +258,7 @@ function link_checker_scheduler_page() {
 			<div class="card">
 				<h3>Description</h3>
 				<p>The scheduler is an additional service for all users who have bought a token for the <a href="https://www.marcobeierer.com/wordpress-plugins/link-checker-professional">Link Checker Professional</a>.</p>
-				<p>If you register your site to the scheduler, a link check is automatically triggered once a day and you receive an email notification with a summary report after the check has finished. If a dead link was found, you could use the default Link Checker interface to fetch the detailed results.</p>
+				<p>If you register your site to the scheduler, a link check is automatically triggered once a day and you receive an email notification with a summary report after the check has finished. If a dead link was found, you can use the default Link Checker interface to fetch the detailed results.</p>
 			</div>
 			
 			<div class="card form-wrap" ng-show="!registered">
@@ -324,11 +324,11 @@ function link_checker_settings_page() {
 				<p>
 					<select name="link-checker-max-fetchers" style="width: 100%;">
 					<?php for ($i = 1; $i <= 10; $i++) { ?>
-						<option <?php if ((int) get_option('link-checker-max-fetchers', 10) === $i) { ?>selected<?php } ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
+						<option <?php if ((int) get_option('link-checker-max-fetchers', 3) === $i) { ?>selected<?php } ?> value="<?php echo $i; ?>"><?php echo $i; ?></option>
 					<?php } ?>
 					</select>
 				</p>
-				<p>Number of the maximal concurrent connections. The default value is ten concurrent connections, but some hosters do not allow ten concurrent connections or an installed plugin may use that much resources on each request that the limitations of your hosting is reached with ten concurrent connections. With this option you could limit the number of concurrent connections used to access your website and make the Link Checker work under these circumstances.</p>
+				<p>Number of the maximal concurrent connections. The default value is three concurrent connections, but some hosters do not allow three concurrent connections or an installed plugin may use that much resources on each request that the limitations of your hosting is reached with three concurrent connections. With this option you can limit the number of concurrent connections used to access your website and make the Link Checker work under these circumstances. You can also increase the number of concurrent connections if your server can handle it.</p>
 				<?php submit_button(); ?>
 			</form>
 		</div>
