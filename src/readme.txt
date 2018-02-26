@@ -73,6 +73,10 @@ In the most cases this is due to the fact that you have set a large value for th
 
 == Changelog ==
 
+= Next Release =
+
+* Respect robots.txt of external links.
+
 = 1.4.1 =
 *Release Date - 11th February, 2018*
 
