@@ -3,7 +3,7 @@ Contributors: mbsec
 Tags: link checker, broken links, dead links, dead link checker, broken link checker, broken, link, links, maintenance, plugin, seo
 Requires at least: 4.5
 Tested up to: 4.9
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -77,15 +77,21 @@ In the most cases this is due to the fact that you have set a large value for th
 
 * Respect robots.txt of external links.
 
+= 1.5.1 =
+*Release Date - 26th February, 2018*
+
+* Release 1.5.0 missed some files.
+
 = 1.5.0 =
 *Release Date - 26th February, 2018*
 
 * Requires WordPress 4.5
-- Fixed broken links could be removed from the results table with the _Mark as fixed_ button. 
-- Added section for links blocked by robots.txt and a _Mark as working_ button to mark them as working after a manual check.
-- Added common status code information.
-- Broken links in the result table are linked now for the case that someone likes to verify that a link is really broken.
-- Set default concurrent connections to three.
+* Fixed broken links could be removed from the results table with the _Mark as fixed_ button. 
+* Added section for links blocked by robots.txt and a _Mark as working_ button to mark them as working after a manual check.
+* Added common status code information.
+* Broken links in the result table are linked now for the case that someone likes to verify that a link is really broken.
+* Set default concurrent connections to three.
+* Improved user interface.
 
 = 1.4.1 =
 *Release Date - 11th February, 2018*
