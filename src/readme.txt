@@ -73,10 +73,19 @@ In the most cases this is due to the fact that you have set a large value for th
 
 == Changelog ==
 
-= Next Release =
+= Coming with the next crawler update =
 
 * Respect robots.txt of external links.
+
+= 1.5.0 =
+*Release Date - 26th February, 2018*
+
 * Requires WordPress 4.5
+- Fixed broken links could be removed from the results table with the _Mark as fixed_ button. 
+- Added section for links blocked by robots.txt and a _Mark as working_ button to mark them as working after a manual check.
+- Added common status code information.
+- Broken links in the result table are linked now for the case that someone likes to verify that a link is really broken.
+- Set default concurrent connections to three.
 
 = 1.4.1 =
 *Release Date - 11th February, 2018*
