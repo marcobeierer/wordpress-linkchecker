@@ -22,175 +22,61 @@ function register_link_checker_page() {
 	add_menu_page('Link Checker', 'Link Checker', 'manage_options', 'link-checker', 'link_checker_page', '', '132132002');
 }
 
-function link_checker_page() {
-	include_once('shared_functions.php'); ?>
-
-	<div class="wrap" id="linkchecker-widget" ng-app="linkCheckerApp" ng-strict-di>
-		<div ng-controller="LinkCheckerController">
-			<form name="linkCheckerForm">
-				<h2>Link Checker <button type="submit" class="add-new-h2" ng-click="check()" ng-disabled="checkDisabled">Check your website</button></h2>
-			</form>
-
-			<?php
-				cURLCheck();
-				localhostCheck();
-			?>
-
-			<h3>Check your website for broken internal and external links.</h3>
-			<p ng-bind-html="message | sanitize"></p>
-
-			<table>
-				<tr>
-					<td>Number of crawled HTML pages on your site:</td>
-					<td>{{ urlsCrawledCount }}</td>
-				</tr>
-				<tr>
-					<td>Number of checked internal and external resources:</td>
-					<td>{{ checkedLinksCount }}</td>
-				</tr>
-			</table>
-
-			<h3>Broken Links</h3>
-			<?php
-				include_once('template.php');
-
-				$templateFilepath = plugin_dir_path(__FILE__) . 'tmpl/table.html';
-				$template = new MarcoBeierer\Template($templateFilepath);
-
-				$template->setVar('th-col1', 'URL where the broken links were found');
-				$template->setVar('th-col2', 'Broken Links');
-				$template->setVar('th-col3', 'Status Code');
-				$template->setVar('list', 'links');
-
-				$template->render();
-			?>
-
-			<?php
-				$token = get_option('link-checker-token');
-				if ($token != ''): 
-			?>
-			<h3>Broken Images</h3>
-			<?php
-				$template = new MarcoBeierer\Template($templateFilepath);
-
-				$template->setVar('th-col1', 'URL where the broken images were found');
-				$template->setVar('th-col2', 'Broken Images');
-				$template->setVar('th-col3', 'Status Code');
-				$template->setVar('list', 'urlsWithDeadImages');
-
-				$template->render();
-
-				endif; 
-			?>
-
-			<h3>Custom Status Codes</h3>
-			<p>The Link Checker uses the following custom status codes:</p>
-			<ul>
-				<li>598 - Blocked by robots: The Link Checker was not able to access the page because the access was blocked by the robots exclusion protocol.</li>
-				<li>599 - HTML parse error: The HTML code of this page could not be parsed because of an error in the code or because the page was larger than 50 MB.</li>
-			</ul>
-			<p><em>Please note that it is also possible that a website returns these status codes and if this is the case, they probably have another meaning.</em></p>
-		</div>
-	</div>
-<?php
+add_action('admin_menu', 'register_link_checker_submenu_pages');
+function register_link_checker_submenu_pages() {
+	add_submenu_page('link-checker', 'Link Checker News', 'News', 'manage_options', 'link-checker-news', 'link_checker_news_page');
+	add_submenu_page('link-checker', 'Link Checker Scheduler', 'Scheduler', 'manage_options', 'link-checker-scheduler', 'link_checker_scheduler_page');
+	add_submenu_page('link-checker', 'Link Checker Settings', 'Settings', 'manage_options', 'link-checker-settings', 'link_checker_settings_page');
 }
 
 add_action('admin_enqueue_scripts', 'load_link_checker_admin_scripts');
 function load_link_checker_admin_scripts($hook) {
 	if ($hook == 'toplevel_page_link-checker' || $hook == 'link-checker_page_link-checker-scheduler') {
-		$angularURL = plugins_url('js/angular.min.js', __FILE__);
-		$linkcheckerURL = plugins_url('js/linkchecker.js?v=8', __FILE__);
+		wp_enqueue_script('jquery');
 
-		wp_enqueue_script('link_checker_angularjs', $angularURL);
+		$linkcheckerURL = plugins_url('js/linkchecker-1.3.3.min.js', __FILE__);
 		wp_enqueue_script('link_checker_linkcheckerjs', $linkcheckerURL);
+		wp_add_inline_script('link_checker_linkcheckerjs', "jQuery(document).ready(function() { riot.mount('*', { linkchecker: riot.observable() }); });");
 
-		wp_localize_script('link_checker_linkcheckerjs', 'ajaxObject', array(
-			'token' => get_option('link-checker-token'),
-			'url' => get_home_url(),
-			'email' => get_option('admin_email'),
-			'service' => 'Link Checker',
-		));
+		$cssURL = plugins_url('css/wrapped.min.css', __FILE__); // TODO versionize file
+		wp_enqueue_style('link_checker_wrappedcss', $cssURL);
 	}
 
+	// TODO remove this and replace with precompiled local tag
 	if ($hook == 'link-checker_page_link-checker-news') {
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('link_checker_riot', 'https://static.marcobeierer.com/cdn/riot/riot+compiler-2.6.1.min.js');
 	}
 }
 
-add_action('wp_ajax_link_checker_scheduler_proxy', 'link_checker_scheduler_proxy_callback');
-function link_checker_scheduler_proxy_callback() {
-	$body = array(
-		'Service' => 'Link Checker',
-		'URL' => get_home_url()
-	);
+function link_checker_page() {
+	include_once('shared_functions.php'); ?>
 
-	$url = 'https://api.marcobeierer.com/scheduler/v1/';
-	linkCheckerProxy($url, 'GET', json_encode($body));
-}
+	<div class="wrap" id="linkchecker-widget">
+		<div class="bootstrap3">
+			<h2>Link Checker</h2>
 
-add_action('wp_ajax_link_checker_proxy', 'link_checker_proxy_callback');
-function link_checker_proxy_callback() {
-	$baseurl = get_home_url();
-	$baseurl64 = strtr(base64_encode($baseurl), '+/', '-_');
+			<?php
+				$url = get_home_url();
+				$dev = isset($_GET['dev']);
 
-	$url = 'https://api.marcobeierer.com/linkchecker/v1/' . $baseurl64 . '?origin_system=wordpress&max_fetchers=' . (int) get_option('link-checker-max-fetchers', 3);
-	linkCheckerProxy($url, 'GET');
-}
+				if ($dev) {
+					$url = 'https://www.marcobeierer.com/';
+				} 
+				else {
+					localhostCheck(); // only if not in dev mode
+				}
+			?>
 
-function linkCheckerProxy($url, $method, $body = false) {
-	$ch = curl_init();
-
-	curl_setopt($ch, CURLOPT_URL, $url);
-	curl_setopt($ch, CURLOPT_HEADER, true);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-	if ($body) {
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $body);
-	}
-
-	$token = get_option('link-checker-token');
-	if ($token != '') {
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Authorization: BEARER ' . $token));
-		header('X-Used-Token: 1');
-	}
-
-	$response = curl_exec($ch);
-
-	if ($response === false) {
-		$errorMessage = curl_error($ch);
-
-		//$responseHeader = '';
-		$responseBody = json_encode($errorMessage);
-
-		$contentType = 'application/json';
-		$statusCode = 504; // gateway timeout
-
-		header('X-CURL-Error: 1');
-	} else {
-		$headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
-
-		//$responseHeader = substr($response, 0, $headerSize);
-		$responseBody = substr($response, $headerSize);
-
-		$contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-		$statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-	}
-
-	curl_close($ch);
-
-	header("Content-Type: $contentType");
-	header('Cache-Control: no-store');
-
-	echo $responseBody;
-	wp_die('', '', $statusCode);
-}
-
-add_action('admin_menu', 'register_link_checker_submenu_pages');
-function register_link_checker_submenu_pages() {
-	add_submenu_page('link-checker', 'Link Checker News', 'News', 'manage_options', 'link-checker-news', 'link_checker_news_page');
-	add_submenu_page('link-checker', 'Link Checker Scheduler', 'Scheduler', 'manage_options', 'link-checker-scheduler', 'link_checker_scheduler_page');
-	add_submenu_page('link-checker', 'Link Checker Settings', 'Settings', 'manage_options', 'link-checker-settings', 'link_checker_settings_page');
+			<linkchecker
+				website-url="<?php echo $url; ?>"
+				token="<?php echo get_option('link-checker-token'); ?>"
+				origin-system="wordpress"
+				max-fetchers="<?php echo (int) get_option('link-checker-max-fetchers', 3); ?>">
+			</linkchecker>
+		</div>
+	</div>
+<?php
 }
 
 function link_checker_news_page() { 
@@ -245,54 +131,27 @@ function link_checker_news_page() {
 function link_checker_scheduler_page() {
 	include_once('shared_functions.php'); ?>
 
-	<div class="wrap" id="scheduler-widget" ng-app="schedulerApp" ng-strict-di>
-		<div ng-controller="SchedulerController">
+	<div class="wrap" id="scheduler-widget">
+		<div class="bootstrap3">
 			<h2>Link Checker Scheduler</h2>
-			<?php
-				tokenCheck('Link Checker', 'link-checker');
-			?>
-			<div class="{{ messageClass }} below-h2" ng-show="message">
-				<p ng-bind-html="message | sanitize"></p>
-			</div>
 
-			<div class="card">
-				<h3>Description</h3>
-				<p>The scheduler is an additional service for all users who have bought a token for the <a href="https://www.marcobeierer.com/wordpress-plugins/link-checker-professional">Link Checker Professional</a>.</p>
-				<p>If you register your site to the scheduler, a link check is automatically triggered once a day and you receive an email notification with a summary report after the check has finished. If a dead link was found, you can use the default Link Checker interface to fetch the detailed results.</p>
-			</div>
-			
-			<div class="card form-wrap" ng-show="!registered">
-				<h3>Register your website</h3>
-				<form>
-					<input type="hidden" ng-model="data.Service" ng-init="data.Service = 'Link Checker'" />
-					<input type="hidden" ng-model="data.IntervalInNs" ng-init="data.IntervalInNs = 86400000000000" />
-					<div class="form-field form-required">
-						<label>Website URL</label>
-						<input ng-model="data.URL" type="text" readonly="readonly" />
-					</div>
-					<div class="form-field form-required">
-						<label>Email address for notifications</label>
-						<input type="email" ng-model="data.Email" />
-					</div>
-					<p class="submit">
-						<button type="submit" ng-click="register()" class="button button-primary">Register</button>
-					</p>
-				</form>
-			</div>
-		
-			<div class="card form-wrap" ng-show="registered">
-				<h3>Deregister your website</h3>
-				<form>
-					<input type="hidden" ng-model="data.Service" ng-init="data.Service = 'Link Checker'" />
-					<div class="form-field form-required">
-						<label>Website URL</label>
-						<input ng-model="data.URL" type="text" readonly="readonly" />
-					</div>
-					<p class="submit">
-						<button type="submit" ng-click="deregister()" class="button button-primary">Deregister</button>
-					</p>
-				</form>
-			</div>
+			<?php
+				$url = get_home_url();
+				$dev = isset($_GET['dev']);
+
+				if ($dev) {
+					$url = 'https://www.marcobeierer.com/';
+				} 
+				else {
+					localhostCheck(); // only if not in dev mode
+				}
+			?>
+
+			<linkchecker-scheduler
+				website-url="<?php echo $url; ?>"
+				token="<?php echo get_option('link-checker-token'); ?>"
+				email="<?php echo get_option('admin_email'); ?>">
+			</linkchecker-scheduler>
 		</div>
 	</div>
 <?php

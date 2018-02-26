@@ -1,7 +1,7 @@
 === Link Checker ===
 Contributors: mbsec
 Tags: link checker, broken links, dead links, dead link checker, broken link checker, broken, link, links, maintenance, plugin, seo
-Requires at least: 4.2
+Requires at least: 4.5
 Tested up to: 4.9
 Stable tag: 1.4.1
 License: GPL v3
@@ -76,6 +76,7 @@ In the most cases this is due to the fact that you have set a large value for th
 = Next Release =
 
 * Respect robots.txt of external links.
+* Requires WordPress 4.5
 
 = 1.4.1 =
 *Release Date - 11th February, 2018*
