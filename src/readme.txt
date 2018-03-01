@@ -73,9 +73,16 @@ In the most cases this is due to the fact that you have set a large value for th
 
 == Changelog ==
 
-= Coming with the next crawler update =
+= 1.6.0 =
+*Release Date - 1st March, 2018*
 
-* Respect robots.txt of external links.
+- Added info box to scheduler and hide register form if no token is present.
+- Hide broken images string and show info that not available.
+- Implemented three retries if request could not be sent or no response was received.
+- Explain changed status codes (598 is now 601 and 599 is 602).
+- Added unhandled resources and images.
+- Crawler
+    - Implemented better blocked by robots detection and handling (for external links).
 
 = 1.5.1 =
 *Release Date - 26th February, 2018*
