@@ -3,7 +3,7 @@ Contributors: mbsec
 Tags: link checker, broken links, dead links, dead link checker, broken link checker, broken, link, links, maintenance, plugin, seo
 Requires at least: 4.5
 Tested up to: 4.9
-Stable tag: 1.5.1
+Stable tag: 1.6.0
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -76,13 +76,13 @@ In the most cases this is due to the fact that you have set a large value for th
 = 1.6.0 =
 *Release Date - 1st March, 2018*
 
-- Added info box to scheduler and hide register form if no token is present.
-- Hide broken images string and show info that not available.
-- Implemented three retries if request could not be sent or no response was received.
-- Explain changed status codes (598 is now 601 and 599 is 602).
-- Added unhandled resources and images.
-- Crawler
-    - Implemented better blocked by robots detection and handling (for external links).
+* Added info box to scheduler and hide register form if no token is present.
+* Hide broken images string and show info that not available.
+* Implemented three retries if request could not be sent or no response was received.
+* Explain changed status codes (598 is now 601 and 599 is 602).
+* Added unhandled resources and images.
+* Crawler
+	* Implemented better blocked by robots detection and handling (for external links).
 
 = 1.5.1 =
 *Release Date - 26th February, 2018*
