@@ -19,20 +19,21 @@ The Link Checker works for every plugin out of the box. The computation costs fo
 [youtube https://www.youtube.com/watch?v=cbrZaPzRv14]
 
 = Features =
-* Simple setup.
-* Works out of the box with all WordPress plugins.
-* Low computation costs for your webserver.
+* **Simple setup**.
+* **Works out of the box** with all WordPress plugins.
+* **Low computation costs** for your webserver.
+* Works with **PHP 5.6 and 7**.
 
 = Technical Features =
 * Respects your robots.txt file (also the crawl-delay directive).
 	* You could use the user-agents MB-LinkChecker or MB-SiteCrawler to control the crawler.
 
-= Additional Technical Features of the Professional Version =
-* Check if embedded internal and external images are broken.
-* Check if embedded YouTube videos are broken.
-* Scheduler to automatically check a website once a day and get a summary report by email.
+= Additional Features of the Professional Version =
+* Check if embedded internal and external **images** are broken.
+* Check if embedded **YouTube videos** are broken.
+* Scheduler to **automatically check a website** once a day and get a summary report by email.
 
-= Upcoming Technical Features =
+= Upcoming Features =
 * Support for checking the availability of videos, CSS files and JS files.
 
 = Technical Requirements =
@@ -77,10 +78,10 @@ In the most cases this is due to the fact that you have set a large value for th
 = 1.7.0 =
 *Release Date - 4th March, 2018*
 
-- Added support for broken embedded YouTube videos.
-- Remove all whitespace (line breaks, spaces, tabs) from token. This prevents Copy and Paste issues.
-- Improvement notification message for daily checks.
-- Crawler performance improvements.
+* Added support for broken embedded YouTube videos.
+* Remove all whitespace (line breaks, spaces, tabs) from token. This prevents Copy and Paste issues.
+* Improvement notification message for daily checks.
+* Crawler performance improvements.
 
 = 1.6.0 =
 *Release Date - 1st March, 2018*
