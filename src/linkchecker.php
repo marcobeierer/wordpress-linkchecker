@@ -34,11 +34,11 @@ function load_link_checker_admin_scripts($hook) {
 	if ($hook == 'toplevel_page_link-checker' || $hook == 'link-checker_page_link-checker-scheduler') {
 		wp_enqueue_script('jquery');
 
-		$linkcheckerURL = plugins_url('js/linkchecker-1.5.0.min.js', __FILE__);
+		$linkcheckerURL = plugins_url('js/linkchecker-1.6.0.min.js', __FILE__);
 		wp_enqueue_script('link_checker_linkcheckerjs', $linkcheckerURL);
 		wp_add_inline_script('link_checker_linkcheckerjs', "jQuery(document).ready(function() { riot.mount('*', { linkchecker: riot.observable() }); });");
 
-		$cssURL = plugins_url('css/wrapped.min.css', __FILE__); // TODO versionize file
+		$cssURL = plugins_url('css/wrapped.min.css?v=1', __FILE__); // TODO versionize file
 		wp_enqueue_style('link_checker_wrappedcss', $cssURL);
 	}
 

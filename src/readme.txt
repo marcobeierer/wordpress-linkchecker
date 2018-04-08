@@ -75,6 +75,16 @@ In the most cases this is due to the fact that you have set a large value for th
 
 == Changelog ==
 
+= 1.8.0 =
+*Release Date - 9th April, 2018*
+
+* Results are saved now and don't get discarded when leaving the Link Checker anymore.
+* Improved navigation with tabs.
+* More detailed stats.
+* Crawler
+	* Added status code 603 (Unknown authority error) with explanation.
+	* Added cookie support.
+
 = 1.7.0 =
 *Release Date - 4th March, 2018*
 
