@@ -22,7 +22,6 @@ The Link Checker works for every plugin out of the box. The computation costs fo
 * **Simple setup**.
 * **Works out of the box** with all WordPress plugins.
 * **Low computation costs** for your webserver.
-* Works with **PHP 5.6 and 7**.
 
 = Technical Features =
 * Respects your robots.txt file (also the crawl-delay directive).
@@ -37,9 +36,7 @@ The Link Checker works for every plugin out of the box. The computation costs fo
 * Support for checking the availability of videos, CSS files and JS files.
 
 = Technical Requirements =
-* cURL 7.18.1 or higher.
-	* PHP 5.3 should be compiled against a compatible cURL version in the most cases. PHP 5.4 or higher should by default provide a compatible cURL version.
-* OpenSSL 0.9.8f or higher.
+* Works with **PHP 5.6 and 7**.
 
 = Limitations of the Basic Version =
 The free basic version of the Link Checker allows you to check the first 500 internal and external links on your website. If you need more capacity, you could buy a token for the professional version of the Link Checker to check up to 50'000 links.

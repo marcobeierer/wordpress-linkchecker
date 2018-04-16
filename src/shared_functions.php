@@ -18,6 +18,20 @@ if (!function_exists('tokenCheck')) {
 	}
 }
 
+if (!function_exists('localhostCheck')) {
+	function localhostCheck() {
+
+		if (preg_match('/^https?:\/\/(?:localhost|127\.0\.0\.1)/i', get_home_url()) === 1): // TODO implement a better localhost detection ?>
+
+			<div class="notice notice-error below-h2">
+				<p>It is not possible to use this plugin in a local development environment. The backend service needs to crawl your website and this is just possible if your site is reachable from the internet.</p>
+			</div>
+
+		<?php endif;
+	}
+}
+
+/*
 if (!function_exists('cURLCheck')) {
 	function cURLCheck() {
 
@@ -40,17 +54,6 @@ if (!function_exists('cURLCheck')) {
 		endif;
 	}
 }
+ */
 
-if (!function_exists('localhostCheck')) {
-	function localhostCheck() {
-
-		if (preg_match('/^https?:\/\/(?:localhost|127\.0\.0\.1)/i', get_home_url()) === 1): // TODO implement a better localhost detection ?>
-
-			<div class="notice notice-error below-h2">
-				<p>It is not possible to use this plugin in a local development environment. The backend service needs to crawl your website and this is just possible if your site is reachable from the internet.</p>
-			</div>
-
-		<?php endif;
-	}
-}
 ?>
