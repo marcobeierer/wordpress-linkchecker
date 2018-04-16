@@ -1,6 +1,6 @@
 === Link Checker ===
 Contributors: mbsec
-Tags: link checker, broken links, dead links, dead link checker, broken link checker, broken, link, links, maintenance, plugin, seo
+Tags: seo, links, maintenance, broken link checker, link checker, dead link checker, link, broken links, dead links
 Requires at least: 4.5
 Tested up to: 4.9
 Stable tag: 1.8.0
