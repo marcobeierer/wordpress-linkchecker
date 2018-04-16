@@ -31,7 +31,7 @@ if (!function_exists('localhostCheck')) {
 	}
 }
 
-/*
+// do not comment this because it is still used by the Sitemap Generator
 if (!function_exists('cURLCheck')) {
 	function cURLCheck() {
 
@@ -54,6 +54,4 @@ if (!function_exists('cURLCheck')) {
 		endif;
 	}
 }
- */
-
 ?>
