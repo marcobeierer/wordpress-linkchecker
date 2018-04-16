@@ -22,6 +22,7 @@ The Link Checker works for every plugin out of the box. The computation costs fo
 * **Simple setup**.
 * **Works out of the box** with all WordPress plugins.
 * **Low computation costs** for your webserver.
+* Lists all broken links and redirects on your website.
 
 = Technical Features =
 * Respects your robots.txt file (also the crawl-delay directive).
@@ -71,6 +72,14 @@ In the most cases this is due to the fact that you have set a large value for th
 1. List of broken links found by the Link Checker.
 
 == Changelog ==
+
+= 1.9.0 =
+*Release Date - 17th April, 2018*
+
+* Highlighting of redirects.
+* Added option to show working redirects.
+	* Has to be enabled in the settings.
+* Fixed a conflict of the settings page with the settings page of the *Broken Link Checker* plugin.
 
 = 1.8.0 =
 *Release Date - 9th April, 2018*
