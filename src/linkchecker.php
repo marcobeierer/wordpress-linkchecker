@@ -26,7 +26,7 @@ add_action('admin_menu', 'register_link_checker_submenu_pages');
 function register_link_checker_submenu_pages() {
 	add_submenu_page('link-checker', 'Link Checker News', 'News', 'manage_options', 'link-checker-news', 'link_checker_news_page');
 	add_submenu_page('link-checker', 'Link Checker Scheduler', 'Scheduler', 'manage_options', 'link-checker-scheduler', 'link_checker_scheduler_page');
-	add_submenu_page('link-checker', 'Link Checker Settings', 'Settings', 'manage_options', 'link-checker-settings', 'link_checker_settings_page');
+	add_submenu_page('link-checker', 'Link Checker Settings', 'Settings', 'manage_options', 'link-checker-settings-x', 'link_checker_settings_page'); // link-checker-settings-x because link-checker-settings is also used by Broken Link Checker plugin
 }
 
 add_action('admin_enqueue_scripts', 'load_link_checker_admin_scripts');
