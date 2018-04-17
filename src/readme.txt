@@ -3,7 +3,7 @@ Contributors: mbsec
 Tags: seo, links, maintenance, broken link checker, link checker, dead link checker, link, broken links, dead links
 Requires at least: 4.5
 Tested up to: 4.9
-Stable tag: 1.9.0
+Stable tag: 1.9.1
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -72,6 +72,11 @@ In the most cases this is due to the fact that you have set a large value for th
 1. List of broken links found by the Link Checker.
 
 == Changelog ==
+
+= 1.9.1 =
+*Release Date - 17th April, 2018*
+
+* Fixed redirect stats.
 
 = 1.9.0 =
 *Release Date - 17th April, 2018*
