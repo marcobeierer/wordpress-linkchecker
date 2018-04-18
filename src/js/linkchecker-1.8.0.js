@@ -3644,7 +3644,7 @@ riot.tag2('datatable', '<div class="panel panel-default table-responsive" riot-s
 			self.update();
 		};
 });
-riot.tag2('linkchecker-form', '<form onsubmit="{submit}" style="margin-bottom: 20px;"> <div class="form-group"> <label>Website URL</label> <input ref="websiteURL" type="url" class="form-control" placeholder="The URL of the website to check, for example \'https://www.marcobeierer.com\'." disabled="{disabled}" required> </div> <div class="form-group"> <label>Token</label> <textarea ref="token" class="form-control" style="min-height: 100px" placeholder="A token is only necessary to check a website with more than 500 internal or external links or if you like to use the paid extra features." disabled="{disabled}"></textarea> </div> <div class="checkbox"> <label> <input ref="showWorkingRedirects" type="checkbox"> Show working redirects </label> </div> <button class="btn btn-default" type="submit" disabled="{disabled}">Check your website</button> </form>', '', '', function(opts) {
+riot.tag2('linkchecker-form', '<form onsubmit="{submit}" style="margin-bottom: 20px;"> <div class="form-group"> <label>Website URL</label> <input ref="websiteURL" type="url" class="form-control" placeholder="The URL of the website to check, for example \'https://www.marcobeierer.com\'." disabled="{disabled}" required> </div> <div class="form-group"> <label>Token</label> <textarea ref="token" class="form-control" style="min-height: 100px" placeholder="A token is only necessary to check a website with more than 500 internal or external links or if you like to use the paid extra features." disabled="{disabled}"></textarea> </div> <div class="checkbox"> <label> <input ref="showWorkingRedirects" type="checkbox"> Show working redirects </label> </div> <button class="btn btn-default" type="submit" if="{!disabled}">Check your website</button> <button class="btn btn-danger" onclick="{stopCheck}" if="{disabled}">Stop website check</button> </form>', '', '', function(opts) {
 		var self = this;
 
 		self.disabled = false;
@@ -3663,6 +3663,11 @@ riot.tag2('linkchecker-form', '<form onsubmit="{submit}" style="margin-bottom: 2
 		this.submit = function(e) {
 			e.preventDefault();
 			opts.linkchecker.trigger('start', this.refs.websiteURL.value, this.refs.token.value, this.refs.showWorkingRedirects.checked);
+		}.bind(this)
+
+		this.stopCheck = function(e) {
+			e.preventDefault();
+			opts.linkchecker.trigger('stop');
 		}.bind(this)
 
 		opts.linkchecker.on('started', function() {
@@ -3786,7 +3791,7 @@ riot.tag2('linkchecker-scheduler', '<div if="{token}" class="alert alert-{messag
 			});
 		}.bind(this)
 });
-riot.tag2('linkchecker', '<form if="{showButton}" onsubmit="{submit}" style="margin-bottom: 20px;"> <button class="btn btn-default" type="submit" disabled="{disabled}">Check your website</button> </form> <div class="alert alert-{messageType}"> <raw content="{message}"></raw> </div> <ul class="nav nav-tabs" role="tablist"> <li role="presentation" class="active"><a href="#progressAndStats{id}" aria-controls="progressAndStats{id}" role="tab" data-toggle="tab">Progress and Stats</a></li> <li role="presentation"><a href="#links{id}" aria-controls="links{id}" role="tab" data-toggle="tab">Links</a></li> <li role="presentation"><a href="#images{id}" aria-controls="images{id}" role="tab" data-toggle="tab">Images</a></li> <li role="presentation"><a href="#youTubeVideos{id}" aria-controls="youTubeVideos{id}" role="tab" data-toggle="tab">YouTube Videos</a></li> <li role="presentation"><a href="#statusCodes{id}" aria-controls="statusCodes{id}" role="tab" data-toggle="tab">Common Status Codes</a></li> <li role="presentation"><a href="#unhandledResources{id}" aria-controls="unhandledResources{id}" role="tab" data-toggle="tab">Unhandled Resources</a></li> <li if="{enableScheduler}" role="presentation"><a href="#scheduler{id}" aria-controls="scheduler{id}" role="tab" data-toggle="tab">Scheduler</a></li> </ul> <div class="tab-content"> <div role="tabpanel" class="tab-pane active" id="progressAndStats{id}"> <h3>Progress and Stats</h3> <div class="row"> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Stats</div> <table class="table table-bordered"> <tr> <td>Number of crawled HTML pages on your site</td> <td class="text-right" style="width: 200px;">{urlsCrawledCount}</td> </tr> <tr> <td>Number of checked internal and external resources</td> <td class="text-right">{checkedLinksCount}</td> </tr> <tr if="{data.Stats}"> <td>Started at</td> <td class="text-right">{datetime(data.Stats.StartedAt)}</td> </tr> <tr if="{data.Stats}"> <td>Finished at</td> <td class="text-right">{datetime(data.Stats.FinishedAt)}</td> </tr> </table> </div> </div> <div if="{data.Stats}" class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Detailed Stats</div> <table class="table table-bordered"> <tr> <td>Number of valid links</td> <td class="text-right" style="width: 200px;">{data.Stats.ValidLinksCount}</td> </tr> <tr> <td>Number of dead or redirected links</td> <td class="text-right">{data.Stats.DeadLinksCount}</td> </tr> <tr> <td>Number of valid embedded YouTube videos</td> <td class="text-right">{data.Stats.ValidEmbeddedYouTubeVideosCount}</td> </tr> <tr> <td>Number of dead embedded YouTube videos</td> <td class="text-right">{data.Stats.DeadEmbeddedYouTubeVideosCount}</td> </tr> </table> </div> </div> <div if="{data.Stats}" class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Setting Stats</div> <table class="table table-bordered"> <tr> <td>Crawl delay</td> <td class="text-right" style="width: 200px;">{data.Stats.CrawlDelayInSeconds} seconds</td> </tr> <tr> <td>Concurrent fetchers</td> <td class="text-right">{data.Stats.MaxFetchers}</td> </tr> <tr> <td>URL limit</td> <td class="text-right">{data.Stats.URLLimit} URLs</td> </tr> <tr> <td>Limit reached</td> <td class="text-right">{bool2text(data.Stats.LimitReached)}</td> </tr> <tr> <td>Show working redirects</td> <td class="text-right">{bool2text(showWorkingRedirects)}</td> </tr> </table> </div> </div> </div> </div> <div role="tabpanel" class="tab-pane" id="links{id}"> <h3>Broken<span if="{showWorkingRedirects}"> and Redirected</span> Links</h3> <p>The table below shows all broken<span if="{showWorkingRedirects}"> and redirected</span> links. Please note that the fixed markers are just temporary and are reset with the next link check.</p> <p if="{showWorkingRedirects}">The result contains working redirects. Non-temporary redirects, even if working correctly, have disadvantages like for example increased loading times and should therefore be fixed. However showing working redirects can be disabled in the settings.</p> <p if="{!showWorkingRedirects}">The result doesn\'t contain working redirects. Non-temporary redirects, even if working correctly, have disadvantages like for example increased loading times and should therefore be fixed. Showing working redirects can be enabled in the settings.</p> <datatable ref="brokenLinks" table-class="table-striped responsive-table" columns="{urlsWithBrokenLinksColumns}" data="{urlsWithBrokenLinks}" actions="{brokenLinksActions}" message="{resultsMessage}"> </datatable> </div> <div role="tabpanel" class="tab-pane" id="images{id}"> <h3>Broken<span if="{showWorkingRedirects}"> and Redirected</span> Images</h3> <p if="{!hasToken()}">Broken images are just checked in the <a href="https://www.marcobeierer.com/tools/link-checker-professional" target="_blank">professional version of the Link Checker</a>.</p> <p if="{hasToken()}">The table below shows all broken<span if="{showWorkingRedirects}"> and redirected</span> images. Please note that the fixed markers are just temporary and are reset for the next link check.</p> <p if="{hasToken() && showWorkingRedirects}">The result contains working redirects. Non-temporary redirects, even if working correctly, have disadvantages like for example increased loading times and should therefore be fixed. However showing working redirects can be disabled in the settings.</p> <p if="{hasToken() && !showWorkingRedirects}">The result doesn\'t contain working redirects. Non-temporary redirects, even if working correctly, have disadvantages like for example increased loading times and should therefore be fixed. Showing working redirects can be enabled in the settings.</p> <datatable if="{hasToken()}" table-class="table-striped table-responsive" columns="{urlsWithDeadImagesColumns}" data="{urlsWithDeadImages}" actions="{brokenImagesActions}" message="{resultsMessage}"> </datatable> </div> <div role="tabpanel" class="tab-pane" id="youTubeVideos{id}"> <h3>Broken Embedded YouTube Videos</h3> <p if="{!hasToken()}">Broken embedded YouTube videos are just checked in the <a href="https://www.marcobeierer.com/tools/link-checker-professional" target="_blank">professional version of the Link Checker</a>.</p> <p if="{hasToken()}">The table below shows all broken embedded YouYube videos. Please note that the fixed markers are just temporary and are reset for the next link check.</p> <datatable if="{hasToken()}" table-class="table-striped table-responsive" columns="{urlsWithDeadYouTubeVideosColumns}" data="{urlsWithDeadYouTubeVideos}" actions="{deadYouTubeVideosActions}" message="{resultsMessage}"> </datatable> </div> <div role="tabpanel" class="tab-pane" id="statusCodes{id}"> <h3>Common Status Codes</h3> <div class="panel panel-default table-responsive"> <table class="table table-striped table-responsive"> <thead> <tr> <th style="width: 10em;">Status Code</th> <th style="width: 20em;">Status Text</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td>502</td> <td>Bad Gateway</td> <td>The server returned an invalid response when the Link Checker tried to access the URL.</td> </tr> <tr> <td>504</td> <td>Gateway Timeout</td> <td>The Link Checker was not able to access the URL because it timed out.</td> </tr> </tbody> </table> </div> </div> <div role="tabpanel" class="tab-pane" id="unhandledResources{id}"> <h3>Unhandled Resources (mainly blocked by robots.txt)</h3> <p>Websites can prohibit access for web crawlers like the one used by the Link Checker with the robots exclusion protocol (robots.txt file). The Link Checker does respect the robots exclusion protocol for the website it crawls, but not for external links because it does just access individual URLs of the external sites.</p> <p>However, some websites take some effort to restrict the access for crawlers and the Link Checker does respect that and does not try to bypass the restrictions. You can find all URLs the Link Checker was not able to access in the table below, so that you could check them manually. If you have done this, you could mark them as working. Each marker is saved for one month in your browsers cache and the date of the last marking is shown in the table below.</p> <p>If the blocked links were found on your website, you can add rules for the Link Checker to your robots.txt file and restart the Link Checker. Please see the <a href="https://www.marcobeierer.com/tools/link-checker-faq" target="_blank">FAQs</a> for further information.</p> <h4>Unhandled Links</h4> <datatable ref="linksBlockedByRobots" table-class="table-striped table-responsive" columns="{urlsWithLinksBlockedByRobotsColumns}" data="{urlsWithLinksBlockedByRobots}" actions="{blockedLinksActions}" message="{resultsMessage}"> </datatable> <virtual if="{hasToken()}"> <h4>Unhandled Images</h4> <datatable ref="unhandledEmbeddedResources" table-class="table-striped table-responsive" columns="{urlsWithLinksBlockedByRobotsColumns}" data="{urlsWithUnhandledEmbeddedResources}" actions="{blockedLinksActions}" message="{resultsMessage}"> </datatable> </virtual> <h4>Custom Status Codes</h4> <div class="panel panel-default table-responsive"> <table class="table table-striped table-responsive"> <thead> <tr> <th style="width: 10em;">Status Code</th> <th style="width: 20em;">Status Text</th> <th>Description</th> </tr> </thead> </tbody> <tr> <td>601</td> <td>Blocked by robots</td> <td>The Link Checker was not able to access the URL because the access was blocked by the robots exclusion protocol.</td> </tr> <tr> <td>602</td> <td>HTML parse error</td> <td>The HTML code of this page could not be parsed because of an error in the code or because the page was larger than 50 MB.</td> </tr> <tr> <td>603</td> <td>Unknown authority error</td> <td>This status code means that the certificate was signed by an unknown certificate authority. If accessing the page works in your web browser, probably the provided certificate chain is broken. Most, but not all, browsers can handle such situation and download the missing certificates on the fly. If the error was detected on you website, you should fix the origin of the issue and provid the whole chain to all clients.</td> </tr> </tbody> </table> </div> <p><em>Please note that it is possible in rare situations that a website returns these status codes and if this is the case, they probably have another meaning.</em></p> </div> <div if="{enableScheduler}" role="tabpanel" class="tab-pane" id="scheduler{id}"> <h3>Scheduler</h3> <linkchecker-scheduler website-url="{websiteURL}" token="{token}" email="{email}" dev="{dev}"></linkchecker-scheduler> </div> </div>', '', '', function(opts) {
+riot.tag2('linkchecker', '<form if="{showButton}" style="margin-bottom: 20px;"> <button class="btn btn-default" onclick="{submit}" if="{!disabled}">Check your website</button> <button class="btn btn-danger" onclick="{stopCheck}" if="{disabled}">Stop website check</button> </form> <div class="alert alert-{messageType}"> <raw content="{message}"></raw> </div> <div if="{crawlDelayInSeconds >= 1}" class="alert alert-danger"> The crawl-delay set in your robots.txt file is equal or higher than one second, namely {crawlDelayInSeconds} seconds. The crawl-delay defines the time waited between two requests of the Link Checker. This means that it might take very long for the check to finish. It is recommended that you lower the crawl-delay for the Link Checker in your robots.txt. You can use the user agent MB-LinkChecker if you like to define a custom crawl-delay for the Link Checker. </div> <ul class="nav nav-tabs" role="tablist"> <li role="presentation" class="active"><a href="#progressAndStats{id}" aria-controls="progressAndStats{id}" role="tab" data-toggle="tab">Progress and Stats</a></li> <li role="presentation"><a href="#links{id}" aria-controls="links{id}" role="tab" data-toggle="tab">Links</a></li> <li role="presentation"><a href="#images{id}" aria-controls="images{id}" role="tab" data-toggle="tab">Images</a></li> <li role="presentation"><a href="#youTubeVideos{id}" aria-controls="youTubeVideos{id}" role="tab" data-toggle="tab">YouTube Videos</a></li> <li role="presentation"><a href="#statusCodes{id}" aria-controls="statusCodes{id}" role="tab" data-toggle="tab">Common Status Codes</a></li> <li role="presentation"><a href="#unhandledResources{id}" aria-controls="unhandledResources{id}" role="tab" data-toggle="tab">Unhandled Resources</a></li> <li if="{enableScheduler}" role="presentation"><a href="#scheduler{id}" aria-controls="scheduler{id}" role="tab" data-toggle="tab">Scheduler</a></li> </ul> <div class="tab-content"> <div role="tabpanel" class="tab-pane active" id="progressAndStats{id}"> <h3>Progress and Stats</h3> <div class="row"> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Stats</div> <table class="table table-bordered"> <tr> <td>Number of crawled HTML pages on your site</td> <td class="text-right" style="width: 200px;">{urlsCrawledCount}</td> </tr> <tr> <td>Number of checked internal and external resources</td> <td class="text-right">{checkedLinksCount}</td> </tr> <tr if="{data.Stats}"> <td>Started at</td> <td class="text-right">{datetime(data.Stats.StartedAt)}</td> </tr> <tr if="{data.Stats}"> <td>Finished at</td> <td class="text-right">{datetime(data.Stats.FinishedAt)}</td> </tr> </table> </div> </div> <div if="{data.Stats}" class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Detailed Stats</div> <table class="table table-bordered"> <tr> <td>Number of valid links</td> <td class="text-right" style="width: 200px;">{data.Stats.ValidLinksCount}</td> </tr> <tr> <td>Number of dead links</td> <td class="text-right">{data.Stats.DeadLinksCount}</td> </tr> <tr> <td>Number of redirected links</td> <td class="text-right">{data.Stats.RedirectedLinksCount}</td> </tr> <tr> <td>Number of valid embedded YouTube videos</td> <td class="text-right">{data.Stats.ValidEmbeddedYouTubeVideosCount}</td> </tr> <tr> <td>Number of dead embedded YouTube videos</td> <td class="text-right">{data.Stats.DeadEmbeddedYouTubeVideosCount}</td> </tr> </table> </div> </div> <div if="{data.Stats}" class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Setting Stats</div> <table class="table table-bordered"> <tr> <td>Crawl delay</td> <td class="text-right" style="width: 200px;">{data.Stats.CrawlDelayInSeconds} seconds</td> </tr> <tr> <td>Concurrent fetchers</td> <td class="text-right">{data.Stats.MaxFetchers}</td> </tr> <tr> <td>URL limit</td> <td class="text-right">{data.Stats.URLLimit} URLs</td> </tr> <tr> <td>Limit reached</td> <td class="text-right">{bool2text(data.Stats.LimitReached)}</td> </tr> <tr> <td>Show working redirects</td> <td class="text-right">{bool2text(showWorkingRedirects)}</td> </tr> </table> </div> </div> </div> </div> <div role="tabpanel" class="tab-pane" id="links{id}"> <h3>Broken<span if="{showWorkingRedirects}"> and Redirected</span> Links</h3> <p>The table below shows all broken<span if="{showWorkingRedirects}"> and redirected</span> links. Please note that the fixed markers are just temporary and are reset with the next link check.</p> <p if="{showWorkingRedirects}">The result lists working redirects. Non-temporary redirects, even if working correctly, have disadvantages like for example increased loading times and should therefore be fixed. However showing working redirects can be disabled in the settings.</p> <p if="{!showWorkingRedirects}">The result doesn\'t list working redirects. Non-temporary redirects, even if working correctly, have disadvantages like for example increased loading times and should therefore be fixed. Showing working redirects can be enabled in the settings.</p> <datatable ref="brokenLinks" table-class="table-striped responsive-table" columns="{urlsWithBrokenLinksColumns}" data="{urlsWithBrokenLinks}" actions="{brokenLinksActions}" message="{resultsMessage}"> </datatable> </div> <div role="tabpanel" class="tab-pane" id="images{id}"> <h3>Broken<span if="{showWorkingRedirects}"> and Redirected</span> Images</h3> <p if="{!hasToken()}">Broken images are just checked in the <a href="https://www.marcobeierer.com/tools/link-checker-professional" target="_blank">professional version of the Link Checker</a>.</p> <p if="{hasToken()}">The table below shows all broken<span if="{showWorkingRedirects}"> and redirected</span> images. Please note that the fixed markers are just temporary and are reset for the next link check.</p> <p if="{hasToken() && showWorkingRedirects}">The result lists working redirects. Non-temporary redirects, even if working correctly, have disadvantages like for example increased loading times and should therefore be fixed. However showing working redirects can be disabled in the settings.</p> <p if="{hasToken() && !showWorkingRedirects}">The result doesn\'t list working redirects. Non-temporary redirects, even if working correctly, have disadvantages like for example increased loading times and should therefore be fixed. Showing working redirects can be enabled in the settings.</p> <datatable if="{hasToken()}" table-class="table-striped table-responsive" columns="{urlsWithDeadImagesColumns}" data="{urlsWithDeadImages}" actions="{brokenImagesActions}" message="{resultsMessage}"> </datatable> </div> <div role="tabpanel" class="tab-pane" id="youTubeVideos{id}"> <h3>Broken Embedded YouTube Videos</h3> <p if="{!hasToken()}">Broken embedded YouTube videos are just checked in the <a href="https://www.marcobeierer.com/tools/link-checker-professional" target="_blank">professional version of the Link Checker</a>.</p> <p if="{hasToken()}">The table below shows all broken embedded YouYube videos. Please note that the fixed markers are just temporary and are reset for the next link check.</p> <datatable if="{hasToken()}" table-class="table-striped table-responsive" columns="{urlsWithDeadYouTubeVideosColumns}" data="{urlsWithDeadYouTubeVideos}" actions="{deadYouTubeVideosActions}" message="{resultsMessage}"> </datatable> </div> <div role="tabpanel" class="tab-pane" id="statusCodes{id}"> <h3>Common Status Codes</h3> <div class="panel panel-default table-responsive"> <table class="table table-striped table-responsive"> <thead> <tr> <th style="width: 10em;">Status Code</th> <th style="width: 20em;">Status Text</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td>502</td> <td>Bad Gateway</td> <td>The server returned an invalid response when the Link Checker tried to access the URL.</td> </tr> <tr> <td>504</td> <td>Gateway Timeout</td> <td>The Link Checker was not able to access the URL because it timed out.</td> </tr> </tbody> </table> </div> </div> <div role="tabpanel" class="tab-pane" id="unhandledResources{id}"> <h3>Unhandled Resources (mainly blocked by robots.txt)</h3> <p>Websites can prohibit access for web crawlers like the one used by the Link Checker with the robots exclusion protocol (robots.txt file). The Link Checker does respect the robots exclusion protocol for the website it crawls, but not for external links because it does just access individual URLs of the external sites.</p> <p>However, some websites take some effort to restrict the access for crawlers and the Link Checker does respect that and does not try to bypass the restrictions. You can find all URLs the Link Checker was not able to access in the table below, so that you could check them manually. If you have done this, you could mark them as working. Each marker is saved for one month in your browsers cache and the date of the last marking is shown in the table below.</p> <p>If the blocked links were found on your website, you can add rules for the Link Checker to your robots.txt file and restart the Link Checker. Please see the <a href="https://www.marcobeierer.com/tools/link-checker-faq" target="_blank">FAQs</a> for further information.</p> <h4>Unhandled Links</h4> <datatable ref="linksBlockedByRobots" table-class="table-striped table-responsive" columns="{urlsWithLinksBlockedByRobotsColumns}" data="{urlsWithLinksBlockedByRobots}" actions="{blockedLinksActions}" message="{resultsMessage}"> </datatable> <virtual if="{hasToken()}"> <h4>Unhandled Images</h4> <datatable ref="unhandledEmbeddedResources" table-class="table-striped table-responsive" columns="{urlsWithLinksBlockedByRobotsColumns}" data="{urlsWithUnhandledEmbeddedResources}" actions="{blockedLinksActions}" message="{resultsMessage}"> </datatable> </virtual> <h4>Custom Status Codes</h4> <div class="panel panel-default table-responsive"> <table class="table table-striped table-responsive"> <thead> <tr> <th style="width: 10em;">Status Code</th> <th style="width: 20em;">Status Text</th> <th>Description</th> </tr> </thead> </tbody> <tr> <td>601</td> <td>Blocked by robots</td> <td>The Link Checker was not able to access the URL because the access was blocked by the robots exclusion protocol.</td> </tr> <tr> <td>602</td> <td>HTML parse error</td> <td>The HTML code of this page could not be parsed because of an error in the code or because the page was larger than 50 MB.</td> </tr> <tr> <td>603</td> <td>Unknown authority error</td> <td>This status code means that the certificate was signed by an unknown certificate authority. If accessing the page works in your web browser, probably the provided certificate chain is broken. Most, but not all, browsers can handle such situation and download the missing certificates on the fly. If the error was detected on you website, you should fix the origin of the issue and provid the whole chain to all clients.</td> </tr> </tbody> </table> </div> <p><em>Please note that it is possible in rare situations that a website returns these status codes and if this is the case, they probably have another meaning.</em></p> </div> <div if="{enableScheduler}" role="tabpanel" class="tab-pane" id="scheduler{id}"> <h3>Scheduler</h3> <linkchecker-scheduler website-url="{websiteURL}" token="{token}" email="{email}" dev="{dev}"></linkchecker-scheduler> </div> </div>', '', '', function(opts) {
 		var self = this;
 
 		self.message = '';
@@ -3795,6 +3800,8 @@ riot.tag2('linkchecker', '<form if="{showButton}" onsubmit="{submit}" style="mar
 		self.dev = opts.dev;
 		self.enableScheduler = opts.enableScheduler || false;
 		self.showWorkingRedirects = opts.showWorkingRedirects || false;
+		self.forceStop = false;
+		self.crawlDelayInSeconds = 0;
 
 		self.id = opts.id || 0;
 		self.email = opts.email || '';
@@ -3808,7 +3815,40 @@ riot.tag2('linkchecker', '<form if="{showButton}" onsubmit="{submit}" style="mar
 				self.render(self.data);
 				self.update();
 			}
+
+			if (self.websiteURL != undefined) {
+				var tokenHeader = '';
+				if (self.token != '') {
+					tokenHeader = 'BEARER ' + self.token;
+				}
+
+				var url64 = self.websiteURL64();
+				var url = getURL(url64 + '/running');
+
+				jQuery.ajax({
+					method: 'GET',
+					url: url,
+					headers: {
+						'Authorization': tokenHeader,
+					}
+				}).done(function(data, textStatus, xhr) {
+					if (data.Running) {
+						self.start();
+					}
+				});
+
+			}
 		});
+
+		function getURL(url64) {
+			var url = 'https://api.marcobeierer.com/linkchecker/v1/' + url64 + '?origin_system=' + self.originSystem + '&max_fetchers=' + self.maxFetchers;
+			if (self.dev == '1') {
+				url = 'sample_data/current.json?_=' + Date.now();
+			} else if (self.dev == '2') {
+				url = 'http://marco-desktop:9999/linkchecker/v1/' + url64 + '?origin_system=' + self.originSystem + '&max_fetchers=' + self.maxFetchers;
+			}
+			return url;
+		}
 
 		self.bool2text = function(val) {
 			if (val) {
@@ -4111,6 +4151,10 @@ riot.tag2('linkchecker', '<form if="{showButton}" onsubmit="{submit}" style="mar
 			self.start();
 		});
 
+		opts.linkchecker.on('stop', function() {
+			self.forceStop = true;
+		});
+
 		opts.linkchecker.on('started', function() {
 			self.disabled = true;
 		});
@@ -4162,6 +4206,15 @@ riot.tag2('linkchecker', '<form if="{showButton}" onsubmit="{submit}" style="mar
 			self.start();
 		}.bind(this)
 
+		self.websiteURL64 = function() {
+			var url64 = window.btoa(encodeURIComponent(self.websiteURL).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+				return String.fromCharCode('0x' + p1);
+			}));
+			url64.replace(/\+/g, '-').replace(/\//g, '_');
+
+			return url64;
+		}
+
 		this.start = function() {
 			opts.linkchecker.trigger('started');
 
@@ -4180,10 +4233,7 @@ riot.tag2('linkchecker', '<form if="{showButton}" onsubmit="{submit}" style="mar
 			self.setMessage('Your website is being checked. Please wait a moment. You can watch the progress in the stats below.', 'warning');
 			self.resultsMessage = 'Please wait until the check has finished.';
 
-			var url64 = window.btoa(encodeURIComponent(self.websiteURL).replace(/%([0-9A-F]{2})/g, function(match, p1) {
-				return String.fromCharCode('0x' + p1);
-			}));
-			url64.replace(/\+/g, '-').replace(/\//g, '_');
+			var url64 = self.websiteURL64();
 
 			self.doRequest = function() {
 				var tokenHeader = '';
@@ -4191,12 +4241,7 @@ riot.tag2('linkchecker', '<form if="{showButton}" onsubmit="{submit}" style="mar
 					tokenHeader = 'BEARER ' + self.token;
 				}
 
-				var url = 'https://api.marcobeierer.com/linkchecker/v1/' + url64 + '?origin_system=' + self.originSystem + '&max_fetchers=' + self.maxFetchers;
-				if (self.dev == '1') {
-					url = 'sample_data/current.json?_=' + Date.now();
-				} else if (self.dev == '2') {
-					url = 'http://marco-desktop:9999/linkchecker/v1/' + url64 + '?origin_system=' + self.originSystem + '&max_fetchers=' + self.maxFetchers;
-				}
+				var url = getURL(url64);
 
 				jQuery.ajax({
 					method: 'GET',
@@ -4217,7 +4262,11 @@ riot.tag2('linkchecker', '<form if="{showButton}" onsubmit="{submit}" style="mar
 							lscache.set('data', data);
 						}
 					} else {
-						setTimeout(self.doRequest, 1000);
+						if (self.forceStop) {
+							self.stop(url, tokenHeader);
+						} else {
+							setTimeout(self.doRequest, 1000);
+						}
 					}
 				}).fail(function(xhr) {
 					opts.linkchecker.trigger('stopped');
@@ -4239,7 +4288,13 @@ riot.tag2('linkchecker', '<form if="{showButton}" onsubmit="{submit}" style="mar
 					}
 					else if (statusCode == 0 && self.retries < 3) {
 						self.retries++;
-						setTimeout(self.doRequest, 1000);
+
+						if (self.forceStop) {
+							self.stop(url, tokenHeader);
+						} else {
+							setTimeout(self.doRequest, 1000);
+						}
+
 						return;
 					}
 					else {
@@ -4254,9 +4309,36 @@ riot.tag2('linkchecker', '<form if="{showButton}" onsubmit="{submit}" style="mar
 			self.doRequest();
 		}.bind(this)
 
+		self.stopCheck = function(e) {
+			e.preventDefault();
+			self.forceStop = true;
+		}
+
+		self.stop = function(url, tokenHeader) {
+			self.setMessage("Going to stop the current check.", 'warning');
+			self.update();
+
+			jQuery.ajax({
+				method: 'DELETE',
+				url: url,
+				headers: {
+					'Authorization': tokenHeader,
+				}
+			}).done(function(data) {
+				self.setMessage("The current check was stopped successfully.", 'info');
+			}).fail(function(xhr) {
+				self.setMessage("Could not stop the check because the connection to the server failed.", 'danger');
+			}).always(function() {
+				self.forceStop = false;
+				opts.linkchecker.trigger('stopped');
+				self.update();
+			});
+		}
+
 		self.render = function(data) {
 			self.urlsCrawledCount = data.URLsCrawledCount;
 			self.checkedLinksCount = data.CheckedLinksCount;
+			self.crawlDelayInSeconds = data.CrawlDelayInSeconds;
 
 			if (data.Finished) {
 				if (data.LimitReached) {

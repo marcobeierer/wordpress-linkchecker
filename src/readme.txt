@@ -73,6 +73,14 @@ In the most cases this is due to the fact that you have set a large value for th
 
 == Changelog ==
 
+= 1.10.0 =
+*Release Date - 19th April, 2018*
+
+* Auto-resume support if the Link Checker gets opened and a check is already running on the server.
+* Implemented a warning for high crawl-delays.
+* Added a stop button to stop the current check.
+* Implemented protection for check hijacking if token is used.
+
 = 1.9.1 =
 *Release Date - 17th April, 2018*
 
