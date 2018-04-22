@@ -73,6 +73,15 @@ In the most cases this is due to the fact that you have set a large value for th
 
 == Changelog ==
 
+= 1.11.0 =
+*Release Date - 22th April, 2018*
+
+- Redesigned user interface.
+	- Pagination.
+	- All-in-one (links, images, videos, working redirects, unhandled resources) result view.
+- Performance of user interface was improved so that it's now possible to view result tables with more than 100'000 broken links or redirects.
+- Use IndexedDB instead of localStorage to store result so that the result set size is not limited to about 5 MB anymore.
+
 = 1.10.0 =
 *Release Date - 19th April, 2018*
 

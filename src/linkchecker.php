@@ -34,7 +34,7 @@ function load_link_checker_admin_scripts($hook) {
 	if ($hook == 'toplevel_page_link-checker' || $hook == 'link-checker_page_link-checker-scheduler') {
 		wp_enqueue_script('jquery');
 
-		$linkcheckerURL = plugins_url('js/linkchecker-1.8.0.min.js', __FILE__);
+		$linkcheckerURL = plugins_url('js/linkchecker-1.9.0.min.js', __FILE__);
 		wp_enqueue_script('link_checker_linkcheckerjs', $linkcheckerURL);
 		wp_add_inline_script('link_checker_linkcheckerjs', "jQuery(document).ready(function() { riot.mount('*', { linkchecker: riot.observable() }); });");
 
@@ -73,9 +73,6 @@ function link_checker_page() {
 				token="<?php echo get_option('link-checker-token'); ?>"
 				origin-system="wordpress"
 				max-fetchers="<?php echo (int) get_option('link-checker-max-fetchers', 3); ?>"
-				<?php if ((bool) get_option('link-checker-show-working-redirects', false)): ?>
-					show-working-redirects="true"
-				<?php endif; ?>
 			>
 			</linkchecker>
 		</div>
@@ -169,7 +166,6 @@ function register_link_checker_settings_page() {
 function register_link_checker_settings() {
 	register_setting('link-checker-settings-group', 'link-checker-token');
 	register_setting('link-checker-settings-group', 'link-checker-max-fetchers', 'intval');
-	register_setting('link-checker-settings-group', 'link-checker-show-working-redirects', 'boolval');
 }
 
 function link_checker_settings_page() {
@@ -184,15 +180,6 @@ function link_checker_settings_page() {
 				<p><textarea name="link-checker-token" style="width: 100%; min-height: 350px;"><?php echo esc_attr(get_option('link-checker-token')); ?></textarea></p>
 				<p>The Link Checker allows you to check up to 500 internal and external links for free. If your website has more links, you can buy a token for the <a href="https://www.marcobeierer.com/wordpress-plugins/link-checker-professional">Link Checker Professional</a> to check up to 50'000 links.</p>
 				<p>The professional version also checks if you have broken embedded images on your site.</p>
-
-				<h3>Show Working Redirects</h3>
-				<p>
-					<select name="link-checker-show-working-redirects" style="width: 100%;">
-						<option <?php if ((bool) get_option('link-checker-show-working-redirects', false) === false) { ?>selected<?php } ?> value="0">No</option>
-						<option <?php if ((bool) get_option('link-checker-show-working-redirects', false) === true) { ?>selected<?php } ?> value="1">Yes</option>
-					</select>
-				</p>
-				<p>By default working redirects aren't shown in the result tables because most websites have so many working redirects, that showing them would pollute the result tables. However, non-temporary redirects, even if working correctly, have disadvantages like for example increased loading times and should therefore be fixed. If you enable this option, working redirects are shown in the result.</p>
 
 				<h3>Concurrent Connections</h3>
 				<p>
