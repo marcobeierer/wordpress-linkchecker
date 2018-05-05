@@ -57,24 +57,98 @@ function link_checker_page() {
 			<h2>Link Checker</h2>
 
 			<?php
-				$url = get_home_url();
-				$dev = isset($_GET['dev']);
+				$rootURL = get_home_url();
+				$websiteURLs = array();
 
-				if ($dev) {
-					$url = 'https://www.marcobeierer.com/';
+				// add trailing slash if not there yet; necessary for compare with $lang['url']
+				$rootURLLength = strlen($rootURL);
+				if ($rootURL[$rootURLLength-1] != '/') {
+					$rootURL .= '/';
+				}
+
+				// deprecated function from WPML, which is also supported by Polylang 
+				// used because pll_the_languages does not work in backend...
+				if (function_exists('icl_get_languages')) { 
+					$langs = icl_get_languages();
+					foreach ($langs as $code => $lang) {
+						$url = $lang['url'];
+
+						// add trailing slash if not there yet
+						$urlLength = strlen($url);
+						if ($url[$urlLength-1] != '/') {
+							$url .= '/';
+						}
+
+						if ($url == $rootURL) {
+							// home_url has no language suffix and can be used directly
+							$websiteURLs = array($rootURL);
+							break;
+						}
+
+						$websiteURLs[] = $url;
+					}
+				}
+
+				$dev = isset($_GET['dev']);
+				if ($dev == '1') {
+					$websiteURLs = array('https://www.marcobeierer.com/');
 				} 
+				else if ($dev == '2') {
+					$websiteURLs = array('https://www.marcobeierer.com/', 'https://www.marcobeierer.com/tools/link-checker');
+				}
 				else {
 					localhostCheck(); // only if not in dev mode
 				}
 			?>
 
-			<linkchecker
-				website-url="<?php echo $url; ?>"
-				token="<?php echo get_option('link-checker-token'); ?>"
-				origin-system="wordpress"
-				max-fetchers="<?php echo (int) get_option('link-checker-max-fetchers', 3); ?>"
-			>
-			</linkchecker>
+			<?php if (count($websiteURLs) > 1): ?>
+				<ul class="nav nav-tabs" role="tablist" style="margin-bottom: 20px;">
+				<?php $firstWebsite = true; ?>
+				<?php foreach ($websiteURLs as $websiteURL): ?>
+					<li role="presentation" class="<?php if ($firstWebsite) { echo 'active'; } ?>">
+						<a href="#<?php echo md5($websiteURL); ?>" aria-controls="<?php echo md5($websiteURL); ?>" role="tab" data-toggle="tab"><?php echo $websiteURL; ?></a>
+					</li>
+					<?php $firstWebsite = false; ?>
+				<?php endforeach; ?>
+				</ul>
+			<?php endif; ?>
+
+			<?php if (count($websiteURLs) > 1): ?>
+				<div class="tab-content">
+					<?php
+						$firstWebsite = true;
+						$count = 0;
+					?>
+					<?php foreach ($websiteURLs as $websiteURL): ?>
+						<div role="tabpanel" class="tab-pane <?php if ($firstWebsite) { echo 'active'; } ?>" id="<?php echo md5($websiteURL); ?>">
+							<linkchecker
+								id="<?php echo $count; ?>"
+								website-url="<?php echo $websiteURL; ?>"
+								token="<?php echo get_option('link-checker-token'); ?>"
+								origin-system="wordpress"
+								max-fetchers="<?php echo (int) get_option('link-checker-max-fetchers', 3); ?>"
+								enable-scheduler="true"
+								email="<?php echo get_option('admin_email'); ?>"
+							>
+							</linkchecker>
+						</div>
+					<?php
+						$firstWebsite = false;
+						$count++;
+					?>
+					<?php endforeach; ?>
+				</div>
+			<?php else: ?>
+				<linkchecker
+					website-url="<?php echo $websiteURLs[0]; ?>"
+					token="<?php echo get_option('link-checker-token'); ?>"
+					origin-system="wordpress"
+					max-fetchers="<?php echo (int) get_option('link-checker-max-fetchers', 3); ?>"
+					enable-scheduler="true"
+					email="<?php echo get_option('admin_email'); ?>"
+				>
+				</linkchecker>
+			<?php endif; ?>
 		</div>
 	</div>
 <?php
@@ -135,7 +209,9 @@ function link_checker_scheduler_page() {
 	<div class="wrap" id="scheduler-widget">
 		<div class="bootstrap3">
 			<h2>Link Checker Scheduler</h2>
+			<p>The scheduler was moved in version 1.12.0 to a tab in the main view of Link Checker.</p>
 
+<!--
 			<?php
 				$url = get_home_url();
 				$dev = isset($_GET['dev']);
@@ -153,6 +229,7 @@ function link_checker_scheduler_page() {
 				token="<?php echo get_option('link-checker-token'); ?>"
 				email="<?php echo get_option('admin_email'); ?>">
 			</linkchecker-scheduler>
+-->
 		</div>
 	</div>
 <?php

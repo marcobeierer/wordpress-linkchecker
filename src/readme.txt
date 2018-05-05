@@ -23,6 +23,7 @@ The Link Checker works for every plugin out of the box. The computation costs fo
 * **Works out of the box** with all WordPress plugins.
 * **Low computation costs** for your webserver.
 * Lists all broken links and redirects on your website.
+* Support for Polylang (probably also WPML) sites.
 
 = Technical Features =
 * Respects your robots.txt file (also the crawl-delay directive).
@@ -72,6 +73,12 @@ In the most cases this is due to the fact that you have set a large value for th
 1. List of broken links found by the Link Checker.
 
 == Changelog ==
+
+= 1.12.0 =
+
+* Moved scheduler to tab in main view.
+* Added Polylang integration.
+	* Probably also works with WPML.
 
 = 1.11.0 =
 *Release Date - 22th April, 2018*
