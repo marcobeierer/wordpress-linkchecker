@@ -10,7 +10,7 @@ defined('ABSPATH') or die('Restricted access.');
 Plugin Name: Link Checker
 Plugin URI: https://www.marcobeierer.com/wordpress-plugins/link-checker
 Description: An easy to use Link Checker for WordPress to detect broken links and images on your website.
-Version: 1.11.0
+Version: 1.12.0
 Author: Marco Beierer
 Author URI: https://www.marcobeierer.com
 License: GPL v3
@@ -34,7 +34,7 @@ function load_link_checker_admin_scripts($hook) {
 	if ($hook == 'toplevel_page_link-checker' || $hook == 'link-checker_page_link-checker-scheduler') {
 		wp_enqueue_script('jquery');
 
-		$linkcheckerURL = plugins_url('js/linkchecker-1.9.1.min.js', __FILE__);
+		$linkcheckerURL = plugins_url('js/linkchecker-1.10.0.min.js', __FILE__);
 		wp_enqueue_script('link_checker_linkcheckerjs', $linkcheckerURL);
 		wp_add_inline_script('link_checker_linkcheckerjs', "jQuery(document).ready(function() { riot.mount('*', { linkchecker: riot.observable() }); });");
 
@@ -89,12 +89,12 @@ function link_checker_page() {
 					}
 				}
 
-				$dev = isset($_GET['dev']);
-				if ($dev == '1') {
+				$isdev = isset($_GET['dev']);
+				if ($isdev && $_GET['dev'] == '1') {
 					$websiteURLs = array('https://www.marcobeierer.com/');
 				} 
-				else if ($dev == '2') {
-					$websiteURLs = array('https://www.marcobeierer.com/', 'https://www.marcobeierer.com/tools/link-checker');
+				else if ($isdev && $_GET['dev'] == '2') {
+					$websiteURLs = array('https://www.marcobeierer.com/', 'https://www.marcobeierer.ch/');
 				}
 				else {
 					localhostCheck(); // only if not in dev mode
