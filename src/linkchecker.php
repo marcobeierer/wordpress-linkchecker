@@ -34,12 +34,15 @@ function load_link_checker_admin_scripts($hook) {
 	if ($hook == 'toplevel_page_link-checker' || $hook == 'link-checker_page_link-checker-scheduler') {
 		wp_enqueue_script('jquery');
 
-		$linkcheckerURL = plugins_url('js/linkchecker-1.10.0.min.js', __FILE__);
+		$linkcheckerURL = plugins_url('js/linkchecker-1.11.0.min.js', __FILE__);
 		wp_enqueue_script('link_checker_linkcheckerjs', $linkcheckerURL);
 		wp_add_inline_script('link_checker_linkcheckerjs', "jQuery(document).ready(function() { riot.mount('*', { linkchecker: riot.observable() }); });");
 
 		$cssURL = plugins_url('css/wrapped.min.css?v=1', __FILE__); // TODO versionize file
 		wp_enqueue_style('link_checker_wrappedcss', $cssURL);
+
+		$customCSSURL = plugins_url('css/custom.css?v=1', __FILE__); // TODO versionize file
+		wp_enqueue_style('link_checker_customcss', $customCSSURL);
 	}
 
 	// TODO remove this and replace with precompiled local tag
