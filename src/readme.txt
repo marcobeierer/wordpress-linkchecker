@@ -3,14 +3,14 @@ Contributors: mbsec
 Tags: seo, links, maintenance, broken link checker, link checker, dead link checker, link, broken links, dead links
 Requires at least: 4.5
 Tested up to: 4.9
-Stable tag: 1.13.0
+Stable tag: 1.14.0
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 An easy to use link checker for WordPress to detect broken links and images on your website.
 
 == Description ==
-The [Link Checker](https://www.marcobeierer.com/wordpress-plugins/link-checker) for WordPress uses an external service to crawl your website and and find broken links and images on your website. 
+The [Link Checker](https://www.marcobeierer.com/wordpress-plugins/link-checker) for WordPress uses an external service to crawl your website and find broken links and images on your website. 
 
 In contrast to search engine tools like the Google Search Console, which only show if a URL on your website is not reachable, it does not matter for the Link Checker if the links leads to an internal or external URL. The Link Checker will find all dead links. 
 
@@ -73,6 +73,16 @@ In the most cases this is due to the fact that you have set a large value for th
 1. List of broken links found by the Link Checker.
 
 == Changelog ==
+
+= 1.14.0 =
+*Release Date - 15th July, 2018*
+
+- Added message with recommendations for Wordfence users.
+- Result from cache is loaded even if a check is currently running.
+- Old result is not cleared anymore when a new check is started, but just when the new check has finished.
+- Split up the 'Progress and Stats' tab in two separate tabs.
+- Added status code and response text to error message.
+- Bugfix: Handle failed IsRunning request.
 
 = 1.13.0 =
 *Release Date - 12th May, 2018*
