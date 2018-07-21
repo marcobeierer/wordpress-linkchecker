@@ -10,7 +10,7 @@ defined('ABSPATH') or die('Restricted access.');
 Plugin Name: Link Checker
 Plugin URI: https://www.marcobeierer.com/wordpress-plugins/link-checker
 Description: An easy to use Link Checker for WordPress to detect broken links and images on your website.
-Version: 1.15.0
+Version: 1.15.1
 Author: Marco Beierer
 Author URI: https://www.marcobeierer.com
 License: GPL v3
@@ -38,7 +38,7 @@ function load_link_checker_admin_scripts($hook) {
 		wp_enqueue_script('link_checker_linkcheckerjs', $linkcheckerURL);
 		wp_add_inline_script('link_checker_linkcheckerjs', "jQuery(document).ready(function() { riot.mount('*', { linkchecker: riot.observable() }); });");
 
-		$cssURL = plugins_url('css/wrapped.min.css?v=1', __FILE__); // TODO versionize file
+		$cssURL = plugins_url('css/wrapped.min.css?v=2', __FILE__); // TODO versionize file
 		wp_enqueue_style('link_checker_wrappedcss', $cssURL);
 
 		$customCSSURL = plugins_url('css/custom.css?v=1', __FILE__); // TODO versionize file
