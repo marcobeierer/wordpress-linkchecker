@@ -13363,6 +13363,563 @@ module.exports = pako;
     .on('click.bs.tab.data-api', '[data-toggle="pill"]', clickHandler)
 
 }(jQuery);
+/* ========================================================================
+ * Bootstrap: tooltip.js v3.3.7
+ * http://getbootstrap.com/javascript/#tooltip
+ * Inspired by the original jQuery.tipsy by Jason Frame
+ * ========================================================================
+ * Copyright 2011-2016 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  // TOOLTIP PUBLIC CLASS DEFINITION
+  // ===============================
+
+  var Tooltip = function (element, options) {
+    this.type       = null
+    this.options    = null
+    this.enabled    = null
+    this.timeout    = null
+    this.hoverState = null
+    this.$element   = null
+    this.inState    = null
+
+    this.init('tooltip', element, options)
+  }
+
+  Tooltip.VERSION  = '3.3.7'
+
+  Tooltip.TRANSITION_DURATION = 150
+
+  Tooltip.DEFAULTS = {
+    animation: true,
+    placement: 'top',
+    selector: false,
+    template: '<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',
+    trigger: 'hover focus',
+    title: '',
+    delay: 0,
+    html: false,
+    container: false,
+    viewport: {
+      selector: 'body',
+      padding: 0
+    }
+  }
+
+  Tooltip.prototype.init = function (type, element, options) {
+    this.enabled   = true
+    this.type      = type
+    this.$element  = $(element)
+    this.options   = this.getOptions(options)
+    this.$viewport = this.options.viewport && $($.isFunction(this.options.viewport) ? this.options.viewport.call(this, this.$element) : (this.options.viewport.selector || this.options.viewport))
+    this.inState   = { click: false, hover: false, focus: false }
+
+    if (this.$element[0] instanceof document.constructor && !this.options.selector) {
+      throw new Error('`selector` option must be specified when initializing ' + this.type + ' on the window.document object!')
+    }
+
+    var triggers = this.options.trigger.split(' ')
+
+    for (var i = triggers.length; i--;) {
+      var trigger = triggers[i]
+
+      if (trigger == 'click') {
+        this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.toggle, this))
+      } else if (trigger != 'manual') {
+        var eventIn  = trigger == 'hover' ? 'mouseenter' : 'focusin'
+        var eventOut = trigger == 'hover' ? 'mouseleave' : 'focusout'
+
+        this.$element.on(eventIn  + '.' + this.type, this.options.selector, $.proxy(this.enter, this))
+        this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.leave, this))
+      }
+    }
+
+    this.options.selector ?
+      (this._options = $.extend({}, this.options, { trigger: 'manual', selector: '' })) :
+      this.fixTitle()
+  }
+
+  Tooltip.prototype.getDefaults = function () {
+    return Tooltip.DEFAULTS
+  }
+
+  Tooltip.prototype.getOptions = function (options) {
+    options = $.extend({}, this.getDefaults(), this.$element.data(), options)
+
+    if (options.delay && typeof options.delay == 'number') {
+      options.delay = {
+        show: options.delay,
+        hide: options.delay
+      }
+    }
+
+    return options
+  }
+
+  Tooltip.prototype.getDelegateOptions = function () {
+    var options  = {}
+    var defaults = this.getDefaults()
+
+    this._options && $.each(this._options, function (key, value) {
+      if (defaults[key] != value) options[key] = value
+    })
+
+    return options
+  }
+
+  Tooltip.prototype.enter = function (obj) {
+    var self = obj instanceof this.constructor ?
+      obj : $(obj.currentTarget).data('bs.' + this.type)
+
+    if (!self) {
+      self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
+      $(obj.currentTarget).data('bs.' + this.type, self)
+    }
+
+    if (obj instanceof $.Event) {
+      self.inState[obj.type == 'focusin' ? 'focus' : 'hover'] = true
+    }
+
+    if (self.tip().hasClass('in') || self.hoverState == 'in') {
+      self.hoverState = 'in'
+      return
+    }
+
+    clearTimeout(self.timeout)
+
+    self.hoverState = 'in'
+
+    if (!self.options.delay || !self.options.delay.show) return self.show()
+
+    self.timeout = setTimeout(function () {
+      if (self.hoverState == 'in') self.show()
+    }, self.options.delay.show)
+  }
+
+  Tooltip.prototype.isInStateTrue = function () {
+    for (var key in this.inState) {
+      if (this.inState[key]) return true
+    }
+
+    return false
+  }
+
+  Tooltip.prototype.leave = function (obj) {
+    var self = obj instanceof this.constructor ?
+      obj : $(obj.currentTarget).data('bs.' + this.type)
+
+    if (!self) {
+      self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
+      $(obj.currentTarget).data('bs.' + this.type, self)
+    }
+
+    if (obj instanceof $.Event) {
+      self.inState[obj.type == 'focusout' ? 'focus' : 'hover'] = false
+    }
+
+    if (self.isInStateTrue()) return
+
+    clearTimeout(self.timeout)
+
+    self.hoverState = 'out'
+
+    if (!self.options.delay || !self.options.delay.hide) return self.hide()
+
+    self.timeout = setTimeout(function () {
+      if (self.hoverState == 'out') self.hide()
+    }, self.options.delay.hide)
+  }
+
+  Tooltip.prototype.show = function () {
+    var e = $.Event('show.bs.' + this.type)
+
+    if (this.hasContent() && this.enabled) {
+      this.$element.trigger(e)
+
+      var inDom = $.contains(this.$element[0].ownerDocument.documentElement, this.$element[0])
+      if (e.isDefaultPrevented() || !inDom) return
+      var that = this
+
+      var $tip = this.tip()
+
+      var tipId = this.getUID(this.type)
+
+      this.setContent()
+      $tip.attr('id', tipId)
+      this.$element.attr('aria-describedby', tipId)
+
+      if (this.options.animation) $tip.addClass('fade')
+
+      var placement = typeof this.options.placement == 'function' ?
+        this.options.placement.call(this, $tip[0], this.$element[0]) :
+        this.options.placement
+
+      var autoToken = /\s?auto?\s?/i
+      var autoPlace = autoToken.test(placement)
+      if (autoPlace) placement = placement.replace(autoToken, '') || 'top'
+
+      $tip
+        .detach()
+        .css({ top: 0, left: 0, display: 'block' })
+        .addClass(placement)
+        .data('bs.' + this.type, this)
+
+      this.options.container ? $tip.appendTo(this.options.container) : $tip.insertAfter(this.$element)
+      this.$element.trigger('inserted.bs.' + this.type)
+
+      var pos          = this.getPosition()
+      var actualWidth  = $tip[0].offsetWidth
+      var actualHeight = $tip[0].offsetHeight
+
+      if (autoPlace) {
+        var orgPlacement = placement
+        var viewportDim = this.getPosition(this.$viewport)
+
+        placement = placement == 'bottom' && pos.bottom + actualHeight > viewportDim.bottom ? 'top'    :
+                    placement == 'top'    && pos.top    - actualHeight < viewportDim.top    ? 'bottom' :
+                    placement == 'right'  && pos.right  + actualWidth  > viewportDim.width  ? 'left'   :
+                    placement == 'left'   && pos.left   - actualWidth  < viewportDim.left   ? 'right'  :
+                    placement
+
+        $tip
+          .removeClass(orgPlacement)
+          .addClass(placement)
+      }
+
+      var calculatedOffset = this.getCalculatedOffset(placement, pos, actualWidth, actualHeight)
+
+      this.applyPlacement(calculatedOffset, placement)
+
+      var complete = function () {
+        var prevHoverState = that.hoverState
+        that.$element.trigger('shown.bs.' + that.type)
+        that.hoverState = null
+
+        if (prevHoverState == 'out') that.leave(that)
+      }
+
+      $.support.transition && this.$tip.hasClass('fade') ?
+        $tip
+          .one('bsTransitionEnd', complete)
+          .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
+        complete()
+    }
+  }
+
+  Tooltip.prototype.applyPlacement = function (offset, placement) {
+    var $tip   = this.tip()
+    var width  = $tip[0].offsetWidth
+    var height = $tip[0].offsetHeight
+
+    // manually read margins because getBoundingClientRect includes difference
+    var marginTop = parseInt($tip.css('margin-top'), 10)
+    var marginLeft = parseInt($tip.css('margin-left'), 10)
+
+    // we must check for NaN for ie 8/9
+    if (isNaN(marginTop))  marginTop  = 0
+    if (isNaN(marginLeft)) marginLeft = 0
+
+    offset.top  += marginTop
+    offset.left += marginLeft
+
+    // $.fn.offset doesn't round pixel values
+    // so we use setOffset directly with our own function B-0
+    $.offset.setOffset($tip[0], $.extend({
+      using: function (props) {
+        $tip.css({
+          top: Math.round(props.top),
+          left: Math.round(props.left)
+        })
+      }
+    }, offset), 0)
+
+    $tip.addClass('in')
+
+    // check to see if placing tip in new offset caused the tip to resize itself
+    var actualWidth  = $tip[0].offsetWidth
+    var actualHeight = $tip[0].offsetHeight
+
+    if (placement == 'top' && actualHeight != height) {
+      offset.top = offset.top + height - actualHeight
+    }
+
+    var delta = this.getViewportAdjustedDelta(placement, offset, actualWidth, actualHeight)
+
+    if (delta.left) offset.left += delta.left
+    else offset.top += delta.top
+
+    var isVertical          = /top|bottom/.test(placement)
+    var arrowDelta          = isVertical ? delta.left * 2 - width + actualWidth : delta.top * 2 - height + actualHeight
+    var arrowOffsetPosition = isVertical ? 'offsetWidth' : 'offsetHeight'
+
+    $tip.offset(offset)
+    this.replaceArrow(arrowDelta, $tip[0][arrowOffsetPosition], isVertical)
+  }
+
+  Tooltip.prototype.replaceArrow = function (delta, dimension, isVertical) {
+    this.arrow()
+      .css(isVertical ? 'left' : 'top', 50 * (1 - delta / dimension) + '%')
+      .css(isVertical ? 'top' : 'left', '')
+  }
+
+  Tooltip.prototype.setContent = function () {
+    var $tip  = this.tip()
+    var title = this.getTitle()
+
+    $tip.find('.tooltip-inner')[this.options.html ? 'html' : 'text'](title)
+    $tip.removeClass('fade in top bottom left right')
+  }
+
+  Tooltip.prototype.hide = function (callback) {
+    var that = this
+    var $tip = $(this.$tip)
+    var e    = $.Event('hide.bs.' + this.type)
+
+    function complete() {
+      if (that.hoverState != 'in') $tip.detach()
+      if (that.$element) { // TODO: Check whether guarding this code with this `if` is really necessary.
+        that.$element
+          .removeAttr('aria-describedby')
+          .trigger('hidden.bs.' + that.type)
+      }
+      callback && callback()
+    }
+
+    this.$element.trigger(e)
+
+    if (e.isDefaultPrevented()) return
+
+    $tip.removeClass('in')
+
+    $.support.transition && $tip.hasClass('fade') ?
+      $tip
+        .one('bsTransitionEnd', complete)
+        .emulateTransitionEnd(Tooltip.TRANSITION_DURATION) :
+      complete()
+
+    this.hoverState = null
+
+    return this
+  }
+
+  Tooltip.prototype.fixTitle = function () {
+    var $e = this.$element
+    if ($e.attr('title') || typeof $e.attr('data-original-title') != 'string') {
+      $e.attr('data-original-title', $e.attr('title') || '').attr('title', '')
+    }
+  }
+
+  Tooltip.prototype.hasContent = function () {
+    return this.getTitle()
+  }
+
+  Tooltip.prototype.getPosition = function ($element) {
+    $element   = $element || this.$element
+
+    var el     = $element[0]
+    var isBody = el.tagName == 'BODY'
+
+    var elRect    = el.getBoundingClientRect()
+    if (elRect.width == null) {
+      // width and height are missing in IE8, so compute them manually; see https://github.com/twbs/bootstrap/issues/14093
+      elRect = $.extend({}, elRect, { width: elRect.right - elRect.left, height: elRect.bottom - elRect.top })
+    }
+    var isSvg = window.SVGElement && el instanceof window.SVGElement
+    // Avoid using $.offset() on SVGs since it gives incorrect results in jQuery 3.
+    // See https://github.com/twbs/bootstrap/issues/20280
+    var elOffset  = isBody ? { top: 0, left: 0 } : (isSvg ? null : $element.offset())
+    var scroll    = { scroll: isBody ? document.documentElement.scrollTop || document.body.scrollTop : $element.scrollTop() }
+    var outerDims = isBody ? { width: $(window).width(), height: $(window).height() } : null
+
+    return $.extend({}, elRect, scroll, outerDims, elOffset)
+  }
+
+  Tooltip.prototype.getCalculatedOffset = function (placement, pos, actualWidth, actualHeight) {
+    return placement == 'bottom' ? { top: pos.top + pos.height,   left: pos.left + pos.width / 2 - actualWidth / 2 } :
+           placement == 'top'    ? { top: pos.top - actualHeight, left: pos.left + pos.width / 2 - actualWidth / 2 } :
+           placement == 'left'   ? { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left - actualWidth } :
+        /* placement == 'right' */ { top: pos.top + pos.height / 2 - actualHeight / 2, left: pos.left + pos.width }
+
+  }
+
+  Tooltip.prototype.getViewportAdjustedDelta = function (placement, pos, actualWidth, actualHeight) {
+    var delta = { top: 0, left: 0 }
+    if (!this.$viewport) return delta
+
+    var viewportPadding = this.options.viewport && this.options.viewport.padding || 0
+    var viewportDimensions = this.getPosition(this.$viewport)
+
+    if (/right|left/.test(placement)) {
+      var topEdgeOffset    = pos.top - viewportPadding - viewportDimensions.scroll
+      var bottomEdgeOffset = pos.top + viewportPadding - viewportDimensions.scroll + actualHeight
+      if (topEdgeOffset < viewportDimensions.top) { // top overflow
+        delta.top = viewportDimensions.top - topEdgeOffset
+      } else if (bottomEdgeOffset > viewportDimensions.top + viewportDimensions.height) { // bottom overflow
+        delta.top = viewportDimensions.top + viewportDimensions.height - bottomEdgeOffset
+      }
+    } else {
+      var leftEdgeOffset  = pos.left - viewportPadding
+      var rightEdgeOffset = pos.left + viewportPadding + actualWidth
+      if (leftEdgeOffset < viewportDimensions.left) { // left overflow
+        delta.left = viewportDimensions.left - leftEdgeOffset
+      } else if (rightEdgeOffset > viewportDimensions.right) { // right overflow
+        delta.left = viewportDimensions.left + viewportDimensions.width - rightEdgeOffset
+      }
+    }
+
+    return delta
+  }
+
+  Tooltip.prototype.getTitle = function () {
+    var title
+    var $e = this.$element
+    var o  = this.options
+
+    title = $e.attr('data-original-title')
+      || (typeof o.title == 'function' ? o.title.call($e[0]) :  o.title)
+
+    return title
+  }
+
+  Tooltip.prototype.getUID = function (prefix) {
+    do prefix += ~~(Math.random() * 1000000)
+    while (document.getElementById(prefix))
+    return prefix
+  }
+
+  Tooltip.prototype.tip = function () {
+    if (!this.$tip) {
+      this.$tip = $(this.options.template)
+      if (this.$tip.length != 1) {
+        throw new Error(this.type + ' `template` option must consist of exactly 1 top-level element!')
+      }
+    }
+    return this.$tip
+  }
+
+  Tooltip.prototype.arrow = function () {
+    return (this.$arrow = this.$arrow || this.tip().find('.tooltip-arrow'))
+  }
+
+  Tooltip.prototype.enable = function () {
+    this.enabled = true
+  }
+
+  Tooltip.prototype.disable = function () {
+    this.enabled = false
+  }
+
+  Tooltip.prototype.toggleEnabled = function () {
+    this.enabled = !this.enabled
+  }
+
+  Tooltip.prototype.toggle = function (e) {
+    var self = this
+    if (e) {
+      self = $(e.currentTarget).data('bs.' + this.type)
+      if (!self) {
+        self = new this.constructor(e.currentTarget, this.getDelegateOptions())
+        $(e.currentTarget).data('bs.' + this.type, self)
+      }
+    }
+
+    if (e) {
+      self.inState.click = !self.inState.click
+      if (self.isInStateTrue()) self.enter(self)
+      else self.leave(self)
+    } else {
+      self.tip().hasClass('in') ? self.leave(self) : self.enter(self)
+    }
+  }
+
+  Tooltip.prototype.destroy = function () {
+    var that = this
+    clearTimeout(this.timeout)
+    this.hide(function () {
+      that.$element.off('.' + that.type).removeData('bs.' + that.type)
+      if (that.$tip) {
+        that.$tip.detach()
+      }
+      that.$tip = null
+      that.$arrow = null
+      that.$viewport = null
+      that.$element = null
+    })
+  }
+
+
+  // TOOLTIP PLUGIN DEFINITION
+  // =========================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.tooltip')
+      var options = typeof option == 'object' && option
+
+      if (!data && /destroy|hide/.test(option)) return
+      if (!data) $this.data('bs.tooltip', (data = new Tooltip(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.tooltip
+
+  $.fn.tooltip             = Plugin
+  $.fn.tooltip.Constructor = Tooltip
+
+
+  // TOOLTIP NO CONFLICT
+  // ===================
+
+  $.fn.tooltip.noConflict = function () {
+    $.fn.tooltip = old
+    return this
+  }
+
+}(jQuery);
+'use strict';
+
+function loadFile(resourceURL, token, filename, callback) {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', resourceURL);
+	xhr.responseType = 'arraybuffer';
+
+	xhr.withCredentials = true;
+	xhr.setRequestHeader('Authorization', 'BEARER ' + token);
+
+	xhr.onload = function(event) {
+		if (xhr.status == 200) {
+			var data = new Uint8Array(this.response);
+			var contentType = xhr.getResponseHeader('Content-Type');
+
+			var blob = new Blob([data], { type: contentType });
+
+			var url = (window.URL || window.webkitURL).createObjectURL(blob);
+			callback(filename, url, blob, xhr, data);
+		}
+	};
+
+	xhr.send();
+}
+
+function loadFileDownloadCallback(filename, blobURL, blob, xhr, data) {
+	if (window.navigator.msSaveOrOpenBlob) {
+		window.navigator.msSaveOrOpenBlob(blob, filename);
+	} else {
+		var a = document.createElement('a');
+		a.href = blobURL;
+		a.download = filename;
+		a.click();
+	}
+
+	(window.URL || window.webkitURL).revokeObjectURL(blobURL);
+}
 'use strict';
 
 riot.tag2('datatable', '<div class="panel panel-default table-responsive" riot-style="margin-bottom: {opts.marginBottom}"> <table class="table {opts.tableClass}"> <thead if="{showTableHeader}"> <tr> <th each="{column, index in columns}" riot-style="width: {column.width}"> {tr(column.label)} </th> </tr> </thead> <tbody> <tr if="{!data || (Array.isArray(data) && data.length == 0) || Object.keys(data).length == 0}"> <td colspan="{columns.length}">{message}</td> </tr> <tr class="{rowClassCallback(elem)}" each="{elem, index in data}"> <td each="{column, index2 in columns}" colspan="{column.colspan}" if="{column.showBody == undefined}" riot-style="width: {column.width}"> <virtual if="{column.linkCallback == undefined}"> <span if="{column.callback != undefined && column.type == \'subtable\'}"> <datatable message="{column.message}" columns="{column.callback(elem, index)}" data="{elem}" actions="{actions}" no-table-footer no-table-header margin-bottom="0"></datatable> </span> <span if="{column.callback != undefined && column.type != \'subtable\'}"> {column.callback(elem, index)} </span> <span if="{column.callback == undefined && elem[column.value] != undefined}"> {elem[column.value]} </span> <span if="{column.callback == undefined && elem[column.label] != undefined}"> {elem[column.label]} </span> </virtual> <a if="{column.linkCallback != undefined}" href="{column.linkCallback(elem, index)}" target="_blank"> <span if="{column.callback != undefined && column.type != \'subtable\'}"> {column.callback(elem, index)} </span> <span if="{column.callback == undefined && elem[column.label] != undefined}"> {elem[column.label]} </span> <span if="{column.isRedirectedCallback != undefined && column.isRedirectedCallback(elem)}" class="badge">Redirected</span> </a> <virtual each="{action in actions}" if="{column.label == \'Actions\'}"> <a if="{action.action == \'callback\'}" disabled="{action.isDisabledCallback !== undefined && action.isDisabledCallback(elem)}" onclick="{action.callback.bind(this, elem)}" class="btn btn-sm btn-{action.btnType}"> {(action.labelCallback !== undefined && action.labelCallback(elem)) || tr(action.label)}</a> <a href="{action.url}/?id={encodeURIComponent(elem[\'ID\'])}" if="{action.action == \'link\'}" class="btn-flat">{tr(action.label)}</a> <a data-toggle="modal" data-target="{action.target}" onclick="{modalOpened}" if="{action.action == \'modal-link\'}" class="btn">{tr(action.label)}</a> </virtual> </td> </tr> </tbody> <tfoot if="{showTableFooter}"> <tr> <th each="{column, index in columns}"> {tr(column.label)} </th> </tr> </tfoot> </table> </div>', '', '', function(opts) {
@@ -13492,7 +14049,7 @@ riot.tag2('linkchecker-form', '<form onsubmit="{submit}" style="margin-bottom: 2
 			self.update();
 		});
 });
-riot.tag2('linkchecker', '<form if="{showButton}" style="margin-bottom: 20px;"> <button class="btn btn-default" onclick="{submit}" if="{!disabled}">Check your website</button> <button class="btn btn-danger" onclick="{stopCheck}" if="{disabled}">Stop website check</button> </form> <message plugin="{plugin}" text="Link Checker is initializing, please wait a moment." type="warning"></message> <div if="{crawlDelayInSeconds >= 1}" class="alert alert-danger"> The crawl-delay set in your robots.txt file is equal or higher than one second, namely {crawlDelayInSeconds} seconds. The crawl-delay defines the time waited between two requests of the Link Checker. This means that it might take very long for the check to finish. It is recommended that you lower the crawl-delay for the Link Checker in your robots.txt. You can use the user agent MB-LinkChecker if you like to define a custom crawl-delay for the Link Checker. </div> <message plugin="{plugin}" name="db" text="" type="warning" dismissible="true" style="padding-top: 5px; padding-bottom: 5px; margin-top: -10px;"></message> <ul class="nav nav-tabs" role="tablist"> <li role="presentation" class="active"><a href="#progress{id}" aria-controls="progress{id}" role="tab" data-toggle="tab">Progress</a></li> <li role="presentation"><a href="#stats{id}" aria-controls="stats{id}" role="tab" data-toggle="tab">Stats</a></li> <li role="presentation"><a href="#result{id}" aria-controls="result{id}" role="tab" data-toggle="tab">Result</a></li> <li role="presentation"><a href="#statusCodes{id}" aria-controls="statusCodes{id}" role="tab" data-toggle="tab">Status Codes</a></li> <li if="{enableScheduler}" role="presentation"><a href="#scheduler{id}" aria-controls="scheduler{id}" role="tab" data-toggle="tab">Scheduler</a></li> <li role="presentation"><a href="#glossary{id}" aria-controls="glossary{id}" role="tab" data-toggle="tab">Glossary</a></li> <li if="{!hasToken()}" role="presentation"><a href="#professional{id}" aria-controls="professional{id}" role="tab" data-toggle="tab">Professional Version</a></li> <li role="presentation"><a href="#feedback{id}" aria-controls="feedback{id}" role="tab" data-toggle="tab">Your Feedback</a></li> </ul> <div class="tab-content"> <div role="tabpanel" class="tab-pane active" id="progress{id}"> <h3>Progress Current Check</h3> <p>Below you see the progress of the current check while the check is running. When the check has finished, you can inspect the stats of the last check in the <em>Stats</em> tab.</p> <div class="row"> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Stats</div> <table class="table table-bordered"> <tr> <td>Number of crawled HTML pages on your site</td> <td class="text-right" style="width: 200px;">{urlsCrawledCount}</td> </tr> <tr> <td>Number of checked internal and external resources</td> <td class="text-right">{checkedLinksCount}</td> </tr> </table> </div> </div> </div> </div> <div role="tabpanel" class="tab-pane" id="stats{id}"> <h3>Stats Last Check</h3> <p if="{!data.Stats}">Nothing to see here because no check has finished yet. You can inspect the stats of the last check as soon as the check has finished or was loaded from the cache.</p> <p if="{data.Stats}">Please see the stats of the last finished check below. If a check is currently running, the stats are for the last check and not the one currently running.</p> <div if="{data.Stats}" class="row"> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Stats</div> <table class="table table-bordered"> <tr> <td>Number of crawled HTML pages on your site</td> <td class="text-right" style="width: 200px;">{data.Stats.HTMLPagesCount}</td> </tr> <tr> <td>Number of checked internal and external resources</td> <td class="text-right">{data.Stats.CrawledResourcesCount}</td> </tr> <tr> <td>Started at</td> <td class="text-right">{datetime(data.Stats.StartedAt)}</td> </tr> <tr> <td>Finished at</td> <td class="text-right">{datetime(data.Stats.FinishedAt)}</td> </tr> </table> </div> </div> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Detailed Stats</div> <table class="table table-bordered"> <tr> <td>Number of valid links</td> <td class="text-right" style="width: 200px;">{data.Stats.ValidLinksCount}</td> </tr> <tr> <td>Number of dead links</td> <td class="text-right">{data.Stats.DeadLinksCount}</td> </tr> <tr> <td>Number of redirected links</td> <td class="text-right">{data.Stats.RedirectedLinksCount}</td> </tr> <tr> <td>Number of valid embedded YouTube videos</td> <td class="text-right">{data.Stats.ValidEmbeddedYouTubeVideosCount}</td> </tr> <tr> <td>Number of dead embedded YouTube videos</td> <td class="text-right">{data.Stats.DeadEmbeddedYouTubeVideosCount}</td> </tr> </table> </div> </div> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Setting Stats</div> <table class="table table-bordered"> <tr> <td>Crawl delay</td> <td class="text-right" style="width: 200px;">{data.Stats.CrawlDelayInSeconds} seconds</td> </tr> <tr> <td>Concurrent fetchers</td> <td class="text-right">{data.Stats.MaxFetchers}</td> </tr> <tr> <td>URL limit</td> <td class="text-right">{data.Stats.URLLimit} URLs</td> </tr> <tr> <td>Limit reached</td> <td class="text-right">{bool2text(data.Stats.LimitReached)}</td> </tr> </table> </div> </div> </div> </div> <div role="tabpanel" class="tab-pane" id="result{id}"> <h3>Result</h3> <p>Please note that the result belongs to the last check that has finished. If a check is currently running, the stats are for the last check and not the one currently running. <span if="{data.Stats}">The result below belongs to the check that was started on {datetimeAt(data.Stats.StartedAt)} and has finished on {datetimeAt(data.Stats.FinishedAt)}.</span></p> <result plugin="{plugin}"></result> </div> <div role="tabpanel" class="tab-pane" id="statusCodes{id}"> <h3>Status Codes</h3> <h4>Common Status Codes</h4> <div class="panel panel-default table-responsive"> <table class="table table-striped table-responsive"> <thead> <tr> <th style="width: 10em;">Status Code</th> <th style="width: 20em;">Status Text</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td>502</td> <td>Bad Gateway</td> <td>The server returned an invalid response when the Link Checker tried to access the URL.</td> </tr> <tr> <td>504</td> <td>Gateway Timeout</td> <td>The Link Checker was not able to access the URL because it timed out.</td> </tr> </tbody> </table> </div> <h4>Custom Status Codes</h4> <div class="panel panel-default table-responsive"> <table class="table table-striped table-responsive"> <thead> <tr> <th style="width: 10em;">Status Code</th> <th style="width: 20em;">Status Text</th> <th>Description</th> </tr> </thead> </tbody> <tr> <td>601</td> <td>Blocked by robots</td> <td>The Link Checker was not able to access the URL because the access was blocked by the robots exclusion protocol.</td> </tr> <tr> <td>602</td> <td>HTML parse error</td> <td>The HTML code of this page could not be parsed because of an error in the code or because the page was larger than 50 MB.</td> </tr> <tr> <td>603</td> <td>Unknown authority error</td> <td>This status code means that the certificate was signed by an unknown certificate authority. If accessing the page works in your web browser, probably the provided certificate chain is broken. Most, but not all, browsers can handle such situation and download the missing certificates on the fly. If the error was detected on you website, you should fix the origin of the issue and provid the whole chain to all clients.</td> </tr> </tbody> </table> </div> <p><em>Please note that it is possible in rare situations that a website returns these status codes and if this is the case, they probably have another meaning.</em></p> </div> <div role="tabpanel" class="tab-pane" id="glossary{id}"> <h3>Glossary</h3> <h4>Unhandled Resources (mainly blocked by robots.txt)</h4> <p>Websites can prohibit access for web crawlers like the one used by the Link Checker with the robots exclusion protocol (robots.txt file). The Link Checker does respect the robots exclusion protocol for the website it crawls, but not for external links because it does just access individual URLs of the external sites.</p> <p>However, some websites take some effort to restrict the access for crawlers and the Link Checker does respect that and does not try to bypass the restrictions. You can find all URLs the Link Checker was not able to access in the table below, so that you could check them manually. If you have done this, you can mark them as working. Each marker is saved for one month in your browsers cache and the date of the last marking is shown in the table below.</p> <p>If the blocked links were found on your website, you can add rules for the Link Checker to your robots.txt file and restart the Link Checker. Please see the <a href="https://www.marcobeierer.com/tools/link-checker-faq" target="_blank">FAQs</a> for further information.</p> <h4>Working Redirects</h4> <p>Non-temporary redirects, even if working correctly, have disadvantages like for example increased loading times and should therefore be fixed. Showing working redirects can be enabled/disabled in the settings of the result tab.</p> <h4>Mark URLs as Fixed</h4> <p>To keep an better overview, you can mark URLs as fixed in the result view. The marked URLs are can be hidden in the result. Please note that the fixed markers are just temporary and are reset on the next link check.</p> <h4>Images</h4> <p>Broken images are just checked in the <a href="https://www.marcobeierer.com/tools/link-checker-professional" target="_blank">professional version of the Link Checker</a>.</p> <h4>Videos</h4> <p>Broken embedded YouTube videos are just checked in the <a href="https://www.marcobeierer.com/tools/link-checker-professional" target="_blank">professional version of the Link Checker</a>.</p> </div> <div if="{enableScheduler}" role="tabpanel" class="tab-pane" id="scheduler{id}"> <h3>Scheduler</h3> <linkchecker-scheduler website-url="{websiteURL}" token="{token}" email="{email}" dev="{dev}"></linkchecker-scheduler> </div> <div if="{!hasToken()}" role="tabpanel" class="tab-pane" id="professional{id}"> <h3>Professional Version</h3> <p>The professional version of the Link Checker allows to check a website with up to 500\'000 URLs and comes with some additional features. It\'s for example possible to:</p> <ul> <li>check embedded images,</li> <li>check YouTube videos or</li> <li>trigger a check once a day automatically and get a summary by mail.</li> </ul> <p>You can <a href="https://www.marcobeierer.com/tools/link-checker-professional" target="_blank">read more about the professional version and purchase a token</a> on my website.</p> </div> <div role="tabpanel" class="tab-pane" id="feedback{id}"> <h3>Your Feedback</h3> <feedback></feedback> </div> </div>', '', '', function(opts) {
+riot.tag2('linkchecker', '<form if="{showButton}" style="margin-bottom: 20px;"> <button class="btn btn-default" onclick="{submit}" if="{!disabled}">Check your website</button> <button class="btn btn-danger" onclick="{stopCheck}" if="{disabled}">Stop website check</button> <span class="pull-right" style="display: inline-block;" data-original-title="{exportableTitle()}" data-toggle="tooltip" data-placement="left"> <button class="btn btn-default btn-sm {disabled: !exportable()}" onclick="{downloadCSVFile}">Export as CSV file</button> </span> </form> <message plugin="{plugin}" text="Link Checker is initializing, please wait a moment." type="warning"></message> <div if="{crawlDelayInSeconds >= 1}" class="alert alert-danger"> The crawl-delay set in your robots.txt file is equal or higher than one second, namely {crawlDelayInSeconds} seconds. The crawl-delay defines the time waited between two requests of the Link Checker. This means that it might take very long for the check to finish. It is recommended that you lower the crawl-delay for the Link Checker in your robots.txt. You can use the user agent MB-LinkChecker if you like to define a custom crawl-delay for the Link Checker. </div> <message plugin="{plugin}" name="db" text="" type="warning" dismissible="true" style="padding-top: 5px; padding-bottom: 5px; margin-top: -10px;"></message> <ul class="nav nav-tabs" role="tablist"> <li role="presentation" class="active"><a href="#progress{id}" aria-controls="progress{id}" role="tab" data-toggle="tab">Progress</a></li> <li role="presentation"><a href="#stats{id}" aria-controls="stats{id}" role="tab" data-toggle="tab">Stats</a></li> <li role="presentation"><a href="#result{id}" aria-controls="result{id}" role="tab" data-toggle="tab">Result</a></li> <li role="presentation"><a href="#statusCodes{id}" aria-controls="statusCodes{id}" role="tab" data-toggle="tab">Status Codes</a></li> <li if="{enableScheduler}" role="presentation"><a href="#scheduler{id}" aria-controls="scheduler{id}" role="tab" data-toggle="tab">Scheduler</a></li> <li role="presentation"><a href="#glossary{id}" aria-controls="glossary{id}" role="tab" data-toggle="tab">Glossary</a></li> <li if="{!hasToken()}" role="presentation"><a href="#professional{id}" aria-controls="professional{id}" role="tab" data-toggle="tab">Professional Version</a></li> <li role="presentation"><a href="#feedback{id}" aria-controls="feedback{id}" role="tab" data-toggle="tab">Your Feedback</a></li> </ul> <div class="tab-content"> <div role="tabpanel" class="tab-pane active" id="progress{id}"> <h3>Progress Current Check</h3> <p>Below you see the progress of the current check while the check is running. When the check has finished, you can inspect the stats of the last check in the <em>Stats</em> tab.</p> <div class="row"> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Stats</div> <table class="table table-bordered"> <tr> <td>Number of crawled HTML pages on your site</td> <td class="text-right" style="width: 200px;">{urlsCrawledCount}</td> </tr> <tr> <td>Number of checked internal and external resources</td> <td class="text-right">{checkedLinksCount}</td> </tr> </table> </div> </div> </div> </div> <div role="tabpanel" class="tab-pane" id="stats{id}"> <h3>Stats Last Check</h3> <p if="{!data.Stats}">Nothing to see here because no check has finished yet. You can inspect the stats of the last check as soon as the check has finished or was loaded from the cache.</p> <p if="{data.Stats}">Please see the stats of the last finished check below. If a check is currently running, the stats are for the last check and not the one currently running.</p> <div if="{data.Stats}" class="row"> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Stats</div> <table class="table table-bordered"> <tr> <td>Number of crawled HTML pages on your site</td> <td class="text-right" style="width: 200px;">{data.Stats.HTMLPagesCount}</td> </tr> <tr> <td>Number of checked internal and external resources</td> <td class="text-right">{data.Stats.CrawledResourcesCount}</td> </tr> <tr> <td>Started at</td> <td class="text-right">{datetime(data.Stats.StartedAt)}</td> </tr> <tr> <td>Finished at</td> <td class="text-right">{datetime(data.Stats.FinishedAt)}</td> </tr> </table> </div> </div> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Detailed Stats</div> <table class="table table-bordered"> <tr> <td>Number of valid links</td> <td class="text-right" style="width: 200px;">{data.Stats.ValidLinksCount}</td> </tr> <tr> <td>Number of dead links</td> <td class="text-right">{data.Stats.DeadLinksCount}</td> </tr> <tr> <td>Number of redirected links</td> <td class="text-right">{data.Stats.RedirectedLinksCount}</td> </tr> <tr> <td>Number of valid embedded YouTube videos</td> <td class="text-right">{data.Stats.ValidEmbeddedYouTubeVideosCount}</td> </tr> <tr> <td>Number of dead embedded YouTube videos</td> <td class="text-right">{data.Stats.DeadEmbeddedYouTubeVideosCount}</td> </tr> </table> </div> </div> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Setting Stats</div> <table class="table table-bordered"> <tr> <td>Crawl delay</td> <td class="text-right" style="width: 200px;">{data.Stats.CrawlDelayInSeconds} seconds</td> </tr> <tr> <td>Concurrent fetchers</td> <td class="text-right">{data.Stats.MaxFetchers}</td> </tr> <tr> <td>URL limit</td> <td class="text-right">{data.Stats.URLLimit} URLs</td> </tr> <tr> <td>Limit reached</td> <td class="text-right">{bool2text(data.Stats.LimitReached)}</td> </tr> </table> </div> </div> </div> </div> <div role="tabpanel" class="tab-pane" id="result{id}"> <h3>Result</h3> <p>Please note that the result belongs to the last check that has finished. If a check is currently running, the stats are for the last check and not the one currently running. <span if="{data.Stats}">The result below belongs to the check that was started on {datetimeAt(data.Stats.StartedAt)} and has finished on {datetimeAt(data.Stats.FinishedAt)}.</span></p> <result plugin="{plugin}"></result> </div> <div role="tabpanel" class="tab-pane" id="statusCodes{id}"> <h3>Status Codes</h3> <h4>Common Status Codes</h4> <div class="panel panel-default table-responsive"> <table class="table table-striped table-responsive"> <thead> <tr> <th style="width: 10em;">Status Code</th> <th style="width: 20em;">Status Text</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td>502</td> <td>Bad Gateway</td> <td>The server returned an invalid response when the Link Checker tried to access the URL.</td> </tr> <tr> <td>504</td> <td>Gateway Timeout</td> <td>The Link Checker was not able to access the URL because it timed out.</td> </tr> </tbody> </table> </div> <h4>Custom Status Codes</h4> <div class="panel panel-default table-responsive"> <table class="table table-striped table-responsive"> <thead> <tr> <th style="width: 10em;">Status Code</th> <th style="width: 20em;">Status Text</th> <th>Description</th> </tr> </thead> </tbody> <tr> <td>601</td> <td>Blocked by robots</td> <td>The Link Checker was not able to access the URL because the access was blocked by the robots exclusion protocol.</td> </tr> <tr> <td>602</td> <td>HTML parse error</td> <td>The HTML code of this page could not be parsed because of an error in the code or because the page was larger than 50 MB.</td> </tr> <tr> <td>603</td> <td>Unknown authority error</td> <td>This status code means that the certificate was signed by an unknown certificate authority. If accessing the page works in your web browser, probably the provided certificate chain is broken. Most, but not all, browsers can handle such situation and download the missing certificates on the fly. If the error was detected on you website, you should fix the origin of the issue and provid the whole chain to all clients.</td> </tr> </tbody> </table> </div> <p><em>Please note that it is possible in rare situations that a website returns these status codes and if this is the case, they probably have another meaning.</em></p> </div> <div role="tabpanel" class="tab-pane" id="glossary{id}"> <h3>Glossary</h3> <h4>Unhandled Resources (mainly blocked by robots.txt)</h4> <p>Websites can prohibit access for web crawlers like the one used by the Link Checker with the robots exclusion protocol (robots.txt file). The Link Checker does respect the robots exclusion protocol for the website it crawls, but not for external links because it does just access individual URLs of the external sites.</p> <p>However, some websites take some effort to restrict the access for crawlers and the Link Checker does respect that and does not try to bypass the restrictions. You can find all URLs the Link Checker was not able to access in the table below, so that you could check them manually. If you have done this, you can mark them as working. Each marker is saved for one month in your browsers cache and the date of the last marking is shown in the table below.</p> <p>If the blocked links were found on your website, you can add rules for the Link Checker to your robots.txt file and restart the Link Checker. Please see the <a href="https://www.marcobeierer.com/tools/link-checker-faq" target="_blank">FAQs</a> for further information.</p> <h4>Working Redirects</h4> <p>Non-temporary redirects, even if working correctly, have disadvantages like for example increased loading times and should therefore be fixed. Showing working redirects can be enabled/disabled in the settings of the result tab.</p> <h4>Mark URLs as Fixed</h4> <p>To keep an better overview, you can mark URLs as fixed in the result view. The marked URLs are can be hidden in the result. Please note that the fixed markers are just temporary and are reset on the next link check.</p> <h4>Images</h4> <p>Broken images are just checked in the <a href="https://www.marcobeierer.com/tools/link-checker-professional" target="_blank">professional version of the Link Checker</a>.</p> <h4>Videos</h4> <p>Broken embedded YouTube videos are just checked in the <a href="https://www.marcobeierer.com/tools/link-checker-professional" target="_blank">professional version of the Link Checker</a>.</p> </div> <div if="{enableScheduler}" role="tabpanel" class="tab-pane" id="scheduler{id}"> <h3>Scheduler</h3> <linkchecker-scheduler website-url="{websiteURL}" token="{token}" email="{email}" dev="{dev}"></linkchecker-scheduler> </div> <div if="{!hasToken()}" role="tabpanel" class="tab-pane" id="professional{id}"> <h3>Professional Version</h3> <p>The professional version of the Link Checker allows to check a website with up to 500\'000 URLs and comes with some additional features. It\'s for example possible to:</p> <ul> <li>check embedded images,</li> <li>check YouTube videos or</li> <li>trigger a check once a day automatically and get a summary by mail.</li> </ul> <p>You can <a href="https://www.marcobeierer.com/tools/link-checker-professional" target="_blank">read more about the professional version and purchase a token</a> on my website.</p> </div> <div role="tabpanel" class="tab-pane" id="feedback{id}"> <h3>Your Feedback</h3> <feedback></feedback> </div> </div>', '', '', function(opts) {
 		var self = this;
 
 		self.plugin = riot.observable();
@@ -13504,6 +14061,7 @@ riot.tag2('linkchecker', '<form if="{showButton}" style="margin-bottom: 20px;"> 
 		self.enableScheduler = opts.enableScheduler || false;
 		self.forceStop = false;
 		self.crawlDelayInSeconds = 0;
+		self.resultAvailableOnServer = false;
 
 		self.id = opts.id || 0;
 		self.email = opts.email || '';
@@ -13541,18 +14099,42 @@ riot.tag2('linkchecker', '<form if="{showButton}" style="margin-bottom: 20px;"> 
 					} else {
 						self.setMessage('The Link Checker was not started yet.', 'info');
 					}
-				}).fail(function(xhr) {
+
+					self.resultAvailableOnServer = data.ResultAvailable;
+					self.loadDataFromDB(data.ResultAvailable);
+				})
+				.fail(function(xhr) {
 					self.setMessage('The Link Checker was not started yet.', 'info');
+
+					self.loadDataFromDB(false);
 				});
 			} else {
 
 				setTimeout(function() {
 					self.setMessage('The Link Checker was not started yet.', 'info');
 				}, 500);
+
+				self.loadDataFromDB(false);
 			}
 
-			self.loadDataFromDB();
+			jQuery('[data-toggle="tooltip"]').tooltip()
 		});
+
+		self.exportable = function() {
+			return self.token != '' && self.resultAvailableOnServer;
+		}
+
+		self.exportableTitle = function() {
+			if (self.token == '') {
+				return 'Export as CSV file is only available for customers of the professional version.';
+			}
+
+			if (!self.resultAvailableOnServer) {
+				return 'No result available on the server. Please start a check if not already done and/or wait till the first check has finished.';
+			}
+
+			return 'Export the last result as CSV file for advanced processing.';
+		}
 
 		self.saveDataToDB = function(data) {
 			self.db.setItem(self.dbKey(), pako.deflate(JSON.stringify(data), { to: 'string' }), function(err) {
@@ -13568,7 +14150,7 @@ riot.tag2('linkchecker', '<form if="{showButton}" style="margin-bottom: 20px;"> 
 			});
 		};
 
-		self.loadDataFromDB = function() {
+		self.loadDataFromDB = function(resultAvailableOnServer) {
 			self.setMessage('Loading the result of the last check from cache, please wait a moment.', 'warning', 'db');
 
 			self.db.removeItem('data', function(err) {
@@ -13588,14 +14170,65 @@ riot.tag2('linkchecker', '<form if="{showButton}" style="margin-bottom: 20px;"> 
 
 				if (data == null) {
 					self.setMessage('No result available in the cache.', 'info', 'db');
+
+					if (resultAvailableOnServer) {
+						self.loadDataFromServer();
+					}
+
 					return;
 				}
 
 				self.data = JSON.parse(pako.inflate(data, { to: 'string' }));
-				self.resultDataReady(self.data, true);
+				self.resultDataReady(self.data, true, false);
 				self.update();
 			});
 		}
+
+		self.downloadCSVFile = function(e) {
+			e.preventDefault();
+
+			if (self.token == '') {
+				return;
+			}
+
+			var url64 = self.websiteURL64();
+			var url = getURL(url64 + '/csv', true);
+
+			loadFile(url, self.token, 'result.csv', loadFileDownloadCallback);
+		};
+
+		self.loadDataFromServer = function() {
+			if (self.token == '') {
+				return;
+			}
+			var tokenHeader = 'BEARER ' + self.token;
+
+			var url64 = self.websiteURL64();
+			var url = getURL(url64 + '/json');
+
+			jQuery.ajax({
+				method: 'GET',
+				url: url,
+				headers: {
+					'Authorization': tokenHeader,
+				}
+			})
+			.done(function(data) {
+
+				self.resultDataReady(data, false, true);
+
+				self.resetData();
+				self.data = data;
+
+				self.saveDataToDB(data);
+			})
+			.fail(function(xhr) {
+				console.log('fetching saved result failed');
+			})
+			.always(function() {
+				self.update();
+			});
+		};
 
 		self.dbKey = function() {
 			if (self.websiteURL != '') {
@@ -13746,8 +14379,12 @@ riot.tag2('linkchecker', '<form if="{showButton}" style="margin-bottom: 20px;"> 
 					self.crawlDelayInSeconds = data.CrawlDelayInSeconds;
 
 					if (data.Finished) {
-						self.resultDataReady(data, false);
+						self.resultDataReady(data, false, false);
 						opts.linkchecker.trigger('stopped');
+
+						if (self.token != '') {
+							self.resultAvailableOnServer = true;
+						}
 
 						self.resetData();
 						self.data = data;
@@ -13829,14 +14466,14 @@ riot.tag2('linkchecker', '<form if="{showButton}" style="margin-bottom: 20px;"> 
 			});
 		}
 
-		self.resultDataReady = function(data, loadedFromDB) {
+		self.resultDataReady = function(data, loadedFromDB, loadedFromServerBackup) {
 			if (data.Finished) {
 				self.resultsMessage = 'No broken resources found or no data available for the enabled filters.';
-				self.plugin.trigger('result-data-ready', data, loadedFromDB);
+				self.plugin.trigger('result-data-ready', data, loadedFromDB, loadedFromServerBackup);
 			}
 		}
 });
-riot.tag2('linkchecker-scheduler', '<div if="{token}" class="alert alert-{messageType}"> <raw content="{message}"></raw> </div> <div class="panel panel-default" if="{!token}"> <div class="panel-heading">Description</div> <div class="panel-body"> <p>The scheduler is an additional service for all users who have bought a token for the <a href="https://www.marcobeierer.com/wordpress-plugins/link-checker-professional" target="_blank">Link Checker Professional</a>.</p> <p>If you register your site to the scheduler, a link check is automatically triggered once a day and you receive an email notification with a summary report after the check has finished. If a dead link was found, you can use the default Link Checker interface to fetch the detailed results.</p> </div> </div> <div class="panel panel-primary" if="{token && !registered}"> <div class="panel-heading">Register your website</div> <div class="panel-body"> <p>If you register your site to the scheduler, a link check is automatically triggered once a day and you receive an email notification with a summary report after the check has finished. If a dead link was found, you can use the default Link Checker interface to fetch the detailed results.</p> <form onsubmit="{register}"> <input type="hidden" name="Service" value="Link Checker"> <input type="hidden" name="IntervalInNs" value="86400000000000"> <div style="display: none;" class="form-group"> <label>Website URL</label> <input class="form-control" name="URL" type="text" riot-value="{websiteURL}" readonly="readonly" required> </div> <div class="form-group"> <label>Email address for notifications</label> <input class="form-control" name="Email" riot-value="{email}" required type="{\'email\'}"> </div> <button class="btn btn-default" type="submit">Register</button> </form> </div> </div> <div class="panel panel-primary" if="{token && registered}"> <div class="panel-heading">Deregister your website</div> <div class="panel-body"> <p>Your site is registered to the scheduler and you should receive status emails regularly. Use the button below if you like to disable the automated checks.</p> <form onsubmit="{deregister}"> <input type="hidden" name="Service" value="Link Checker"> <div style="display: none;" class="form-group"> <label>Website URL</label> <input class="form-control" name="URL" type="text" riot-value="{websiteURL}" readonly="readonly" required> </div> <button class="btn btn-default" type="submit">Deregister</button> </form> </div> </div>', '', '', function(opts) {
+riot.tag2('linkchecker-scheduler', '<div if="{token}" class="alert alert-{messageType}"> <raw content="{message}"></raw> </div> <div class="panel panel-default" if="{!token}"> <div class="panel-heading">Description</div> <div class="panel-body"> <p>The scheduler is an additional service for all users who have bought a token for the <a href="https://www.marcobeierer.com/wordpress-plugins/link-checker-professional" target="_blank">Link Checker Professional</a>.</p> <p>If you register your site to the scheduler, a link check is automatically triggered once a day and you receive an email notification with a summary report after the check has finished. If a dead link was found, you can use the default Link Checker interface to fetch the detailed results.</p> </div> </div> <div class="panel panel-primary" if="{token && !registered}"> <div class="panel-heading">Register your website</div> <div class="panel-body"> <p>If you register your site to the scheduler, a link check is automatically triggered once a day and you receive an email notification with a summary report after the check has finished. If a dead link was found, you can use the default Link Checker interface to fetch the detailed results.</p> <form onsubmit="{register}"> <input type="hidden" name="Service" value="Link Checker"> <input type="hidden" name="IntervalInNs" value="86400000000000"> <div style="display: none;" class="form-group"> <label>Website URL</label> <input class="form-control" name="URL" type="text" riot-value="{websiteURL}" readonly="readonly" required> </div> <div class="form-group"> <label>Email address for notifications</label> <input class="form-control" name="Email" riot-value="{email}" required type="{\'email\'}"> </div> <button class="btn btn-default" type="submit">Register</button> </form> </div> </div> <div class="panel panel-primary" if="{token && registered}"> <div class="panel-heading">Deregister your website</div> <div class="panel-body"> <p>Your site is registered to the scheduler and you should receive status emails regularly. Use the button below if you like to disable the automated checks.</p> <p>If you like to <strong>change your email address</strong>, please deregister from the scheduler, update the email address in the register form and then reregister to the scheduler.</p> <form onsubmit="{deregister}"> <input type="hidden" name="Service" value="Link Checker"> <div style="display: none;" class="form-group"> <label>Website URL</label> <input class="form-control" name="URL" type="text" riot-value="{websiteURL}" readonly="readonly" required> </div> <button class="btn btn-default" type="submit">Deregister</button> </form> </div> </div>', '', '', function(opts) {
 		var self = this;
 
 		self.registered = false;
@@ -14169,20 +14806,25 @@ riot.tag2('result', '<div class="btn-toolbar toolbar"> <div class="btn-group" ro
 			return (self.currentPage + 1) * self.pageSize;
 		};
 
-		self.plugin.on('result-data-ready', function(data, loadedFromDB) {
+		self.plugin.on('result-data-ready', function(data, loadedFromDB, loadedFromServerBackup) {
 			self.resetCurrentPage();
 			self.result = [];
 
-			self.onload(data, loadedFromDB);
+			self.onload(data, loadedFromDB, loadedFromServerBackup);
 			self.update();
 		});
 
 		self.plugin.on('started', function() {
 		});
 
-		self.onload = function(data, loadedFromDB) {
-			if (loadedFromDB) {
-				var message = "The result of your last check has been loaded from the cache successfully. Please see it below.";
+		self.onload = function(data, loadedFromDB, loadedFromServerBackup) {
+			if (loadedFromDB || loadedFromServerBackup) {
+				var typex = 'cache';
+				if (loadedFromServerBackup) {
+					typex = 'server';
+				}
+
+				var message = "The result of your last check has been loaded from the " + typex + " successfully. Please see it below.";
 				var type = 'success';
 
 				if (data.LimitReached) {

@@ -3,7 +3,7 @@ Contributors: mbsec
 Tags: seo, links, maintenance, broken link checker, link checker, dead link checker, link, broken links, dead links
 Requires at least: 4.5
 Tested up to: 4.9
-Stable tag: 1.14.0
+Stable tag: 1.15.0
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -33,6 +33,8 @@ The Link Checker works for every plugin out of the box. The computation costs fo
 * Check if embedded internal and external **images** are broken.
 * Check if embedded **YouTube videos** are broken.
 * Scheduler to **automatically check a website** once a day and get a summary report by email.
+* The result can be exported as CSV file.
+* The result is saved on the Link Checker server so that it can be fetched multiple times without requiring a recheck. For example from different users or with different browsers.
 
 = Upcoming Features =
 * Support for checking the availability of videos, CSS files and JS files.
@@ -73,6 +75,12 @@ In the most cases this is due to the fact that you have set a large value for th
 1. List of broken links found by the Link Checker.
 
 == Changelog ==
+
+= 1.15.0 =
+*Release Date - 21th July, 2018*
+- Export result as CSV file for users of the professional version.
+- Result is saved on server for customers of the professional version. So the same result can be downloaded by multiple users or with multiple browsers.
+- Added hint how to change scheduler email address.
 
 = 1.14.0 =
 *Release Date - 15th July, 2018*
