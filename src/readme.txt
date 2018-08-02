@@ -76,6 +76,7 @@ In the most cases this is due to the fact that you have set a large value for th
 == Screenshots ==
 
 1. List of broken links found by the Link Checker.
+2. Stats of the Link Checker after a check has finished.
 
 == Changelog ==
 
