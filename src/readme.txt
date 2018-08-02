@@ -16,7 +16,10 @@ In contrast to search engine tools like the Google Search Console, which only sh
 
 The Link Checker works for every plugin out of the box. The computation costs for your website is also very low because the crawler does the heavy work and just acts like a normal visitor, who visits all pages of you website once.
 
-[youtube https://www.youtube.com/watch?v=cbrZaPzRv14]
+= Videos =
+You can find videos about the Link Checker on the [Link Checker for WordPress playlist on YouTube](https://www.youtube.com/watch?v=8rUFDp09tjs&list=PL5VYcNma6nfxIrlbpz0f1avXT_JIrUZA1).
+
+[youtube https://www.youtube.com/watch?v=8rUFDp09tjs&list=PL5VYcNma6nfxIrlbpz0f1avXT_JIrUZA1]
 
 = Features =
 * **Simple setup**.
