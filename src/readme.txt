@@ -82,23 +82,25 @@ In the most cases this is due to the fact that you have set a large value for th
 
 = 1.15.1 =
 *Release Date - 21th July, 2018*
-- Force CSS reload because an old version is cached for users of older versions.
+
+* Force CSS reload because an old version is cached for users of older versions.
 
 = 1.15.0 =
 *Release Date - 21th July, 2018*
-- Export result as CSV file for users of the professional version.
-- Result is saved on server for customers of the professional version. So the same result can be downloaded by multiple users or with multiple browsers.
-- Added hint how to change scheduler email address.
+
+* Export result as CSV file for users of the professional version.
+* Result is saved on server for customers of the professional version. So the same result can be downloaded by multiple users or with multiple browsers.
+* Added hint how to change scheduler email address.
 
 = 1.14.0 =
 *Release Date - 15th July, 2018*
 
-- Added message with recommendations for Wordfence users.
-- Result from cache is loaded even if a check is currently running.
-- Old result is not cleared anymore when a new check is started, but just when the new check has finished.
-- Split up the 'Progress and Stats' tab in two separate tabs.
-- Added status code and response text to error message.
-- Bugfix: Handle failed IsRunning request.
+* Added message with recommendations for Wordfence users.
+* Result from cache is loaded even if a check is currently running.
+* Old result is not cleared anymore when a new check is started, but just when the new check has finished.
+* Split up the 'Progress and Stats' tab in two separate tabs.
+* Added status code and response text to error message.
+* Bugfix: Handle failed IsRunning request.
 
 = 1.13.0 =
 *Release Date - 12th May, 2018*
@@ -122,11 +124,11 @@ In the most cases this is due to the fact that you have set a large value for th
 = 1.11.0 =
 *Release Date - 22th April, 2018*
 
-- Redesigned user interface.
-	- Pagination.
-	- All-in-one (links, images, videos, working redirects, unhandled resources) result view.
-- Performance of user interface was improved so that it's now possible to view result tables with more than 100'000 broken links or redirects.
-- Use IndexedDB instead of localStorage to store result so that the result set size is not limited to about 5 MB anymore.
+* Redesigned user interface.
+	* Pagination.
+	* All-in-one (links, images, videos, working redirects, unhandled resources) result view.
+* Performance of user interface was improved so that it's now possible to view result tables with more than 100'000 broken links or redirects.
+* Use IndexedDB instead of localStorage to store result so that the result set size is not limited to about 5 MB anymore.
 
 = 1.10.0 =
 *Release Date - 19th April, 2018*

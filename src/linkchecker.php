@@ -108,7 +108,7 @@ function link_checker_page() {
 
 			<?php if (defined('WORDFENCE_VERSION')): ?>
 				<div class="notice notice-warning below-h2 is-dismissible">
-					<p>The Link Checker detected that you have Wordfence installed. Wordfence may rate limit the Link Checker crawler and as a result of this behavior you might see lots of timeouts (status code 503) in the results.</p>
+					<p>The Link Checker detected that you have Wordfence installed. Wordfence may rate limit the Link Checker crawler and as a result of this behavior you might see lots of timeouts (status code 504) in the results.</p>
 					<p>To make the Link Checker work as expected, you can try to set the number of concurrent connections to 1 in the <a href="admin.php?page=link-checker-settings-x">Link Checker settings</a> and optionally increase or disable the rate limits in the <em>Rate Limiting</em> section in the <a href="admin.php?page=WordfenceOptions">Wordfence options</a>. But please keep in mind, that the Wordfence options apply for all crawlers and not just the Link Checker.</p>
 					<p>Alternatively you can whitelist the Link Checker in the <a href="admin.php?page=WordfenceOptions">Wordfence options</a> with the option <em>Whitelisted IP addresses that bypass all rules</em>. However, general whitelisting isn't the best solution from a security point of view. It would be better to whitelist the Link Checker just for rate limiting, but Wordfence doesn't provide such an option at the time. The IP addresses of the Link Checker are:</p>
 					<p>195.201.127.2</br>
