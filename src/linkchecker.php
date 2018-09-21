@@ -34,14 +34,14 @@ function load_link_checker_admin_scripts($hook) {
 	if ($hook == 'toplevel_page_link-checker' || $hook == 'link-checker_page_link-checker-scheduler') {
 		wp_enqueue_script('jquery');
 
-		$linkcheckerURL = plugins_url('js/linkchecker-1.13.0.min.js', __FILE__);
+		$linkcheckerURL = plugins_url('js/linkchecker-1.14.0.min.js', __FILE__);
 		wp_enqueue_script('link_checker_linkcheckerjs', $linkcheckerURL);
 		wp_add_inline_script('link_checker_linkcheckerjs', "jQuery(document).ready(function() { riot.mount('*', { linkchecker: riot.observable() }); });");
 
 		$cssURL = plugins_url('css/wrapped.min.css?v=2', __FILE__); // TODO versionize file
 		wp_enqueue_style('link_checker_wrappedcss', $cssURL);
 
-		$customCSSURL = plugins_url('css/custom.css?v=1', __FILE__); // TODO versionize file
+		$customCSSURL = plugins_url('css/custom.css?v=2', __FILE__); // TODO versionize file
 		wp_enqueue_style('link_checker_customcss', $customCSSURL);
 	}
 
@@ -161,6 +161,7 @@ function link_checker_page() {
 					max-fetchers="<?php echo (int) get_option('link-checker-max-fetchers', 3); ?>"
 					enable-scheduler="true"
 					email="<?php echo get_option('admin_email'); ?>"
+					edit-urls-endpoint="admin-ajax.php?action=link_checker_edit_urls"
 				>
 				</linkchecker>
 			<?php endif; ?>
@@ -289,4 +290,20 @@ function link_checker_settings_page() {
 <?php
 }
 
+add_action('wp_ajax_link_checker_edit_urls', 'link_checker_edit_urls');
+function link_checker_edit_urls() {
+	$editURLs = array();
+
+	$urls = $_POST['urls'];
+
+	foreach ($urls as $url) {
+		$postID = url_to_postid($url);
+		if ($postID != 0) { // 0 means failure
+			$editURLs[$url] = admin_url('post.php?post=' . $postID . '&action=edit'); // just save $url values are added because url_to_postid would return 0 if not a valid url
+		}
+	}
+
+	echo json_encode($editURLs);
+	wp_die();
+}
 ?>
