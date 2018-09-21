@@ -14760,12 +14760,12 @@ riot.tag2('result', '<div class="btn-toolbar toolbar"> <div class="btn-group" ro
 		self.setPageSize = function(size, e) {
 			e.preventDefault();
 
-			self.resetCurrentPage();
-
 			self.pageSize = size;
 
 			lscache.setBucket('linkchecker-settings-');
 			lscache.set('pageSize', self.pageSize);
+
+			self.resetCurrentPage();
 		}
 
 		self.loadEditURLs = function() {
@@ -14775,8 +14775,14 @@ riot.tag2('result', '<div class="btn-toolbar toolbar"> <div class="btn-group" ro
 
 			var urls = [];
 			self.paginate().forEach(function(item) {
-				urls.push(item.FoundOnURL);
+				if (self.editURLs[item.FoundOnURL] === undefined) {
+					urls.push(item.FoundOnURL);
+				}
 			});
+
+			if (urls.length == 0) {
+				return;
+			}
 
 			var data = {
 				urls: urls
@@ -14789,7 +14795,16 @@ riot.tag2('result', '<div class="btn-toolbar toolbar"> <div class="btn-group" ro
 				data: data
 			})
 			.done(function(data, textStatus, xhr) {
-				self.editURLs = data;
+				for (var foundOnURL in data) {
+					self.editURLs[foundOnURL] = data[foundOnURL];
+				}
+
+				urls.forEach(function(foundOnURL) {
+					if (self.editURLs[foundOnURL] === undefined) {
+						self.editURLs[foundOnURL] = null;
+					}
+				});
+
 				self.update();
 			});
 		};
@@ -14902,13 +14917,12 @@ riot.tag2('result', '<div class="btn-toolbar toolbar"> <div class="btn-group" ro
 		};
 
 		self.plugin.on('result-data-ready', function(data, loadedFromDB, loadedFromServerBackup) {
-			self.resetCurrentPage();
 			self.result = [];
 
 			self.onload(data, loadedFromDB, loadedFromServerBackup);
-			self.update();
+			self.resetCurrentPage();
 
-			self.loadEditURLs();
+			self.update();
 		});
 
 		self.plugin.on('started', function() {
