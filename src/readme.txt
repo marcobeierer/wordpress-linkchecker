@@ -80,6 +80,15 @@ In the most cases this is due to the fact that you have set a large value for th
 
 == Changelog ==
 
+= 1.16.0 =
+*Release Date - 21th September, 2018*
+
+* Show edit link for URLs that could be assigned to a post.
+* Improved status codes page.
+* Improved professional version page.
+* Bugfix: Reset retries count before every check.
+* Crawler: Performance optimizations and some bug fixes.
+
 = 1.15.1 =
 *Release Date - 21th July, 2018*
 
