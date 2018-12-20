@@ -2,8 +2,8 @@
 Contributors: mbsec
 Tags: seo, links, maintenance, broken link checker, link checker, dead link checker, link, broken links, dead links
 Requires at least: 4.5
-Tested up to: 4.9
-Stable tag: 1.16.0
+Tested up to: 5.0
+Stable tag: 1.16.1
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -79,6 +79,10 @@ In the most cases this is due to the fact that you have set a large value for th
 2. Stats of the Link Checker after a check has finished.
 
 == Changelog ==
+
+= 1.16.1 =
+*Release Date - 20th December, 2018*
+* Bugfix for broken CSV download in Firefox.
 
 = 1.16.0 =
 *Release Date - 21th September, 2018*
