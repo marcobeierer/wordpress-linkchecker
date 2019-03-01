@@ -82,10 +82,12 @@ In the most cases this is due to the fact that you have set a large value for th
 
 = 1.16.2 =
 *Release Date - 1st March, 2019*
+
 * Updated 'Tested up to' information.
 
 = 1.16.1 =
 *Release Date - 20th December, 2018*
+
 * Bugfix for broken CSV download in Firefox.
 
 = 1.16.0 =
