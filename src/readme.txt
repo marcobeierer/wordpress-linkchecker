@@ -3,7 +3,7 @@ Contributors: mbsec
 Tags: seo, links, maintenance, broken link checker, link checker, dead link checker, link, broken links, dead links
 Requires at least: 4.5
 Tested up to: 5.1
-Stable tag: 1.16.2
+Stable tag: 1.17.0
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -37,6 +37,7 @@ You can find videos about the Link Checker on the [Link Checker for WordPress pl
 * Check if embedded **YouTube videos** are broken.
 * Scheduler to **automatically check a website** once a day and get a summary report by email.
 * The result can be exported as CSV file.
+* Form login support to check protected pages like membership areas.
 * The result is saved on the Link Checker server so that it can be fetched multiple times without requiring a recheck. For example from different users or with different browsers.
 
 = Upcoming Features =
@@ -79,6 +80,12 @@ In the most cases this is due to the fact that you have set a large value for th
 2. Stats of the Link Checker after a check has finished.
 
 == Changelog ==
+
+= 1.17.0 =
+*Release Date - 22st March, 2019*
+
+* Added form login support.
+* Fixed a security vulnerability (XSS).
 
 = 1.16.2 =
 *Release Date - 1st March, 2019*
