@@ -30,7 +30,7 @@ You can find videos about the Link Checker on the [Link Checker for WordPress pl
 
 = Technical Features =
 * Respects your robots.txt file (also the crawl-delay directive).
-	* You could use the user-agents MB-LinkChecker or MB-SiteCrawler to control the crawler.
+	* You can use the user-agents MB-LinkChecker to control the crawler.
 
 = Additional Features of the Professional Version =
 * Check if embedded internal and external **images** are broken.
