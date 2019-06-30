@@ -13885,6 +13885,28 @@ module.exports = pako;
 }(jQuery);
 'use strict';
 
+// MouseEvent polyfill for IE and Edge(?)
+(function (window) {
+	try {
+		new MouseEvent('test');
+		return false; // No need to polyfill
+	} catch (e) {
+		// Need to polyfill - fall through
+	}
+
+	// Polyfills DOM4 MouseEvent
+	var MouseEvent = function (eventType, params) {
+		params = params || { bubbles: false, cancelable: false };
+		var mouseEvent = document.createEvent('MouseEvent');
+		mouseEvent.initMouseEvent(eventType, params.bubbles, params.cancelable, window, 0, params.screenX || 0, params.screenY || 0, params.clientX || 0, params.clientY || 0, false, false, false, false, 0, null);
+
+		return mouseEvent;
+	}
+
+	MouseEvent.prototype = Event.prototype;
+	window.MouseEvent = MouseEvent;
+})(window);
+
 function loadFile(resourceURL, token, filename, callback) {
 	var xhr = new XMLHttpRequest();
 	xhr.open('GET', resourceURL);
@@ -13915,7 +13937,9 @@ function loadFileDownloadCallback(filename, blobURL, blob, xhr, data) {
 		var a = document.createElement('a');
 		a.href = blobURL;
 		a.download = filename;
-		a.click();
+
+		//a.click(); // click does not work in Firefox if link is not in DOM
+		a.dispatchEvent(new MouseEvent('click')); // MouseEvent requires polyfill
 	}
 
 	(window.URL || window.webkitURL).revokeObjectURL(blobURL);
@@ -14049,7 +14073,7 @@ riot.tag2('linkchecker-form', '<form onsubmit="{submit}" style="margin-bottom: 2
 			self.update();
 		});
 });
-riot.tag2('linkchecker', '<form if="{showButton}" style="margin-bottom: 20px;"> <button class="btn btn-default" onclick="{submit}" if="{!disabled}">Check your website</button> <button class="btn btn-danger" onclick="{stopCheck}" if="{disabled}">Stop website check</button> <span class="pull-right" style="display: inline-block;" data-original-title="{exportableTitle()}" data-toggle="tooltip" data-placement="left"> <button class="btn btn-default btn-sm {disabled: !exportable()}" onclick="{downloadCSVFile}">Export as CSV file</button> </span> </form> <message plugin="{plugin}" text="Link Checker is initializing, please wait a moment." type="warning"></message> <div if="{crawlDelayInSeconds >= 1}" class="alert alert-danger"> The crawl-delay set in your robots.txt file is equal or higher than one second, namely {crawlDelayInSeconds} seconds. The crawl-delay defines the time waited between two requests of the Link Checker. This means that it might take very long for the check to finish. It is recommended that you lower the crawl-delay for the Link Checker in your robots.txt. You can use the user agent MB-LinkChecker if you like to define a custom crawl-delay for the Link Checker. </div> <message plugin="{plugin}" name="db" text="" type="warning" dismissible="true" style="padding-top: 5px; padding-bottom: 5px; margin-top: -10px;"></message> <ul class="nav nav-tabs" id="tabnav" role="tablist"> <li role="presentation" class="active"><a href="#progress{id}" aria-controls="progress{id}" role="tab" data-toggle="tab">Progress</a></li> <li role="presentation"><a href="#stats{id}" aria-controls="stats{id}" role="tab" data-toggle="tab">Stats</a></li> <li role="presentation"><a href="#result{id}" aria-controls="result{id}" role="tab" data-toggle="tab">Result</a></li> <li role="presentation"><a href="#statusCodes{id}" aria-controls="statusCodes{id}" role="tab" data-toggle="tab">Status Codes</a></li> <li if="{enableScheduler}" role="presentation"><a href="#scheduler{id}" aria-controls="scheduler{id}" role="tab" data-toggle="tab">Scheduler</a></li> <li role="presentation"><a href="#glossary{id}" aria-controls="glossary{id}" role="tab" data-toggle="tab">Glossary</a></li> <li role="presentation"><a href="#professional{id}" aria-controls="professional{id}" role="tab" data-toggle="tab">Professional Version</a></li> <li role="presentation"><a href="#feedback{id}" aria-controls="feedback{id}" role="tab" data-toggle="tab">Your Feedback</a></li> </ul> <div class="tab-content"> <div role="tabpanel" class="tab-pane active" id="progress{id}"> <h3>Progress Current Check</h3> <p>Below you see the progress of the current check while the check is running. When the check has finished, you can inspect the stats of the last check in the <em>Stats</em> tab.</p> <div class="row"> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Stats</div> <table class="table table-bordered"> <tr> <td>Number of crawled HTML pages on your site</td> <td class="text-right" style="width: 200px;">{urlsCrawledCount}</td> </tr> <tr> <td>Number of checked internal and external resources</td> <td class="text-right">{checkedLinksCount}</td> </tr> </table> </div> </div> </div> </div> <div role="tabpanel" class="tab-pane" id="stats{id}"> <h3>Stats Last Check</h3> <p if="{!data.Stats}">Nothing to see here because no check has finished yet. You can inspect the stats of the last check as soon as the check has finished or was loaded from the cache.</p> <p if="{data.Stats}">Please see the stats of the last finished check below. If a check is currently running, the stats are for the last check and not the one currently running.</p> <div if="{data.Stats}" class="row"> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Stats</div> <table class="table table-bordered"> <tr> <td>Number of crawled HTML pages on your site</td> <td class="text-right" style="width: 200px;">{data.Stats.HTMLPagesCount}</td> </tr> <tr> <td>Number of checked internal and external resources</td> <td class="text-right">{data.Stats.CrawledResourcesCount}</td> </tr> <tr> <td>Started at</td> <td class="text-right">{datetime(data.Stats.StartedAt)}</td> </tr> <tr> <td>Finished at</td> <td class="text-right">{datetime(data.Stats.FinishedAt)}</td> </tr> </table> </div> </div> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Detailed Stats</div> <table class="table table-bordered"> <tr> <td>Number of valid links</td> <td class="text-right" style="width: 200px;">{data.Stats.ValidLinksCount}</td> </tr> <tr> <td>Number of dead links</td> <td class="text-right">{data.Stats.DeadLinksCount}</td> </tr> <tr> <td>Number of redirected links</td> <td class="text-right">{data.Stats.RedirectedLinksCount}</td> </tr> <tr> <td>Number of valid embedded YouTube videos</td> <td class="text-right">{data.Stats.ValidEmbeddedYouTubeVideosCount}</td> </tr> <tr> <td>Number of dead embedded YouTube videos</td> <td class="text-right">{data.Stats.DeadEmbeddedYouTubeVideosCount}</td> </tr> </table> </div> </div> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Setting Stats</div> <table class="table table-bordered"> <tr> <td>Crawl delay</td> <td class="text-right" style="width: 200px;">{data.Stats.CrawlDelayInSeconds} seconds</td> </tr> <tr> <td>Concurrent fetchers</td> <td class="text-right">{data.Stats.MaxFetchers}</td> </tr> <tr> <td>URL limit</td> <td class="text-right">{data.Stats.URLLimit} URLs</td> </tr> <tr> <td>Limit reached</td> <td class="text-right">{bool2text(data.Stats.LimitReached)}</td> </tr> </table> </div> </div> </div> </div> <div role="tabpanel" class="tab-pane" id="result{id}"> <h3>Result</h3> <p>Please note that the result belongs to the last check that has finished. If a check is currently running, the stats are for the last check and not the one currently running. <span if="{data.Stats}">The result below belongs to the check that was started on {datetimeAt(data.Stats.StartedAt)} and has finished on {datetimeAt(data.Stats.FinishedAt)}.</span></p> <result plugin="{plugin}" edit-urls-endpoint="{editURLsEndpoint}"></result> </div> <div role="tabpanel" class="tab-pane" id="statusCodes{id}"> <h3>Status Codes</h3> <p>The Link Checker result includes all URLs that respond with a <strong>status code greater or equal 300</strong>. Redirected URLs respond with a status code between 300 and 399 and if the redirects are working fine, they are only shown if you enable the <em>Working Redirects</em> flag in the result tab. URLs with a status code greater or equal 400 are always shown if the main flag for the URL category (<em>Links</em>, <em>Images</em> or <em>Videos</em>) is enabled. One exception are unhandled links (explained in the <a href="#" onclick="{switchTab.bind(this, \'glossary\')}">Glossary</a>) which are only shown if the <em>Unhandled</em> flag is enabled.</p> <p>If you hover over a status code in the result tab, you see a short description for the status code in a tooltip. Please consult <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank">Wikipedia</a> for detailed explanations.</p> <p>Below you find a short list of status codes which have a special meaning in the Link Checker context or are custom to the Link Checker.</p> <h4>Status Codes with Special Meaning</h4> <div class="panel panel-default table-responsive"> <table class="table table-striped table-responsive"> <thead> <tr> <th style="width: 10em;">Status Code</th> <th style="width: 20em;">Status Text</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td>502</td> <td>Bad Gateway</td> <td>The server returned an invalid response when the Link Checker tried to access the URL.</td> </tr> <tr> <td>504</td> <td>Gateway Timeout</td> <td>The Link Checker was not able to access the URL because it timed out.</td> </tr> </tbody> </table> </div> <h4>Custom Status Codes</h4> <div class="panel panel-default table-responsive"> <table class="table table-striped table-responsive"> <thead> <tr> <th style="width: 10em;">Status Code</th> <th style="width: 20em;">Status Text</th> <th>Description</th> </tr> </thead> </tbody> <tr> <td>601</td> <td>Blocked by robots</td> <td>The Link Checker was not able to access the URL because the access was blocked by the robots exclusion protocol.</td> </tr> <tr> <td>602</td> <td>HTML parse error</td> <td>The HTML code of this page could not be parsed because of an error in the code or because the page was larger than 50 MB.</td> </tr> <tr> <td>603</td> <td>Unknown authority error</td> <td>This status code means that the certificate was signed by an unknown certificate authority. If accessing the page works in your web browser, probably the provided certificate chain is broken. Most, but not all, browsers can handle such situation and download the missing certificates on the fly. If the error was detected on you website, you should fix the origin of the issue and provid the whole chain to all clients.</td> </tr> </tbody> </table> </div> <p><em>Please note that it is possible in rare situations that a website returns these status codes and if this is the case, they probably have another meaning.</em></p> </div> <div role="tabpanel" class="tab-pane" id="glossary{id}"> <h3>Glossary</h3> <h4>Unhandled Resources (mainly blocked by robots.txt)</h4> <p>Websites can prohibit access for web crawlers like the one used by the Link Checker with the robots exclusion protocol (robots.txt file). The Link Checker does respect the robots exclusion protocol for the website it crawls, but not for external links because it does just access individual URLs of the external sites.</p> <p>However, some websites take some effort to restrict the access for crawlers and the Link Checker does respect that and does not try to bypass the restrictions. You can find all URLs the Link Checker was not able to access in the table below, so that you could check them manually. If you have done this, you can mark them as working. Each marker is saved for one month in your browsers cache and the date of the last marking is shown in the table below.</p> <p>If the blocked links were found on your website, you can add rules for the Link Checker to your robots.txt file and restart the Link Checker. Please see the <a href="https://www.marcobeierer.com/tools/link-checker-faq" target="_blank">FAQs</a> for further information.</p> <h4>Working Redirects</h4> <p>Non-temporary redirects, even if working correctly, have disadvantages like for example increased loading times and should therefore be fixed. Showing working redirects can be enabled/disabled in the settings of the result tab.</p> <h4>Mark URLs as Fixed</h4> <p>To keep an better overview, you can mark URLs as fixed in the result view. The marked URLs are can be hidden in the result. Please note that the fixed markers are just temporary and are reset on the next link check.</p> <h4>Images</h4> <p>Broken images are just checked in the <a href="https://www.marcobeierer.com/tools/link-checker-professional" target="_blank">professional version of the Link Checker</a>.</p> <h4>Videos</h4> <p>Broken embedded YouTube videos are just checked in the <a href="https://www.marcobeierer.com/tools/link-checker-professional" target="_blank">professional version of the Link Checker</a>.</p> </div> <div if="{enableScheduler}" role="tabpanel" class="tab-pane" id="scheduler{id}"> <h3>Scheduler</h3> <linkchecker-scheduler website-url="{websiteURL}" token="{token}" email="{email}" dev="{dev}"></linkchecker-scheduler> </div> <div role="tabpanel" class="tab-pane" id="professional{id}"> <h3>Professional Version</h3> <div if="{hasToken()}" class="alert alert-info"> Thank you, you are already using the professional version. </div> <p>The professional version of the Link Checker allows to check a website with up to 500\'000 URLs and comes with some additional features. It\'s for example possible to:</p> <ul> <li>check embedded images,</li> <li>check YouTube videos or</li> <li>trigger a check once a day automatically and get a summary by mail.</li> </ul> <p>You can <a href="https://www.marcobeierer.com/tools/link-checker-professional" target="_blank">read more about the professional version and purchase a token</a> on my website.</p> <h4>Pricing</h4> <pricing></pricing> <h4>Offers for Web Agencies</h4> <p>Web agencies, and of course all other interested parties, can rent a dedicated Link Checker and Sitemap Generator server. Servers in Germany and Finland are available from 395.00 € per month. Other server locations are available on request against an extra fee.</p> <p>When renting a server, you can offer the services to all your clients and also offer it publicly on your website to potential customers, but public reselling and thus directly competing against the Link Checker or Sitemap Generator is not allowed. If you like to resell tokens, please contact me and we may find a solution that works for both of us.</p> <p>Advantages of a dedicated server are:</p> <ul> <li>No need to manage tokens anymore, you can whitelist individual websites and manage scheduling for all websites from a central admin panel.</li> <li>Faster checks if the server is located near your hosting server.</li> <li>Better performance in general because server resources are not shared with other users.</li> </ul> <p>If interested, please write me an email to <a href="mailto:email@marcobeierer.com">email@marcobeierer.com</a> for an individual offer.</p> </div> <div role="tabpanel" class="tab-pane" id="feedback{id}"> <h3>Your Feedback</h3> <feedback></feedback> </div> </div>', '', '', function(opts) {
+riot.tag2('linkchecker', '<form if="{showButton}" style="margin-bottom: 20px;"> <button class="btn btn-default" onclick="{submit}" if="{!disabled}">Check your website</button> <button class="btn btn-danger" onclick="{stopCheck}" if="{disabled}">Stop website check</button> <span class="pull-right" style="display: inline-block;" data-original-title="{exportableTitle()}" data-toggle="tooltip" data-placement="left"> <button class="btn btn-default btn-sm {disabled: !exportable()}" onclick="{downloadCSVFile}">Export as CSV file</button> </span> </form> <message plugin="{plugin}" text="Link Checker is initializing, please wait a moment." type="warning"></message> <div if="{crawlDelayInSeconds >= 1}" class="alert alert-danger"> The crawl-delay set in your robots.txt file is equal or higher than one second, namely {crawlDelayInSeconds} seconds. The crawl-delay defines the time waited between two requests of the Link Checker. This means that it might take very long for the check to finish. It is recommended that you lower the crawl-delay for the Link Checker in your robots.txt. You can use the user agent MB-LinkChecker if you like to define a custom crawl-delay for the Link Checker. </div> <div if="{hasFormLogin()}" class="alert alert-info" style="padding-top: 5px; padding-bottom: 5px; margin-top: -10px;"> Form login is setup and used for the next check. </div> <message plugin="{plugin}" name="db" text="" type="warning" dismissible="true" style="padding-top: 5px; padding-bottom: 5px; margin-top: -10px;"></message> <ul class="nav nav-tabs" id="tabnav" role="tablist"> <li role="presentation" class="active"><a href="#progress{id}" aria-controls="progress{id}" role="tab" data-toggle="tab">Progress</a></li> <li role="presentation"><a href="#stats{id}" aria-controls="stats{id}" role="tab" data-toggle="tab">Stats</a></li> <li role="presentation"><a href="#result{id}" aria-controls="result{id}" role="tab" data-toggle="tab">Result</a></li> <li role="presentation"><a href="#statusCodes{id}" aria-controls="statusCodes{id}" role="tab" data-toggle="tab">Status Codes</a></li> <li if="{enableScheduler}" role="presentation"><a href="#scheduler{id}" aria-controls="scheduler{id}" role="tab" data-toggle="tab">Scheduler</a></li> <li role="presentation"><a href="#glossary{id}" aria-controls="glossary{id}" role="tab" data-toggle="tab">Glossary</a></li> <li role="presentation"><a href="#professional{id}" aria-controls="professional{id}" role="tab" data-toggle="tab">Professional Version</a></li> <li role="presentation"><a href="#feedback{id}" aria-controls="feedback{id}" role="tab" data-toggle="tab">Your Feedback</a></li> </ul> <div class="tab-content"> <div role="tabpanel" class="tab-pane active" id="progress{id}"> <h3>Progress Current Check</h3> <p>Below you see the progress of the current check while the check is running. When the check has finished, you can inspect the stats of the last check in the <em>Stats</em> tab.</p> <div class="row"> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Stats</div> <table class="table table-bordered"> <tr> <td>Number of crawled HTML pages on your site</td> <td class="text-right" style="width: 200px;">{urlsCrawledCount}</td> </tr> <tr> <td>Number of checked internal and external resources</td> <td class="text-right">{checkedLinksCount}</td> </tr> </table> </div> </div> </div> </div> <div role="tabpanel" class="tab-pane" id="stats{id}"> <h3>Stats Last Check</h3> <p if="{!data.Stats}">Nothing to see here because no check has finished yet. You can inspect the stats of the last check as soon as the check has finished or was loaded from the cache.</p> <p if="{data.Stats}">Please see the stats of the last finished check below. If a check is currently running, the stats are for the last check and not the one currently running.</p> <div if="{data.Stats}" class="row"> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Stats</div> <table class="table table-bordered"> <tr> <td>Number of crawled HTML pages on your site</td> <td class="text-right" style="width: 200px;">{data.Stats.HTMLPagesCount}</td> </tr> <tr> <td>Number of checked internal and external resources</td> <td class="text-right">{data.Stats.CrawledResourcesCount}</td> </tr> <tr> <td>Started at</td> <td class="text-right">{datetime(data.Stats.StartedAt)}</td> </tr> <tr> <td>Finished at</td> <td class="text-right">{datetime(data.Stats.FinishedAt)}</td> </tr> </table> </div> </div> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Detailed Stats</div> <table class="table table-bordered"> <tr> <td>Number of valid links</td> <td class="text-right" style="width: 200px;">{data.Stats.ValidLinksCount}</td> </tr> <tr> <td>Number of dead links</td> <td class="text-right">{data.Stats.DeadLinksCount}</td> </tr> <tr> <td>Number of redirected links</td> <td class="text-right">{data.Stats.RedirectedLinksCount}</td> </tr> <tr> <td>Number of valid embedded YouTube videos</td> <td class="text-right">{data.Stats.ValidEmbeddedYouTubeVideosCount}</td> </tr> <tr> <td>Number of dead embedded YouTube videos</td> <td class="text-right">{data.Stats.DeadEmbeddedYouTubeVideosCount}</td> </tr> </table> </div> </div> <div class="col-lg-6"> <div class="panel panel-default"> <div class="panel-heading">Setting Stats</div> <table class="table table-bordered"> <tr> <td>Crawl delay</td> <td class="text-right" style="width: 200px;">{data.Stats.CrawlDelayInSeconds} seconds</td> </tr> <tr> <td>Concurrent fetchers</td> <td class="text-right">{data.Stats.MaxFetchers}</td> </tr> <tr> <td>URL limit</td> <td class="text-right">{data.Stats.URLLimit} URLs</td> </tr> <tr> <td>Limit reached</td> <td class="text-right">{bool2text(data.Stats.LimitReached)}</td> </tr> <tr> <td>Token used</td> <td class="text-right">{bool2text(data.Stats.TokenUsed)}</td> </tr> <tr> <td>Form login used</td> <td class="text-right">{bool2text(data.Stats.FormLoginUsed)}</td> </tr> </table> </div> </div> </div> </div> <div role="tabpanel" class="tab-pane" id="result{id}"> <h3>Result</h3> <p>Please note that the result belongs to the last check that has finished. If a check is currently running, the stats are for the last check and not the one currently running. <span if="{data.Stats}">The result below belongs to the check that was started on {datetimeAt(data.Stats.StartedAt)} and has finished on {datetimeAt(data.Stats.FinishedAt)}.</span></p> <result plugin="{plugin}" edit-urls-endpoint="{editURLsEndpoint}"></result> </div> <div role="tabpanel" class="tab-pane" id="statusCodes{id}"> <h3>Status Codes</h3> <p>The Link Checker result includes all URLs that respond with a <strong>status code greater or equal 300</strong>. Redirected URLs respond with a status code between 300 and 399 and if the redirects are working fine, they are only shown if you enable the <em>Working Redirects</em> flag in the result tab. URLs with a status code greater or equal 400 are always shown if the main flag for the URL category (<em>Links</em>, <em>Images</em> or <em>Videos</em>) is enabled. One exception are unhandled links (explained in the <a href="#" onclick="{switchTab.bind(this, \'glossary\')}">Glossary</a>) which are only shown if the <em>Unhandled</em> flag is enabled.</p> <p>If you hover over a status code in the result tab, you see a short description for the status code in a tooltip. Please consult <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank">Wikipedia</a> for detailed explanations.</p> <p>Below you find a short list of status codes which have a special meaning in the Link Checker context or are custom to the Link Checker.</p> <h4>Status Codes with Special Meaning</h4> <div class="panel panel-default table-responsive"> <table class="table table-striped table-responsive"> <thead> <tr> <th style="width: 10em;">Status Code</th> <th style="width: 20em;">Status Text</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td>502</td> <td>Bad Gateway</td> <td>The server returned an invalid response when the Link Checker tried to access the URL.</td> </tr> <tr> <td>504</td> <td>Gateway Timeout</td> <td>The Link Checker was not able to access the URL because it timed out.</td> </tr> </tbody> </table> </div> <h4>Custom Status Codes</h4> <div class="panel panel-default table-responsive"> <table class="table table-striped table-responsive"> <thead> <tr> <th style="width: 10em;">Status Code</th> <th style="width: 20em;">Status Text</th> <th>Description</th> </tr> </thead> </tbody> <tr> <td>601</td> <td>Blocked by robots</td> <td>The Link Checker was not able to access the URL because the access was blocked by the robots exclusion protocol.</td> </tr> <tr> <td>602</td> <td>HTML parse error</td> <td>The HTML code of this page could not be parsed because of an error in the code or because the page was larger than 50 MB.</td> </tr> <tr> <td>603</td> <td>Unknown authority error</td> <td>This status code means that the certificate was signed by an unknown certificate authority. If accessing the page works in your web browser, probably the provided certificate chain is broken. Most, but not all, browsers can handle such situation and download the missing certificates on the fly. If the error was detected on you website, you should fix the origin of the issue and provid the whole chain to all clients.</td> </tr> </tbody> </table> </div> <p><em>Please note that it is possible in rare situations that a website returns these status codes and if this is the case, they probably have another meaning.</em></p> </div> <div role="tabpanel" class="tab-pane" id="glossary{id}"> <h3>Glossary</h3> <h4>Unhandled Resources (mainly blocked by robots.txt)</h4> <p>Websites can prohibit access for web crawlers like the one used by the Link Checker with the robots exclusion protocol (robots.txt file). The Link Checker does respect the robots exclusion protocol for the website it crawls and also for external links.</p> <p>If the blocked links were found on your website, you can add rules for the Link Checker to your robots.txt file and restart the Link Checker. Please see the <a href="https://www.marcobeierer.com/tools/link-checker-faq" target="_blank">FAQs</a> for further information.</p> <h5>Mark URLs as Working</h5> <p>If the blocked links were found on external websites, the Link Checker cannot check the links for you and you have to check each blocked link manually. When you have checked a link and it is working, you can use the <em>Mark as Working</em> button in the result table to mark the link. The marker is saved in your browser storage for one month and the date of the last marking is shown in the result table afterwards.</p> <p>The storage period is limited to one month because the manually checked links can also break and it is recommended to recheck them at least once a month. If you like to recheck them before one month has expired, you can enable the filter to show URLs marked as working in the results and click on <em>Checked</em> button to update the date of the last check.</p> <p>Saving the markers in the browser storage means that nothing is saved when you are using the private browsing mode of your browser. Also if you empty the cache of your browser, the markers may geht deleted.</p> <h5>Mark all with same status code and domain as working</h5> <p>If you have multiple links to the same website that blocks the Link Checker, for example LinkedIn, then you can use the <em>Mark all with same status code and domain as working</em> button to mark all links to the target website as working. This function works the same as when you just mark one link as working (see description above).</p> <p>It is not recommended to use this function as you cannot be sure that the marked links are really working, but the feature was added because it was requested by many users.</p> <h4>Working Redirects</h4> <p>Non-temporary redirects, even if working correctly, have disadvantages like for example increased loading times and should therefore be fixed. Showing working redirects can be enabled/disabled in the settings of the result tab.</p> <h4>Mark URLs as Fixed</h4> <p>To keep an better overview, you can mark URLs as fixed in the result view. The marked URLs are can be hidden in the result. Please note that the fixed markers are just temporary and are reset on the next link check.</p> <h4>Images</h4> <p>Broken images are just checked in the <a href="https://www.marcobeierer.com/tools/link-checker-professional" target="_blank">professional version of the Link Checker</a>.</p> <h4>Videos</h4> <p>Broken embedded YouTube videos are just checked in the <a href="https://www.marcobeierer.com/tools/link-checker-professional" target="_blank">professional version of the Link Checker</a>.</p> </div> <div if="{enableScheduler}" role="tabpanel" class="tab-pane" id="scheduler{id}"> <h3>Scheduler</h3> <linkchecker-scheduler website-url="{websiteURL}" token="{token}" email="{email}" dev="{dev}" login-page-url="{loginPageURL}" login-form-selector="{loginFormSelector}" login-data="{loginData}"> </linkchecker-scheduler> </div> <div role="tabpanel" class="tab-pane" id="professional{id}"> <h3>Professional Version</h3> <div if="{hasToken()}" class="alert alert-info"> Thank you, you are already using the professional version. </div> <p>The professional version of the Link Checker allows to check a website with up to 500\'000 URLs and comes with some additional features. It\'s for example possible to:</p> <ul> <li>check embedded images,</li> <li>check YouTube videos,</li> <li>check login protected pages like membership areas or</li> <li>trigger a check once a day automatically and get a summary by mail.</li> </ul> <p>You can <a href="https://www.marcobeierer.com/tools/link-checker-professional" target="_blank">read more about the professional version and purchase a token</a> on my website.</p> <h4>Pricing</h4> <pricing></pricing> <h4>Offers for Web Agencies</h4> <p>Web agencies, and of course all other interested parties, can rent a dedicated Link Checker and Sitemap Generator server. Servers in Germany and Finland are available from 395.00 € per month. Other server locations are available on request against an extra fee.</p> <p>When renting a server, you can offer the services to all your clients and also offer it publicly on your website to potential customers, but public reselling and thus directly competing against the Link Checker or Sitemap Generator is not allowed. If you like to resell tokens, please contact me and we may find a solution that works for both of us.</p> <p>Advantages of a dedicated server are:</p> <ul> <li>No need to manage tokens anymore, you can whitelist individual websites and manage scheduling for all websites from a central admin panel.</li> <li>Faster checks if the server is located near your hosting server.</li> <li>Better performance in general because server resources are not shared with other users.</li> </ul> <p>If interested, please write me an email to <a href="mailto:email@marcobeierer.com">email@marcobeierer.com</a> for an individual offer.</p> </div> <div role="tabpanel" class="tab-pane" id="feedback{id}"> <h3>Your Feedback</h3> <feedback></feedback> </div> </div>', '', '', function(opts) {
 		var self = this;
 
 		self.plugin = riot.observable();
@@ -14063,6 +14087,10 @@ riot.tag2('linkchecker', '<form if="{showButton}" style="margin-bottom: 20px;"> 
 		self.crawlDelayInSeconds = 0;
 		self.resultAvailableOnServer = false;
 		self.editURLsEndpoint = opts.editUrlsEndpoint;
+
+		self.loginPageURL = opts.loginPageUrl;
+		self.loginFormSelector = opts.loginFormSelector;
+		self.loginData = opts.loginData;
 
 		self.id = opts.id || 0;
 		self.email = opts.email || '';
@@ -14246,11 +14274,18 @@ riot.tag2('linkchecker', '<form if="{showButton}" style="margin-bottom: 20px;"> 
 		};
 
 		function getURL(url64, runningRequest) {
-			var url = 'https://api.marcobeierer.com/linkchecker/v1/' + url64 + '?origin_system=' + self.originSystem + '&max_fetchers=' + self.maxFetchers + '&disable_cookies=1';
+
+			var disableCookies = '1';
+			if (self.hasFormLogin()) {
+
+				disableCookies = '0';
+			}
+
+			var url = 'https://api.marcobeierer.com/linkchecker/v1/' + url64 + '?origin_system=' + self.originSystem + '&max_fetchers=' + self.maxFetchers + '&disable_cookies=' + disableCookies;
 			if (self.dev == '1' && runningRequest !== true) {
 				url = 'sample_data/current.json?_=' + Date.now();
 			} else if (self.dev == '2') {
-				url = 'http://marco-desktop:9999/linkchecker/v1/' + url64 + '?origin_system=' + self.originSystem + '&max_fetchers=' + self.maxFetchers;
+				url = 'http://marco-desktop:9999/linkchecker/v1/' + url64 + '?origin_system=' + self.originSystem + '&max_fetchers=' + self.maxFetchers + '&disable_cookies=' + disableCookies;
 			}
 			return url;
 		}
@@ -14273,6 +14308,10 @@ riot.tag2('linkchecker', '<form if="{showButton}" style="margin-bottom: 20px;"> 
 
 		self.hasToken = function() {
 			return self.token || (self.data.Stats != undefined && self.data.Stats.TokenUsed);
+		}
+
+		self.hasFormLogin = function() {
+			return self.loginPageURL && self.loginPageURL != '' && self.loginFormSelector && self.loginFormSelector != '';
 		}
 
 		opts.linkchecker.on('start', function(websiteURL, token, maxFetchers) {
@@ -14374,12 +14413,22 @@ riot.tag2('linkchecker', '<form if="{showButton}" style="margin-bottom: 20px;"> 
 				}
 
 				var url = getURL(url64);
+				var credentials = '';
+
+				if (self.hasFormLogin()) {
+					credentials = JSON.stringify({
+						'login_page_url': self.loginPageURL,
+						'form_selector': self.loginFormSelector,
+						'data': self.loginData,
+					});
+				}
 
 				jQuery.ajax({
 					method: 'GET',
 					url: url,
 					headers: {
 						'Authorization': tokenHeader,
+						'X-Credentials': credentials,
 					}
 				}).done(function(data) {
 					self.retries = 0;
@@ -14483,7 +14532,7 @@ riot.tag2('linkchecker', '<form if="{showButton}" style="margin-bottom: 20px;"> 
 			}
 		}
 });
-riot.tag2('linkchecker-scheduler', '<div if="{token}" class="alert alert-{messageType}"> <raw content="{message}"></raw> </div> <div class="panel panel-default" if="{!token}"> <div class="panel-heading">Description</div> <div class="panel-body"> <p>The scheduler is an additional service for all users who have bought a token for the <a href="https://www.marcobeierer.com/wordpress-plugins/link-checker-professional" target="_blank">Link Checker Professional</a>.</p> <p>If you register your site to the scheduler, a link check is automatically triggered once a day and you receive an email notification with a summary report after the check has finished. If a dead link was found, you can use the default Link Checker interface to fetch the detailed results.</p> </div> </div> <div class="panel panel-primary" if="{token && !registered}"> <div class="panel-heading">Register your website</div> <div class="panel-body"> <p>If you register your site to the scheduler, a link check is automatically triggered once a day and you receive an email notification with a summary report after the check has finished. If a dead link was found, you can use the default Link Checker interface to fetch the detailed results.</p> <form onsubmit="{register}"> <input type="hidden" name="Service" value="Link Checker"> <input type="hidden" name="IntervalInNs" value="86400000000000"> <div style="display: none;" class="form-group"> <label>Website URL</label> <input class="form-control" name="URL" type="text" riot-value="{websiteURL}" readonly="readonly" required> </div> <div class="form-group"> <label>Email address for notifications</label> <input class="form-control" name="Email" riot-value="{email}" required type="{\'email\'}"> </div> <button class="btn btn-default" type="submit">Register</button> </form> </div> </div> <div class="panel panel-primary" if="{token && registered}"> <div class="panel-heading">Deregister your website</div> <div class="panel-body"> <p>Your site is registered to the scheduler and you should receive status emails regularly. Use the button below if you like to disable the automated checks.</p> <p>If you like to <strong>change your email address</strong>, please deregister from the scheduler, update the email address in the register form and then reregister to the scheduler.</p> <form onsubmit="{deregister}"> <input type="hidden" name="Service" value="Link Checker"> <div style="display: none;" class="form-group"> <label>Website URL</label> <input class="form-control" name="URL" type="text" riot-value="{websiteURL}" readonly="readonly" required> </div> <button class="btn btn-default" type="submit">Deregister</button> </form> </div> </div>', '', '', function(opts) {
+riot.tag2('linkchecker-scheduler', '<div if="{token}" class="alert alert-{messageType}"> <raw content="{message}"></raw> </div> <div class="panel panel-default" if="{!token}"> <div class="panel-heading">Description</div> <div class="panel-body"> <p>The scheduler is an additional service for all users who have bought a token for the <a href="https://www.marcobeierer.com/wordpress-plugins/link-checker-professional" target="_blank">Link Checker Professional</a>.</p> <p>If you register your site to the scheduler, a link check is automatically triggered once a day and you receive an email notification with a summary report after the check has finished. If a dead link was found, you can use the default Link Checker interface to fetch the detailed results.</p> </div> </div> <div class="panel panel-primary" if="{token && !registered}"> <div class="panel-heading">Register your website</div> <div class="panel-body"> <p>If you register your site to the scheduler, a link check is automatically triggered once a day and you receive an email notification with a summary report after the check has finished. If a dead link was found, you can use the default Link Checker interface to fetch the detailed results.</p> <form onsubmit="{register}"> <input type="hidden" name="Service" value="Link Checker"> <div class="form-group"> <label>Interval to check your website</label> <select class="form-control" name="IntervalInNs" default="86400000000000" required> <option value="86400000000000">Daily</option> <option value="604800000000000">Weekly</option> <option value="1209600000000000">Biweekly</option> <option value="2592000000000000">Every 30 days</option> </select> </div> <div style="display: none;" class="form-group"> <label>Website URL</label> <input class="form-control" name="URL" type="text" riot-value="{websiteURL}" readonly="readonly" required> </div> <div class="form-group"> <label>Email address for notifications</label> <input class="form-control" name="Email" riot-value="{email}" required type="{\'email\'}"> </div> <button class="btn btn-default" type="submit">Register</button> </form> </div> </div> <div class="panel panel-primary" if="{token && registered}"> <div class="panel-heading">Deregister your website</div> <div class="panel-body"> <p>Your site is registered to the scheduler and you should receive status emails regularly. Use the button below if you like to disable the automated checks.</p> <p>If you like to <strong>change your email address</strong>, please deregister from the scheduler, update the email address in the register form and then reregister to the scheduler.</p> <form onsubmit="{deregister}"> <input type="hidden" name="Service" value="Link Checker"> <div style="display: none;" class="form-group"> <label>Website URL</label> <input class="form-control" name="URL" type="text" riot-value="{websiteURL}" readonly="readonly" required> </div> <button class="btn btn-default" type="submit">Deregister</button> </form> </div> </div>', '', '', function(opts) {
 		var self = this;
 
 		self.registered = false;
@@ -14492,8 +14541,12 @@ riot.tag2('linkchecker-scheduler', '<div if="{token}" class="alert alert-{messag
 		self.token = opts.token || '';
 		self.email = opts.email || '';
 
+		self.loginPageURL = opts.loginPageUrl;
+		self.loginFormSelector = opts.loginFormSelector;
+		self.loginData = opts.loginData;
+
 		self.apiURL = 'https://api.marcobeierer.com/scheduler/v1/';
-		if (opts.dev === '1') {
+		if (opts.dev === '1' || opts.dev === '2') {
 			self.apiURL = 'http://marco-desktop:9999/scheduler/v1/';
 		}
 
@@ -14524,10 +14577,18 @@ riot.tag2('linkchecker-scheduler', '<div if="{token}" class="alert alert-{messag
 				}
 			}).done(function(data, textStatus, xhr) {
 				if (xhr.status == 204) {
-					self.setMessage('Your website isn\'t registered for the scheduler currently. Please use the form below to register your site.', 'info');
+					self.setMessage('Your website isn\'t registered for the scheduler. Please use the form below to register your site.', 'info');
 					self.registered = false;
 				} else {
-					self.setMessage('Your website is registered to the scheduler currently. You can use the form below to deregister your site.', 'info');
+					var msg = 'Your website is registered to the scheduler. ';
+					if (data.LoginPageURL && data.LoginPageURL != '') {
+						msg += 'Form login is setup and used by the scheduler. ';
+					} else {
+						msg += 'Form login isn\'t setup. ';
+					}
+					msg += 'You can use the form below to deregister your site.';
+
+					self.setMessage(msg, 'info');
 					self.registered = true;
 				}
 			}).fail(function(xhr, textStatus, error) {
@@ -14548,7 +14609,14 @@ riot.tag2('linkchecker-scheduler', '<div if="{token}" class="alert alert-{messag
 			e.preventDefault();
 
 			var obj = jQuery(e.target).serializeObject();
+
 			obj.IntervalInNs = parseInt(obj.IntervalInNs);
+			obj.Credentials = {
+				'login_page_url': self.loginPageURL,
+				'form_selector': self.loginFormSelector,
+				'data': self.loginData
+			};
+
 			var data = JSON.stringify(obj);
 
 			jQuery.ajax({
@@ -14760,12 +14828,12 @@ riot.tag2('result', '<div class="btn-toolbar toolbar"> <div class="btn-group" ro
 		self.setPageSize = function(size, e) {
 			e.preventDefault();
 
-			self.resetCurrentPage();
-
 			self.pageSize = size;
 
 			lscache.setBucket('linkchecker-settings-');
 			lscache.set('pageSize', self.pageSize);
+
+			self.resetCurrentPage();
 		}
 
 		self.loadEditURLs = function() {
@@ -14775,8 +14843,14 @@ riot.tag2('result', '<div class="btn-toolbar toolbar"> <div class="btn-group" ro
 
 			var urls = [];
 			self.paginate().forEach(function(item) {
-				urls.push(item.FoundOnURL);
+				if (self.editURLs[item.FoundOnURL] === undefined) {
+					urls.push(item.FoundOnURL);
+				}
 			});
+
+			if (urls.length == 0) {
+				return;
+			}
 
 			var data = {
 				urls: urls
@@ -14789,7 +14863,16 @@ riot.tag2('result', '<div class="btn-toolbar toolbar"> <div class="btn-group" ro
 				data: data
 			})
 			.done(function(data, textStatus, xhr) {
-				self.editURLs = data;
+				for (var foundOnURL in data) {
+					self.editURLs[foundOnURL] = data[foundOnURL];
+				}
+
+				urls.forEach(function(foundOnURL) {
+					if (self.editURLs[foundOnURL] === undefined) {
+						self.editURLs[foundOnURL] = null;
+					}
+				});
+
 				self.update();
 			});
 		};
@@ -14902,13 +14985,12 @@ riot.tag2('result', '<div class="btn-toolbar toolbar"> <div class="btn-group" ro
 		};
 
 		self.plugin.on('result-data-ready', function(data, loadedFromDB, loadedFromServerBackup) {
-			self.resetCurrentPage();
 			self.result = [];
 
 			self.onload(data, loadedFromDB, loadedFromServerBackup);
-			self.update();
+			self.resetCurrentPage();
 
-			self.loadEditURLs();
+			self.update();
 		});
 
 		self.plugin.on('started', function() {
@@ -15053,10 +15135,28 @@ riot.tag2('result', '<div class="btn-toolbar toolbar"> <div class="btn-group" ro
 			lscache.setBucket('linkchecker-checked-');
 			lscache.set(resourceURL, datex, 60 * 24 * 30);
 		}
+
+		self.setAllWithSameStatusCodeAndDomainMarkedAsWorking = function(resourceURL, resourceStatusCode, datex) {
+			var url = new URL(resourceURL);
+
+			self.result.forEach(function(row) {
+				row.Resources.forEach(function(resource) {
+					var urlx = new URL(resource.URL);
+
+					if (url.hostname == urlx.hostname && resourceStatusCode == resource.StatusCode) {
+						resource.IsMarkedAsWorking = datex;
+
+						lscache.setBucket('linkchecker-checked-');
+						lscache.set(resource.URL, datex, 60 * 24 * 30);
+
+					}
+				});
+			});
+		}
 });
 'use strict';
 
-riot.tag2('result-row', '<td if="{resources.length > 0}" style="width: 35%;"> <a href="{url}" target="_blank">{url}</a>&nbsp; <a if="{opts.editUrl}" href="{opts.editUrl}" class="btn btn-sm btn-default btn-edit" target="_blank" role="button">Edit</a> </td> <td if="{resources.length > 0}" colspan="4"> <div class="panel panel-default table-responsive" style="margin-bottom: 0;"> <table class="table"> <tbody> <tr each="{resource in resources}" if="{show(resource)}"> <td> <a target="_blank" href="{resource.URL}">{resource.URL}</a> <span if="{resource.IsRedirected}" class="badge">Redirected</span> </td> <td style="width: 9em;">{resource.Type}</td> <td style="width: 9em;" title="{resource.StatusText}">{status(resource)}</td> <td style="width: 13em;"> <virtual if="{!resource.IsUnhandled}"> <div class="btn-group"> <button if="{!resource.IsMarkedAsFixed}" class="btn btn-sm btn-primary" onclick="{markAsFixed}">Mark as Fixed</button> <button if="{resource.IsMarkedAsFixed}" class="btn btn-sm btn-primary" onclick="{markAsFixed}" disabled="{true}">Marked as Fixed</button> <button if="{!resource.IsMarkedAsFixed}" type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdownx" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span> <span class="sr-only">Toggle Dropdown</span> </button> <ul class="dropdown-menu dropdown-menu-right"> <li><a href="#" onclick="{markAsFixedOnAllPages}">Mark as fixed on all pages</a></li> </ul> </div> </virtual> <virtual if="{resource.IsUnhandled}"> <button if="{!resource.IsMarkedAsWorking}" class="btn btn-sm btn-primary" onclick="{markAsWorking}">Mark as Working</button> <button if="{resource.IsMarkedAsWorking}" title="The resource was manually checked on {new Date(resource.IsMarkedAsWorking).toLocaleDateString()}. Click the button to update date of last check." disabled="{checkedToday(resource)}" class="btn btn-sm btn-primary" onclick="{markAsWorking}">Checked: {checkedDateString(resource)}</button> </virtual> </td> </tr> </tbody> </table> </div> </td>', '', '', function(opts) {
+riot.tag2('result-row', '<td if="{resources.length > 0}" style="width: 35%;"> <a style="word-break: break-word;" href="{url}" target="_blank">{url}</a>&nbsp; <a if="{opts.editUrl}" href="{opts.editUrl}" class="btn btn-sm btn-default btn-edit" target="_blank" role="button">Edit</a> </td> <td if="{resources.length > 0}" colspan="4"> <div class="panel panel-default table-responsive" style="margin-bottom: 0;"> <table class="table"> <tbody> <tr each="{resource in resources}" if="{show(resource)}"> <td> <a style="word-break: break-word;" target="_blank" href="{resource.URL}">{resource.URL}</a> <span if="{resource.IsRedirected}" class="badge">Redirected</span> </td> <td style="width: 9em;">{resource.Type}</td> <td style="width: 9em;" title="{resource.StatusText}">{status(resource)}</td> <td style="width: 13em;"> <virtual if="{!resource.IsUnhandled}"> <div class="btn-group"> <button if="{!resource.IsMarkedAsFixed}" class="btn btn-sm btn-primary" onclick="{markAsFixed}">Mark as Fixed</button> <button if="{resource.IsMarkedAsFixed}" class="btn btn-sm btn-primary" onclick="{markAsFixed}" disabled="{true}">Marked as Fixed</button> <button if="{!resource.IsMarkedAsFixed}" type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdownx" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span> <span class="sr-only">Toggle Dropdown</span> </button> <ul class="dropdown-menu dropdown-menu-right"> <li><a href="#" onclick="{markAsFixedOnAllPages}">Mark as fixed on all pages</a></li> </ul> </div> </virtual> <virtual if="{resource.IsUnhandled}"> <div class="btn-group"> <button if="{!resource.IsMarkedAsWorking}" class="btn btn-sm btn-primary" onclick="{markAsWorking}">Mark as Working</button> <button if="{resource.IsMarkedAsWorking}" title="The resource was manually checked on {new Date(resource.IsMarkedAsWorking).toLocaleDateString()}. Click the button to update date of last check." disabled="{checkedToday(resource)}" class="btn btn-sm btn-primary" onclick="{markAsWorking}">Checked: {checkedDateString(resource)}</button> <button if="{!resource.IsMarkedAsWorking}" type="button" class="btn btn-sm btn-primary dropdown-toggle" data-toggle="dropdownx" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span> <span class="sr-only">Toggle Dropdown</span> </button> <ul class="dropdown-menu dropdown-menu-right"> <li><a href="#" onclick="{markAllWithSameStatusCodeAndDomainAsWorking}">Mark all with same status code and domain as working</a></li> </ul> </div> </virtual> </td> </tr> </tbody> </table> </div> </td>', '', '', function(opts) {
 		var self = this;
 
 		self.url = opts.url || console.error('no url set');
@@ -15102,6 +15202,7 @@ riot.tag2('result-row', '<td if="{resources.length > 0}" style="width: 35%;"> <a
 
 		self.markAsFixedOnAllPages = function(e) {
 			e.preventDefault();
+
 			self.parent.setMarkedAsFixedOnAllPages(e.item.resource.URL, e.item.resource.Type);
 			self.parent.update();
 		};
@@ -15109,6 +15210,16 @@ riot.tag2('result-row', '<td if="{resources.length > 0}" style="width: 35%;"> <a
 		self.markAsWorking = function(e) {
 			var datex = Date.now();
 			self.parent.setMarkedAsWorking(e.item.resource.URL, datex);
+
+			self.parent.update();
+		};
+
+		self.markAllWithSameStatusCodeAndDomainAsWorking = function(e) {
+			e.preventDefault();
+
+			var datex = Date.now();
+			self.parent.setAllWithSameStatusCodeAndDomainMarkedAsWorking(e.item.resource.URL, e.item.resource.StatusCode, datex);
+
 			self.parent.update();
 		};
 

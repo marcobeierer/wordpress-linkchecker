@@ -2,7 +2,7 @@
 Contributors: mbsec
 Tags: seo, links, maintenance, broken link checker, link checker, dead link checker, link, broken links, dead links
 Requires at least: 4.5
-Tested up to: 5.1
+Tested up to: 5.2
 Stable tag: 1.17.0
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
@@ -80,6 +80,13 @@ In the most cases this is due to the fact that you have set a large value for th
 2. Stats of the Link Checker after a check has finished.
 
 == Changelog ==
+
+= 1.18.0 =
+*Release Date - 30st June, 2019*
+
+* Added selectable interval (daily, weekly, bi-weekly, every 30 days) to scheduler.
+* Added _Mark all with same status code and domain as working_ function.
+* Improved documentation/glossary.
 
 = 1.17.0 =
 *Release Date - 22st March, 2019*
