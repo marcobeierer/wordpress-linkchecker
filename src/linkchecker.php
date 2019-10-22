@@ -123,50 +123,34 @@ function link_checker_page() {
 				</ul>
 			<?php endif; ?>
 
-			<?php if (count($websiteURLs) > 1): ?>
-				<div class="tab-content">
-					<?php
-						$firstWebsite = true;
-						$count = 0;
-					?>
-					<?php foreach ($websiteURLs as $websiteURL): ?>
-						<div role="tabpanel" class="tab-pane <?php if ($firstWebsite) { echo 'active'; } ?>" id="<?php echo md5($websiteURL); ?>">
-							<linkchecker
-								id="<?php echo $count; ?>"
-								website-url="<?php echo esc_attr($websiteURL); ?>"
-								token="<?php echo esc_attr(get_option('link-checker-token')); ?>"
-								origin-system="wordpress"
-								max-fetchers="<?php echo (int) get_option('link-checker-max-fetchers', 3); ?>"
-								enable-scheduler="true"
-								email="<?php echo esc_attr(get_option('admin_email')); ?>"
-								edit-urls-endpoint="admin-ajax.php?action=link_checker_edit_urls"
-								login-page-url="<?php echo esc_attr(get_option('link-checker-login-page-url')); ?>"
-								login-form-selector="<?php echo esc_attr(get_option('link-checker-login-form-selector')); ?>"
-								login-data="<?php echo esc_attr(get_option('link-checker-login-data')); ?>"
-							>
-							</linkchecker>
-						</div>
-					<?php
-						$firstWebsite = false;
-						$count++;
-					?>
-					<?php endforeach; ?>
-				</div>
-			<?php else: ?>
-				<linkchecker
-					website-url="<?php echo esc_attr($websiteURLs[0]); ?>"
-					token="<?php echo esc_attr(get_option('link-checker-token')); ?>"
-					origin-system="wordpress"
-					max-fetchers="<?php echo (int) get_option('link-checker-max-fetchers', 3); ?>"
-					enable-scheduler="true"
-					email="<?php echo esc_attr(get_option('admin_email')); ?>"
-					edit-urls-endpoint="admin-ajax.php?action=link_checker_edit_urls"
-					login-page-url="<?php echo esc_attr(get_option('link-checker-login-page-url')); ?>"
-					login-form-selector="<?php echo esc_attr(get_option('link-checker-login-form-selector')); ?>"
-					login-data="<?php echo esc_attr(get_option('link-checker-login-data')); ?>"
-				>
-				</linkchecker>
-			<?php endif; ?>
+			<div class="tab-content">
+				<?php
+					$firstWebsite = true;
+					$count = 0;
+				?>
+				<?php foreach ($websiteURLs as $websiteURL): ?>
+					<div role="tabpanel" class="tab-pane <?php if ($firstWebsite) { echo 'active'; } ?>" id="<?php echo md5($websiteURL); ?>">
+						<linkchecker
+							id="<?php echo $count; ?>"
+							website-url="<?php echo esc_attr($websiteURL); ?>"
+							token="<?php echo esc_attr(get_option('link-checker-token')); ?>"
+							origin-system="wordpress"
+							max-fetchers="<?php echo (int) get_option('link-checker-max-fetchers', 3); ?>"
+							enable-scheduler="true"
+							email="<?php echo esc_attr(get_option('admin_email')); ?>"
+							edit-urls-endpoint="admin-ajax.php?action=link_checker_edit_urls"
+							login-page-url="<?php echo esc_attr(get_option('link-checker-login-page-url')); ?>"
+							login-form-selector="<?php echo esc_attr(get_option('link-checker-login-form-selector')); ?>"
+							login-data="<?php echo esc_attr(get_option('link-checker-login-data')); ?>"
+						>
+						</linkchecker>
+					</div>
+				<?php
+					$firstWebsite = false;
+					$count++;
+				?>
+				<?php endforeach; ?>
+			</div>
 		</div>
 	</div>
 <?php
