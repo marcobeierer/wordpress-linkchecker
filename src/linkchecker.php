@@ -94,19 +94,19 @@ function link_checker_page() {
 					$websiteURLs = array($rootURL);
 				}
 
-				$isdev = isset($_GET['dev']);
-				if ($isdev && $_GET['dev'] == '1') {
-					$websiteURLs = array('https://www.marcobeierer.com/');
-				} 
-				else if ($isdev && $_GET['dev'] == '2') {
-					$websiteURLs = array('https://www.marcobeierer.com/', 'https://www.marcobeierer.ch/');
-				}
-				else if ($isdev && $_GET['dev'] == '3') {
-					$websiteURLs = array('https://www.aboutcms.de/');
-				}
-				else {
+				// $isdev = isset($_GET['dev']);
+				// if ($isdev && $_GET['dev'] == '1') {
+				// 	$websiteURLs = array('https://www.marcobeierer.com/');
+				// } 
+				// else if ($isdev && $_GET['dev'] == '2') {
+				// 	$websiteURLs = array('https://www.marcobeierer.com/', 'https://www.marcobeierer.ch/');
+				// }
+				// else if ($isdev && $_GET['dev'] == '3') {
+				// 	$websiteURLs = array('https://www.aboutcms.de/');
+				// }
+				// else {
 					localhostCheck(); // only if not in dev mode
-				}
+				// }
 
 				wordfenceCheck('Link Checker', 'link-checker-settings-x');
 			?>
