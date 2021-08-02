@@ -3,7 +3,7 @@ Contributors: mbsec
 Tags: seo, links, maintenance, broken link checker, link checker, dead link checker, link, broken links, dead links
 Requires at least: 4.5
 Tested up to: 5.8
-Stable tag: 1.18.1
+Stable tag: 1.18.2
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 

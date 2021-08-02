@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    LinkChecker
- * @copyright  Copyright (C) 2015 - 2019 Marco Beierer. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2021 Marco Beierer. All rights reserved.
  * @license    https://www.gnu.org/licenses/gpl-3.0.html GNU/GPL
  */
 defined('ABSPATH') or die('Restricted access.');
@@ -10,7 +10,7 @@ defined('ABSPATH') or die('Restricted access.');
 Plugin Name: Link Checker
 Plugin URI: https://www.marcobeierer.com/wordpress-plugins/link-checker
 Description: An easy to use Link Checker for WordPress to detect broken links and images on your website.
-Version: 1.18.1
+Version: 1.18.2
 Author: Marco Beierer
 Author URI: https://www.marcobeierer.com
 License: GPL v3
