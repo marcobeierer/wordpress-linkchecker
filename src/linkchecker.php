@@ -7,10 +7,10 @@
 defined('ABSPATH') or die('Restricted access.');
 
 /*
-Plugin Name: Link Checker
+Plugin Name: Link Checker Professional
 Plugin URI: https://www.marcobeierer.com/wordpress-plugins/link-checker
 Description: An easy to use Link Checker for WordPress to detect broken links and images on your website.
-Version: 1.18.2
+Version: 1.18.3
 Author: Marco Beierer
 Author URI: https://www.marcobeierer.com
 License: GPL v3
@@ -58,6 +58,13 @@ function link_checker_page() {
 	<div class="wrap" id="linkchecker-widget">
 		<div class="bootstrap3">
 			<h2>Link Checker</h2>
+
+			<?php if (get_option('link-checker-token') == ''): ?>
+			<div class="notice notice-error below-h2">
+				<p>The Link Checker needs a paid token to operate since August 2022. For more information have a look at the <a href="https://www.marcobeierer.com/tools/link-checker-professional">information page</a>.</p>
+				<p>Canceling the free version was sadly necessary because the ratio between free and paying users wasn't healthy for a long time and all income from paying users was used to pay the servers required for the free users. The web version on my <a href="https://www.marcobeierer.com/tools/link-checker">website</a> is still free to use. Thank you for your trust and sorry for the inconvenience caused.</p>
+			</div>
+			<?php endif; ?>
 
 			<?php
 				$rootURL = get_home_url();
