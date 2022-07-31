@@ -3,21 +3,22 @@ Contributors: mbsec
 Tags: seo, links, maintenance, broken link checker, link checker, dead link checker, link, broken links, dead links
 Requires at least: 4.5
 Tested up to: 6.0
-Stable tag: 1.18.3
+Stable tag: 1.18.4
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 An easy to use link checker for WordPress to detect broken links and images on your website.
 
-== Paid plugin ==
-Please note that the Link Checker requires a paid token to operate. The free version is no longer offered.
-
 == Description ==
+
 The [Link Checker](https://www.marcobeierer.com/wordpress-plugins/link-checker) for WordPress uses an external service to crawl your website and find broken links and images on your website. 
 
 In contrast to search engine tools like the Google Search Console, which only show if a URL on your website is not reachable, it does not matter for the Link Checker if the links leads to an internal or external URL. The Link Checker will find all dead links. 
 
 The Link Checker works for every plugin out of the box. The computation costs for your website is also very low because the crawler does the heavy work and just acts like a normal visitor, who visits all pages of you website once.
+
+= Paid plugin =
+Please note that the Link Checker requires a paid token to operate. The free version is no longer offered.
 
 = Videos =
 You can find videos about the Link Checker on the [Link Checker for WordPress playlist on YouTube](https://www.youtube.com/watch?v=8rUFDp09tjs&list=PL5VYcNma6nfxIrlbpz0f1avXT_JIrUZA1).
@@ -83,6 +84,11 @@ In the most cases this is due to the fact that you have set a large value for th
 2. Stats of the Link Checker after a check has finished.
 
 == Changelog ==
+
+= 1.18.4 =
+*Release Date - 1st August, 2022*
+
+* Updated readme.
 
 = 1.18.3 =
 *Release Date - 1st August, 2022*
