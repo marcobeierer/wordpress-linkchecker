@@ -10,7 +10,7 @@ defined('ABSPATH') or die('Restricted access.');
 Plugin Name: Link Checker Professional
 Plugin URI: https://www.marcobeierer.com/wordpress-plugins/link-checker
 Description: An easy to use Link Checker for WordPress to detect broken links and images on your website.
-Version: 1.18.5
+Version: 1.18.6
 Author: Marco Beierer
 Author URI: https://www.marcobeierer.com
 License: GPL v3
@@ -118,46 +118,48 @@ function link_checker_page() {
 				wordfenceCheck('Link Checker', 'link-checker-settings-x');
 			?>
 
-			<?php if (count($websiteURLs) > 1): ?>
-				<ul class="nav nav-tabs" role="tablist" style="margin-bottom: 20px;">
-				<?php $firstWebsite = true; ?>
-				<?php foreach ($websiteURLs as $websiteURL): ?>
-					<li role="presentation" class="<?php if ($firstWebsite) { echo 'active'; } ?>">
-						<a href="#<?php echo md5($websiteURL); ?>" aria-controls="<?php echo md5($websiteURL); ?>" role="tab" data-toggle="tab"><?php echo esc_attr($websiteURL); ?></a>
-					</li>
-					<?php $firstWebsite = false; ?>
-				<?php endforeach; ?>
-				</ul>
-			<?php endif; ?>
+			<?php if (get_option('link-checker-token') != ''): ?>
+				<?php if (count($websiteURLs) > 1): ?>
+					<ul class="nav nav-tabs" role="tablist" style="margin-bottom: 20px;">
+					<?php $firstWebsite = true; ?>
+					<?php foreach ($websiteURLs as $websiteURL): ?>
+						<li role="presentation" class="<?php if ($firstWebsite) { echo 'active'; } ?>">
+							<a href="#<?php echo md5($websiteURL); ?>" aria-controls="<?php echo md5($websiteURL); ?>" role="tab" data-toggle="tab"><?php echo esc_attr($websiteURL); ?></a>
+						</li>
+						<?php $firstWebsite = false; ?>
+					<?php endforeach; ?>
+					</ul>
+				<?php endif; ?>
 
-			<div class="tab-content">
-				<?php
-					$firstWebsite = true;
-					$count = 0;
-				?>
-				<?php foreach ($websiteURLs as $websiteURL): ?>
-					<div role="tabpanel" class="tab-pane <?php if ($firstWebsite) { echo 'active'; } ?>" id="<?php echo md5($websiteURL); ?>">
-						<linkchecker
-							id="<?php echo $count; ?>"
-							website-url="<?php echo esc_attr($websiteURL); ?>"
-							token="<?php echo esc_attr(get_option('link-checker-token')); ?>"
-							origin-system="wordpress"
-							max-fetchers="<?php echo (int) get_option('link-checker-max-fetchers', 3); ?>"
-							enable-scheduler="true"
-							email="<?php echo esc_attr(get_option('admin_email')); ?>"
-							edit-urls-endpoint="admin-ajax.php?action=link_checker_edit_urls"
-							login-page-url="<?php echo esc_attr(get_option('link-checker-login-page-url')); ?>"
-							login-form-selector="<?php echo esc_attr(get_option('link-checker-login-form-selector')); ?>"
-							login-data="<?php echo esc_attr(get_option('link-checker-login-data')); ?>"
-						>
-						</linkchecker>
-					</div>
-				<?php
-					$firstWebsite = false;
-					$count++;
-				?>
-				<?php endforeach; ?>
-			</div>
+				<div class="tab-content">
+					<?php
+						$firstWebsite = true;
+						$count = 0;
+					?>
+					<?php foreach ($websiteURLs as $websiteURL): ?>
+						<div role="tabpanel" class="tab-pane <?php if ($firstWebsite) { echo 'active'; } ?>" id="<?php echo md5($websiteURL); ?>">
+							<linkchecker
+								id="<?php echo $count; ?>"
+								website-url="<?php echo esc_attr($websiteURL); ?>"
+								token="<?php echo esc_attr(get_option('link-checker-token')); ?>"
+								origin-system="wordpress"
+								max-fetchers="<?php echo (int) get_option('link-checker-max-fetchers', 3); ?>"
+								enable-scheduler="true"
+								email="<?php echo esc_attr(get_option('admin_email')); ?>"
+								edit-urls-endpoint="admin-ajax.php?action=link_checker_edit_urls"
+								login-page-url="<?php echo esc_attr(get_option('link-checker-login-page-url')); ?>"
+								login-form-selector="<?php echo esc_attr(get_option('link-checker-login-form-selector')); ?>"
+								login-data="<?php echo esc_attr(get_option('link-checker-login-data')); ?>"
+							>
+							</linkchecker>
+						</div>
+					<?php
+						$firstWebsite = false;
+						$count++;
+					?>
+					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
 		</div>
 	</div>
 <?php

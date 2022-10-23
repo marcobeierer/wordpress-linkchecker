@@ -3,7 +3,7 @@ Contributors: mbsec
 Tags: seo, links, maintenance, broken link checker, link checker, dead link checker, link, broken links, dead links
 Requires at least: 4.5
 Tested up to: 6.0
-Stable tag: 1.18.5
+Stable tag: 1.18.6
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -84,6 +84,11 @@ In the most cases this is due to the fact that you have set a large value for th
 2. Stats of the Link Checker after a check has finished.
 
 == Changelog ==
+
+= 1.18.6 =
+*Release Date - 24th October, 2022*
+
+* Added paywall.
 
 = 1.18.5 =
 *Release Date - 1st August, 2022*
