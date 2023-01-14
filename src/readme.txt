@@ -9,6 +9,11 @@ License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
 An easy to use link checker for WordPress to detect broken links and images on your website.
 
+== Out of service ==
+It's no longer possible to purchase tokens for the Link Checker as of mid-January 2023. 
+
+The service is still available for all users that have already purchased a token and will be shutdown when the last issued token expires mid-January 2024.
+
 == Description ==
 
 The [Link Checker](https://www.marcobeierer.com/wordpress-plugins/link-checker) for WordPress uses an external service to crawl your website and find broken links and images on your website. 
