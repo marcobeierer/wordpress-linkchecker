@@ -1,9 +1,9 @@
-=== Link Checker Professional ===
+=== Link Checker Pro ===
 Contributors: mbsec
 Tags: seo, links, maintenance, broken link checker, link checker, dead link checker, link, broken links, dead links
-Requires at least: 4.5
-Tested up to: 6.0
-Stable tag: 1.18.7
+Requires at least: 4.7
+Tested up to: 7.0
+Stable tag: 1.19.0
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -11,19 +11,16 @@ An easy to use link checker for WordPress to detect broken links and images on y
 
 == Description ==
 
-The [Link Checker](https://www.marcobeierer.com/wordpress-plugins/link-checker) for WordPress uses an external service to crawl your website and find broken links and images on your website. 
+The [Link Checker](https://www.marcobeierer.com/tools/link-checker/pro) for WordPress uses an external service to crawl your website and find broken links and images on your website.
 
 In contrast to search engine tools like the Google Search Console, which only show if a URL on your website is not reachable, it does not matter for the Link Checker if the links leads to an internal or external URL. The Link Checker will find all dead links. 
 
 The Link Checker works for every plugin out of the box. The computation costs for your website is also very low because the crawler does the heavy work and just acts like a normal visitor, who visits all pages of you website once.
 
-= Out of service =
-It's no longer possible to purchase tokens for the Link Checker as of mid-January 2023. 
+= Limitations of the free version =
+The Link Checker can be used for free, but the free version is limited. You can check websites with up to 500 URLs. Advanced features like image or video checks, CSV export, scheduler support, and form login support aren't available in the free version.
 
-The service is still available for all users that have already purchased a token and will be shutdown when the last issued token expires mid-January 2024.
-
-= Paid plugin =
-Please note that the Link Checker requires a paid token to operate. The free version is no longer offered.
+The service cannot be offered free of charge for larger websites because the crawling is done by servers operated by the plugin developer and renting and maintaining these servers isn't cheap.
 
 = Videos =
 You can find videos about the Link Checker on the [Link Checker for WordPress playlist on YouTube](https://www.youtube.com/watch?v=8rUFDp09tjs&list=PL5VYcNma6nfxIrlbpz0f1avXT_JIrUZA1).
@@ -41,7 +38,7 @@ You can find videos about the Link Checker on the [Link Checker for WordPress pl
 * Respects your robots.txt file (also the crawl-delay directive).
 	* You can use the user-agents MB-LinkChecker to control the crawler.
 
-= Additional Features of the Professional Version =
+= Additional Features of Link Checker Pro =
 * Check if embedded internal and external **images** are broken.
 * Check if embedded **YouTube videos** are broken.
 * Scheduler to **automatically check a website** once a day and get a summary report by email.
@@ -53,12 +50,7 @@ You can find videos about the Link Checker on the [Link Checker for WordPress pl
 * Support for checking the availability of videos, CSS files and JS files.
 
 = Technical Requirements =
-* Works with **PHP 5.6 and 7**.
-
-= Is the service free of charge? =
-The Link Checker Professional is a paid plugin. A free version was offered for many years, but since August 2022 only a paid version is available.
-
-[Link Checker Professional](https://www.marcobeierer.com/wordpress-plugins/link-checker-professional)
+* Works with **WordPress 4.7 or newer** on **PHP 5.6 or newer**.
 
 = Use of an External Server =
 The Link Checker uses an external server, operated by the developer of the plugin, to crawl your website and detect broken links. This means, that there is some communication between your website and the server. The only data that is communicated to the external server by your website is the URL of your website and the fact that you are using WordPress. The server than crawlers your website (as a normal visitor does) and answers with a list of the found broken links.
@@ -90,10 +82,19 @@ In the most cases this is due to the fact that you have set a large value for th
 
 == Changelog ==
 
+= 1.19.0 =
+*Release Date - 2nd June, 2026*
+
+* WordPress 7 compatibility update while keeping WordPress 4.7 as the minimum supported version.
+* Hardened settings sanitization, admin AJAX handling, and bundled jQuery compatibility for current WordPress/PHP versions.
+* Removed outdated out-of-service notice.
+* Restored no-token/free-version usage with an admin notice that explains the limits.
+* Disabled the feedback tab by default.
+
 = 1.18.7 =
 *Release Date - 14th January, 2023*
 
-* Out of service info.
+* Updated readme.
 
 = 1.18.6 =
 *Release Date - 24th October, 2022*
@@ -154,7 +155,7 @@ In the most cases this is due to the fact that you have set a large value for th
 
 * Show edit link for URLs that could be assigned to a post.
 * Improved status codes page.
-* Improved professional version page.
+* Improved Pro version page.
 * Bugfix: Reset retries count before every check.
 * Crawler: Performance optimizations and some bug fixes.
 
@@ -166,8 +167,8 @@ In the most cases this is due to the fact that you have set a large value for th
 = 1.15.0 =
 *Release Date - 21th July, 2018*
 
-* Export result as CSV file for users of the professional version.
-* Result is saved on server for customers of the professional version. So the same result can be downloaded by multiple users or with multiple browsers.
+* Export result as CSV file for users of the Pro version.
+* Result is saved on server for customers of the Pro version. So the same result can be downloaded by multiple users or with multiple browsers.
 * Added hint how to change scheduler email address.
 
 = 1.14.0 =
@@ -367,7 +368,7 @@ In the most cases this is due to the fact that you have set a large value for th
 = 1.0.0-rc.1 =
 *Release Date - 17th September, 2015*
 
-* Implemented token support for the Link Checker Professional.
+* Implemented token support for Link Checker Pro.
 * Reset list of broken links directly and not at the first find if a second check is executed.
 * Undone change introduced in 1.0.0-beta.3: Pages blocked by the robots.txt file are not parsed from now on as in versions older than 1.0.0-beta.3. I rethought this point and think crawlers should respect the robots.txt, no matter which purpose the crawler has.
 * Support for custom user-agent group (MB-SiteCrawler) in robots.txt.
@@ -395,4 +396,3 @@ In the most cases this is due to the fact that you have set a large value for th
 *Release Date - 8th August, 2015*
 
 * Initial release.
-

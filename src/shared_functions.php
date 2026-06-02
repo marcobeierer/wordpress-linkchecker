@@ -1,6 +1,6 @@
 <?php
 /*
- * @copyright  Copyright (C) 2015 - 2019 Marco Beierer. All rights reserved.
+ * @copyright  Copyright (C) 2015 - 2026 Marco Beierer. All rights reserved.
  * @license    https://www.gnu.org/licenses/gpl-3.0.html GNU/GPL
  */
 defined('ABSPATH') or die('Restricted access.');
@@ -10,7 +10,7 @@ if (!function_exists('tokenCheck')) {
 		$token = get_option('link-checker-token');
 		if ($token == '') { ?>
 			<div class="notice notice-error below-h2">
-			<p>The scheduler is only available if you have deposited a valid token for the <?php echo $service; ?> Professional in the settings. You could purchase the <a href="https://www.marcobeierer.com/wordpress-plugins/<?php echo $url; ?>-professional"><?php echo $service; ?> Professional</a> on my website</p>
+			<p>The scheduler is only available if you have deposited a valid token for <?php echo esc_html($service); ?> Pro in the settings. You could purchase <a href="<?php echo esc_url('https://www.marcobeierer.com/tools/' . sanitize_key($url) . '/pro'); ?>"><?php echo esc_html($service); ?> Pro</a> on my website</p>
 			</div>
 
 
@@ -58,12 +58,15 @@ if (!function_exists('cURLCheck')) {
 if (!function_exists('wordfenceCheck')) {
 	// $toolName is 'Link Checker' or 'Sitemap Generator'
 	function wordfenceCheck($toolName, $settingsPageURL) {
+		$settingsURL = admin_url('admin.php?page=' . sanitize_key($settingsPageURL));
+		$wordfenceOptionsURL = admin_url('admin.php?page=WordfenceOptions');
+
 		if (defined('WORDFENCE_VERSION')): ?>
 			<div class="notice notice-warning below-h2 is-dismissible">
-				<p>The <?php echo $toolName; ?> detected that you have Wordfence installed. Wordfence may rate limit the <?php echo $toolName; ?> crawler and as a result of this behavior you might see lots of timeouts<?php if ($toolName == 'Link Checker'): ?> (status code 504) in the results<?php endif; ?>.</p>
-				<p>To make the <?php echo $toolName; ?> work as expected, you can try to set the number of concurrent connections to 1 in the <a href="admin.php?page=<?php echo $settingsPageURL; ?>"><?php echo $toolName; ?> settings</a> and optionally increase or disable the rate limits in the <em>Rate Limiting</em> section in the <a href="admin.php?page=WordfenceOptions">Wordfence options</a>. But please keep in mind, that the Wordfence options apply for all crawlers and not just the <?php echo $toolName; ?>.</p>
-				<p>Alternatively you can whitelist the <?php echo $toolName; ?> in the <a href="admin.php?page=WordfenceOptions">Wordfence options</a> with the option <em>Whitelisted IP addresses that bypass all rules</em>. However, general whitelisting isn't the best solution from a security point of view. It would be better to whitelist the <?php echo $toolName; ?> just for rate limiting, but Wordfence doesn't provide such an option at the time. The IP addresses of the <?php echo $toolName; ?> are:</p>
-				<p>195.201.127.2</br>
+				<p>The <?php echo esc_html($toolName); ?> detected that you have Wordfence installed. Wordfence may rate limit the <?php echo esc_html($toolName); ?> crawler and as a result of this behavior you might see lots of timeouts<?php if ($toolName == 'Link Checker'): ?> (status code 504) in the results<?php endif; ?>.</p>
+				<p>To make the <?php echo esc_html($toolName); ?> work as expected, you can try to set the number of concurrent connections to 1 in the <a href="<?php echo esc_url($settingsURL); ?>"><?php echo esc_html($toolName); ?> settings</a> and optionally increase or disable the rate limits in the <em>Rate Limiting</em> section in the <a href="<?php echo esc_url($wordfenceOptionsURL); ?>">Wordfence options</a>. But please keep in mind, that the Wordfence options apply for all crawlers and not just the <?php echo esc_html($toolName); ?>.</p>
+				<p>Alternatively you can whitelist the <?php echo esc_html($toolName); ?> in the <a href="<?php echo esc_url($wordfenceOptionsURL); ?>">Wordfence options</a> with the option <em>Whitelisted IP addresses that bypass all rules</em>. However, general whitelisting isn't the best solution from a security point of view. It would be better to whitelist the <?php echo esc_html($toolName); ?> just for rate limiting, but Wordfence doesn't provide such an option at the time. The IP addresses of the <?php echo esc_html($toolName); ?> are:</p>
+				<p>195.201.127.2<br />
 2a01:4f8:1c1c:70c::1</p>
 			</div>
 		<?php endif;

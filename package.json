@@ -1,0 +1,15 @@
+{
+	"name": "link-checker-wordpress-plugin",
+	"private": true,
+	"scripts": {
+		"wp-env:start": "wp-env start",
+		"wp-env:stop": "wp-env stop",
+		"wp-env:destroy": "wp-env destroy",
+		"wp-env:logs": "wp-env logs",
+		"wp-env:cli": "wp-env run cli wp",
+		"test:php": "php -l src/linkchecker.php && php -l src/shared_functions.php"
+	},
+	"devDependencies": {
+		"@wordpress/env": "^10.17.0"
+	}
+}
