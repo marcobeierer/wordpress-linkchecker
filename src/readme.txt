@@ -89,7 +89,6 @@ In the most cases this is due to the fact that you have set a large value for th
 * Hardened settings sanitization, admin AJAX handling, and bundled jQuery compatibility for current WordPress/PHP versions.
 * Removed outdated out-of-service notice.
 * Restored no-token/free-version usage with an admin notice that explains the limits.
-* Disabled the feedback tab by default.
 
 = 1.18.7 =
 *Release Date - 14th January, 2023*
