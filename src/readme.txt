@@ -1,6 +1,6 @@
 === Link Checker Pro ===
 Contributors: mbsec
-Tags: seo, links, maintenance, broken link checker, link checker, dead link checker, link, broken links, dead links
+Tags: seo, broken link checker, link checker, broken links, dead links
 Requires at least: 4.7
 Tested up to: 7.0
 Stable tag: 1.19.0
