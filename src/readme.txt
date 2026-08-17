@@ -1,9 +1,9 @@
-=== Link Checker Pro ===
+=== Link Checker ===
 Contributors: mbsec
 Tags: seo, broken link checker, link checker, broken links, dead links
 Requires at least: 4.7
-Tested up to: 7.0
-Stable tag: 1.19.0
+Tested up to: 7.1
+Stable tag: 1.19.1
 License: GPL v3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -81,6 +81,11 @@ In the most cases this is due to the fact that you have set a large value for th
 2. Stats of the Link Checker after a check has finished.
 
 == Changelog ==
+
+= 1.19.1 =
+*Release Date - 17th August, 2026*
+
+* Updated 'Tested up to' information.
 
 = 1.19.0 =
 *Release Date - 2nd June, 2026*
