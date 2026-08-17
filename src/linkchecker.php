@@ -7,15 +7,15 @@
 defined('ABSPATH') or die('Restricted access.');
 
 /*
-Plugin Name: Link Checker Pro
+Plugin Name: Link Checker
 Plugin URI: https://www.marcobeierer.com/tools/link-checker
 Description: An easy to use Link Checker for WordPress to detect broken links and images on your website.
-Version: 1.19.0
+Version: 1.19.1
 Author: Marco Beierer
 Author URI: https://www.marcobeierer.com
 License: GPL v3
 Requires at least: 4.7
-Tested up to: 7.0
+Tested up to: 7.1
 Text Domain: link-checker
 */
 
